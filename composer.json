@@ -1,0 +1,26 @@
+{
+	"name" : "bgies/edilaravel",
+	"description" : "EDI Laravel - package",
+	"authors" : [{
+			"name" : "bgies",
+			"email" : "rbgies@gmail.com"
+		}
+	],
+	"type" : "project",
+	"license" : "MIT",
+	"minimum-stability" : "dev",
+	"autoload" : {
+		"psr-4" : {
+			"bgies\\edilaravel\\" : "src/"
+		}
+	},
+	"extra" : {
+      "laravel" : {
+         "providers": [ 
+            "Bgies\\EdiLaravel\\EdiLaravelProvider"
+         ],
+         "aliases": {
+         }
+      }
+   }
+}
