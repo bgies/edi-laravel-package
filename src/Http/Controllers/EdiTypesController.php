@@ -2,7 +2,11 @@
 
 namespace Bgies\EdiLaravel\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiTypes;
+use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
+use Bgies\EdiLaravel\Functions\ObjectFunctions; 
+
 
 class EdiTypesController extends Controller
 {
@@ -14,8 +18,43 @@ class EdiTypesController extends Controller
       return view('edilaravel::ediTypes.editypes', compact('ediTypes'));
    }
    
+   public function showObject() 
+   {
+      
+      
+   }
+   
+   
+   
+   public function edit(Request $request, $ediTypeId)
+   {
+      \Log::info('EdiTypesController edi ediTypeId: ' . $ediTypeId);
+      $ediType = EdiTypes::find($ediTypeId);
+      if (!$ediType) {
+         throw new NoSuchEdiTypeException('Division by zero.');
+      }
+      
+      $beforeProcessObjectProperties = [];
+      if ($ediType) {
+         $beforeProcessObjectProperties = ObjectFunctions::getObjectProperties($ediType);
+         $fields = $ediType->getAttributes();
+      }
+      \Log::info('EdiTypesController edit $fieldNames: ' . print_r($fields, true));
+           
+      
+
+
+      
+      return view('edilaravel::ediTypes.editype', ['ediType' => $ediType, 
+         'fields' => $fields,
+         'beforeProcessObjectProperties' => $beforeProcessObjectProperties
+      ]);
+   }
+   
+   
    public function show()
    {
+      
       
    }
    
@@ -42,6 +81,8 @@ class EdiTypesController extends Controller
       
       return redirect(route('posts.show', $post));
    }
+   
+   
     
     
 }

@@ -15,12 +15,13 @@
 		}
 	},
 	"extra" : {
-      "laravel" : {
-         "providers": [ 
-            "Bgies\\EdiLaravel\\EdiLaravelProvider"
-         ],
-         "aliases": {
-         }
-      }
-   }
+		"laravel" : {
+			"providers" : [
+				"Bgies\\EdiLaravel\\EdiLaravelProvider"
+			]
+		}
+	},
+	"files" : [
+		"Helpers/BladeHelpers.php"
+	]
 }

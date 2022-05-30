@@ -22,6 +22,11 @@ class EdiLaravelProvider extends ServiceProvider
        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
        
        $this->loadViewsFrom(__DIR__ . '/resources/views', 'edilaravel');
+
+       $this->publishes([
+          __DIR__ . '/path/to/assets' => public_path('vendor/edilaravel'),
+       ], 'public');
+       
        
        $router = $this->app->make(Router::class);
        $router->pushMiddlewareToGroup('edi', CheckAuthorization::class);
@@ -43,10 +48,10 @@ class EdiLaravelProvider extends ServiceProvider
                 __DIR__ . '/resources/views/' => base_path('resources/views/vendor/edilaravel'),
                 __DIR__ . '/resources/js/' => base_path('resources/assets/js/vendor/edilaravel')
           ], 'assets');
-          
+                    
           /* Views */
           $this->publishes([
-             __DIR__.'/resources/views' => resource_path('views/vendor/edilaravel'),
+             __DIR__ . '/resources/views' => resource_path('views/vendor/edilaravel'),
           ], 'views');
        }
             

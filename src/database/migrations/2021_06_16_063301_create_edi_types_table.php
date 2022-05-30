@@ -17,12 +17,11 @@ class CreateEdiTypesTable extends Migration
             $table->id();
             $table->string('edt_name', 30)->unique('edi_type_name_unique');
             $table->tinyInteger('edt_is_incoming', false, true)->default(1);
-            $table->enum('edt_edi_standard', ['X12', 'EDIFACT']);
+            $table->string('edt_edi_standard', 10)->default('X12');
             $table->string('edt_transaction_set_name', 30);
             $table->tinyInteger('edt_enabled')->default(0);
             $table->unsignedBigInteger('edt_control_number')->default(0);
             $table->boolean('edt_manual_create')->default(1);
-//            $table->integer('edtScfID')->default(0);
             $table->boolean('edt_in_use')->default(0);
             $table->integer('edt_user_id')->default(-1);
             $table->dateTime('edt_next_run_datetime')->nullable();
