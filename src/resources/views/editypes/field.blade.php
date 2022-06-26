@@ -1,0 +1,103 @@
+@extends('layouts.layout')
+
+@section('title', 'EDI Type')
+
+
+@section('content')
+	<div class="">{{ $ediType->edt_name }} - {{ $fieldName }}</div>
+	@php( $indentLevel = 0)
+
+	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
+
+
+   <div class="container edi-grid edi-grid-bg column-gap: 10px">
+   		<div class="row">
+   			@if (! $fieldObject)
+				<h5>Null</h5>
+				<div class="mb-3">
+					<label for="edt_edi_standard" class="form-label">Transaction Set</label>   
+					<select class="mb-3 form-select" aria-label=".edt_transaction_set_name">
+		   <option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
+				<h5><a href="">Choose Object Type</a></h5>
+			@else
+				<h5>{{ get_class($fieldObject) }}</h5>
+			@endif   		
+   		</div>
+   		<form class="edi-grid-bg needs-validation" novalidate>
+   			@foreach($objectProperties as $curField => $curFieldValue) 
+   				@php( $fieldType = gettype($fieldObject->$curField) )  
+   				
+   				@switch($fieldType)
+					@case('string')
+						<div class="mb-3">
+   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $curField }}</label>
+   							<input type="input" class="form-control" id="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
+							<div id="{{ $curField }}Help" class="form-text"></div>
+						</div>
+        			@break
+
+    				@case('integer')
+    					<div class="mb-3">
+   							<label for="{{ $curField }}" class="form-label">{{ $curField }}</label>
+   							<input type="input" class="form-control" id="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
+							<div id="{{ $curField }}Help" class="form-text">Help</div>
+						</div>
+        				
+        			@break
+
+    				@case('boolean')
+    					<div class="mb-3">
+        					<div class="form-check">
+  								<input class="form-check-input" type="checkbox" value="{{ $curFieldValue }}" id="{{ $curField }}">
+							   <label class="form-check-label" for="{{ $curField }}">
+								    	{{ $curField }}
+  									</label>
+								</div>
+        				</div>
+        			@break
+
+					@case('array')
+    					<div class="mb-3">
+    					   {{ $curField }} 	array...
+    					   @if (isset($curFieldValue))
+    					   		{{ print_r($curFieldValue, true) }}
+    					   	@endif
+    					   
+        				</div>
+        			@break
+
+					@case('object')
+    					<div class="mb-3">
+    						@php( $indentLevel++)
+    						@if ( isset($curField) && isset($curFieldValue) )
+    						    
+    							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject($curField, $curFieldValue, $indentLevel) }}
+    						@endif
+    						@php( $indentLevel--)
+    					   
+        				</div>
+        			@break
+
+
+    				@default
+    					<div class="mb-3">
+    					   	Current Field: {{ $curField }}
+    						Current Value: {{ print_r($curFieldValue, true) }}
+    					   @if (isset($fieldType))
+	    						<div>Default...  Field Type: {{ $fieldType }}</div>
+	    					@else
+	    					   <div>Default...  Field Type: NULL</div>
+        					@endif
+        				</div>	
+				@endswitch
+   				
+   			@endforeach
+   		</form>  
+   		<div><br /></div>  
+   </div>
+
+
+
+
+    
+@endsection

@@ -22,7 +22,7 @@ class EdiTypesId3Seeder extends Seeder
     {
         // Setup the preProcess object
         $beforeProcessObject = new FileFromDirectory();
-        $beforeProcessObject->edt_file_directory = 'incoming/Read852';
+        $beforeProcessObject->directoryName = 'incoming/Read852';
 
 
         // Setup the main Options object

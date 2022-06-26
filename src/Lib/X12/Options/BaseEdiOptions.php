@@ -49,10 +49,10 @@ abstract class BaseEdiOptions
 
    public $fileName = '';
    public $detailSQL = '';
-   public $useDetailQuery = false;
-   public $overwriteFile = false;
+   public bool $useDetailQuery = false;
+   public bool $overwriteFile = false;
 
-   public $use4DigitYear = false;
+   public bool $use4DigitYear = false;
    public $edi2DigitYearDate = '';
    public $edi4DigitYearDate = '';
    public $ediTime = '';
@@ -80,7 +80,25 @@ abstract class BaseEdiOptions
 
    }
 
-
+   public function getPropertyTypes() {
+      $propTypes = array();
+      $propTypes['ComponentElementSeparator'] = new PropertyType(
+         'string', 1, 1, false, true, null
+         );
+      $propTypes['ElementDelimiter'] = new PropertyType(
+         'string', 1, 1, false, true, null
+         );
+      $propTypes['SegmentTerminator'] = new PropertyType(
+         'string', 1, 1, false, true, null
+         );
+      $propTypes['ReleaseCharacter'] = new PropertyType(
+         'string', 1, 1, false, true, null
+         );
+      $propTypes['DecimalPoint'] = new PropertyType(
+         'string', 1, 1, false, true, null
+         );
+      return $propTypes;
+   }
 
 
 }

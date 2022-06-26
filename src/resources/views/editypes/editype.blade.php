@@ -369,12 +369,13 @@
 
 	<div class="mb-3">
 		<div class="row">
-		<div class="col-6">Before Processing</div>
-		<div class="col-6">
-			edt_before_process_object
-		</div>
-		</div>	  
-	   
+			<div class="col-6">Before Processing</div>
+			<div class="col-6">
+				<a href="/edilaravel/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
+					Before Processing Options
+				</a>
+			</div>
+		</div>		   
 	</div>  
 	
 	<div class="mb-3">
@@ -387,17 +388,17 @@
 		<div class="row">
 		<div class="col-6">EDI Options</div>
 		<div class="col-6">
-			edt_edi_object
+			<a href="/edilaravel/field/{{ $ediType->id . '/edt_edi_object'  }}/edit" >EDI Object</a>
 		</div>
 		</div>
 	</div>  
 	
 	<div class="mb-3">
 		<div class="row">
-		<div class="col-6">After Processing</div>
-		<div class="col-6">
-			edt_after_process_object
-		</div>
+			<div class="col-6">After Processing</div>
+			<div class="col-6">
+				<a href="/edilaravel/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >After Processing</a>
+			</div>
 		</div>
 	</div>  
 
@@ -410,7 +411,7 @@
 		<div class="row">
 		<div class="col-6">Alert Options</div>
 		<div class="col-6">
-			edt_alert_object
+			<a href="/edilaravel/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
 		</div>
 		</div>
 	</div>  
@@ -419,17 +420,17 @@
 		<div class="row">
 		<div class="col-6">File Drop Options</div>
 		<div class="col-6">
-			edt_file_drop
+			<a href="/edilaravel/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
 		</div>
 		</div>
 	</div>  
 	 
 	<div class="mb-3">
 		<div class="row">
-		<div class="col-6">Transmission Options</div>
-		<div class="col-6">
-			edt_transmission_object
-		</div>
+			<div class="col-6">Transmission Options</div>
+			<div class="col-6">
+				<a href="/edilaravel/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
+			</div>
 		</div>
 	</div>  
 	 

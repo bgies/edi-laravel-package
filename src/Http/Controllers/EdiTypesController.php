@@ -82,7 +82,53 @@ class EdiTypesController extends Controller
       return redirect(route('posts.show', $post));
    }
    
-   
+   public function fieldEdit(Request $request, $ediTypeId, $fieldName)
+   {
+      $ediType = EdiTypes::find($ediTypeId);
+      
+      $fieldObject = unserialize($ediType->$fieldName);
+      $ObjectProperties = ObjectFunctions:: getVars($fieldObject);
+      
+      $objectTypes = [];
+      if (!$fieldObject) {
+         switch ($fieldName) {
+            case 'edt_before_process_object': 
+            
+            break;
+            case 'edt_edi_object':
+               
+            break;
+            case 'edt_before_process_object':
+               
+            break;
+            case 'edt_after_process_object':
+               
+            break;
+            case 'edt_alert_object':
+               $objectTypes[0] = 'email';
+               $objectTypes[1] = 'SMS';
+               
+            break;
+            case 'edt_transmission_object':
+               
+            break;               
+         
+            default : 
+               
+            break;            
+         }
+         
+      }
+      
+      return view('edilaravel::ediTypes.field', ['ediType' => $ediType,
+         'fieldName' => $fieldName,
+         'fieldObject' => $fieldObject,
+         'objectProperties' => $ObjectProperties, 
+         'objectTypes' => $objectTypes
+      ]);
+      
+      
+   }
     
     
 }

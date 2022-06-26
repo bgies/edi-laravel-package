@@ -2,34 +2,36 @@
 
 namespace Bgies\EdiLaravel\Lib\X12;
 
+use Bgies\EdiLaravel\Lib\PropertyType;
+
 
 class ReplySettings
 {
-   public $AcknowledgeFileOn997 = true;
-   public $AcknowledgeTransactionOn997Accepted = false;
-   public $AcknlowledgeTransactionOn997Reject = true;
-   public $AcknowledgeFileOn824 = true;
-   public $AcknowledgeTransactionOn824Accepted = true;
-   public $AcknlowledgeTransactionOn824Reject = true;
-   public $ErrorSegment = '';
-   public $ErrorTransaction = array();
-   public $OnlyMatchControlNumberWithin = 0;
-   public $SQLCommand824 = array();
-   public $SQLCommand997 = array();
+   public bool $AcknowledgeFileOn997 = true;
+   public bool $AcknowledgeTransactionOn997Accepted = false;
+   public bool $AcknowledgeTransactionOn997Reject = true;
+   public bool $AcknowledgeFileOn824 = true;
+   public bool $AcknowledgeTransactionOn824Accepted = true;
+   public bool $AcknowledgeTransactionOn824Reject = true;
+   public string $ErrorSegment = '';
+   public array $ErrorTransaction = array();
+   public int $OnlyMatchControlNumberWithin = 0;
+   public array $SQLCommand824 = array();
+   public array $SQLCommand997 = array();
 
-   public $DetailQuery = '';
-   public $GESegment = '';
-   public $GESegmentFilePos = -1;
-   public $GSSegment = '';
-   public $GSSegmentFilePos = -1;
-   public $IEASegment = '';
-   public $IEASegmentFilePos = -1;
-   public $ISASegment = '';
-   public $ISASegmentFilePos = -1;
-   public $STSegmentFilePos = -1;
-   public $SESegmentFilePos = -1;
+   public string $DetailQuery = '';
+   public string $GESegment = '';
+   public int $GESegmentFilePos = -1;
+   public string $GSSegment = '';
+   public int $GSSegmentFilePos = -1;
+   public string $IEASegment = '';
+   public int $IEASegmentFilePos = -1;
+   public string $ISASegment = '';
+   public int $ISASegmentFilePos = -1;
+   public int $STSegmentFilePos = -1;
+   public int $SESegmentFilePos = -1;
    
-   public $FShipmentMemo = array();
+   public array $FShipmentMemo = array();
    
    
    /**
@@ -43,7 +45,93 @@ class ReplySettings
       
    }   
    
-   
+   public function getPropertyTypes() {
+      $propTypes = array();
+      $propTypes['AcknowledgeFileOn997'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['AcknowledgeTransactionOn997Accepted'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['AcknowledgeTransactionOn997Reject'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['AcknowledgeFileOn824'] = new PropertyType(
+         'bool', 1, 1, false, true, null, true, true
+         );
+      $propTypes['AcknowledgeTransactionOn824Accepted'] = new PropertyType(
+         'bool', 1, 1, false, true, null, true, true
+         );
+      $propTypes['AcknowledgeTransactionOn824Reject'] = new PropertyType(
+         'bool', 1, 1, false, true, null, true, true
+         );
+      $propTypes['ErrorSegment'] = new PropertyType(
+         'string', 0, 255, true, false, null, false, false
+         );
+      $propTypes['ErrorTransaction'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['OnlyMatchControlNumberWithin'] = new PropertyType(
+         'int', 0, 30, false, true, null, true, true
+         );
+      $propTypes['SQLCommand824'] = new PropertyType(
+         'array', 1, 255, false, true, null, true, true
+         );
+      $propTypes['SQLCommand997'] = new PropertyType(
+         'array', 1, 255, false, true, null, true, true
+         );
+      $propTypes['DetailQuery'] = new PropertyType(
+         'string', 1, 20000, false, true, null, true, true
+         );
+      
+      
+/*      
+      $this->propertyType = $propertyType;
+      $this->minLength = $minLength;
+      $this->maxLength = $maxLength;
+      $this->allowNull = $allowNull;
+      $this->required = $required;
+      $this->dataElement = $dataElement;
+      $this->canEdit = $canEdit;
+      $this->displayInForm = $displayInForm; 
+*/      
+      
+      $propTypes['GESegment'] = new PropertyType(
+         'string', 1, 255, true, false, null, false, false
+         );
+      $propTypes['GESegmentFilePos'] = new PropertyType(
+         'int', 0, 255, true, false, null, false, false
+         );
+      $propTypes['GSSegment'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['GSSegmentFilePos'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['IEASegment'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['IEASegmentFilePos'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['ISASegment'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['ISASegmentFilePos'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      $propTypes['STSegmentFilePos'] = new PropertyType(
+         'int', 1, 255, true, false, null, false, false
+         );
+      $propTypes['SESegmentFilePos'] = new PropertyType(
+         'int', 1, 255, true, false, null, false, false
+         );
+      $propTypes['FShipmentMemo'] = new PropertyType(
+         'array', 1, 255, true, false, null, false, false
+         );
+      
+      return $propTypes;
+   }
    
 }
 

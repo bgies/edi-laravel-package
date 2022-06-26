@@ -18,6 +18,28 @@ class ObjectFunctions
        return $beforeProcessObjectProperties;
     }
     
+    public static function getMethods($inObject)
+    {
+       $objectProperties = [];
+    
+       if ($inObject) {
+          $objectProperties = get_class_methods($inObject);
+       }
+       
+       return $objectProperties;
+    }
+
+    public static function getVars($inObject) : array
+    {
+       $objectProperties = [];
+       
+       if ($inObject) {
+          $objectProperties = get_object_vars($inObject);
+       }
+       
+       return $objectProperties;
+    }
+    
     public static function is_serialized( $data, $strict = true ) {
        // If it isn't a string, it isn't serialized.
        if ( ! is_string( $data ) ) {
