@@ -19,6 +19,7 @@ class PropertyType
     public ?int $dataElement = null; 
     public bool $canEdit = true;
     public bool $displayInForm = true;
+    public string $propertyHelp = '';
     
     /**
      * Create a new instance.
@@ -28,7 +29,7 @@ class PropertyType
     public function __construct(string $propertyType,
        int $minLength, int $maxLength, bool $allowNull,
        bool $required, ?int $dataElement, ?bool $canEdit = true,
-       ?bool $displayInForm = true)
+       ?bool $displayInForm = true, ?string $propertyHelp = '')
     {
        $this->propertyType = $propertyType;
        $this->minLength = $minLength;
@@ -38,6 +39,7 @@ class PropertyType
        $this->dataElement = $dataElement;       
        $this->canEdit = $canEdit;     
        $this->displayInForm = $displayInForm; 
+       $this->propertyHelp = $propertyHelp;
     }
     
    

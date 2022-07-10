@@ -5,6 +5,7 @@ namespace Bgies\EdiLaravel\Lib\X12\Options;
 use Bgies\EdiLaravel\Lib\Delimiters;
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;
 use Bgies\EdiLaravel\Lib\X12\ReplySettings;
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 abstract class BaseEdiOptions
 {
@@ -28,27 +29,27 @@ abstract class BaseEdiOptions
    public $ediStandard = 'X12'; // from public $EDIStandard = array('Unknown', 'X12', 'EDIFACT', 'Custom');
 
    public $ediMemo = array(); // array of string
-   public $errorCount = 0;
+   public int $errorCount = 0;
    public $errorList = array(); // array of string
    public $fileDateTime = null; // File Creation Date for outgoing files
 
-   public $leftPadControlNumber = false;
+   public bool $leftPadControlNumber = false;
 
-   public $trimExtraDelimiters = false;
-   public $writeOneLine = true;
-   public $isTestFile = true;
+   public bool $trimExtraDelimiters = false;
+   public bool $writeOneLine = true;
+   public bool $isTestFile = true;
 
-   public $ediId = 0;
+   public int $ediId = 0;
    public $dataInterchangeControlNumber = 0;
    public $ediReplySettings = null; // : TEDIReplySettings;
-   public $useXDigitsFromControlNumber = 9;
-   public $GSControlNumber = null;
+   public int $useXDigitsFromControlNumber = 9;
+   public ?int $GSControlNumber = null;
 
    public bool $needs997 = false;
    public bool $needs999 = false;
 
-   public $fileName = '';
-   public $detailSQL = '';
+   public string $fileName = '';
+   public string $detailSQL = '';
    public bool $useDetailQuery = false;
    public bool $overwriteFile = false;
 
@@ -57,10 +58,9 @@ abstract class BaseEdiOptions
    public $edi4DigitYearDate = '';
    public $ediTime = '';
 
-   public $identificationCodeQualifier = 'ZZ';
-   public $responsibleAgencyCode = ''; // str2;
-
-   public $transactionSetControlNumber = 0;
+//   public $identificationCodeQualifier = 'ZZ';
+//   public $responsibleAgencyCode = ''; // str2;
+//   public $transactionSetControlNumber = 0;
 
    /**
     * Create a new instance.
@@ -80,23 +80,135 @@ abstract class BaseEdiOptions
 
    }
 
+   /*
+    $this->propertyType = $propertyType;
+    $this->minLength = $minLength;
+    $this->maxLength = $maxLength;
+    $this->allowNull = $allowNull;
+    $this->required = $required;
+    $this->dataElement = $dataElement;
+    $this->canEdit = $canEdit;
+    $this->displayInForm = $displayInForm;
+    */ 
+   
    public function getPropertyTypes() {
       $propTypes = array();
-      $propTypes['ComponentElementSeparator'] = new PropertyType(
-         'string', 1, 1, false, true, null
+      $propTypes['delimiters'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
          );
-      $propTypes['ElementDelimiter'] = new PropertyType(
-         'string', 1, 1, false, true, null
+      $propTypes['interchangeControlVersionNumber'] = new PropertyType(
+         'string', 1, 15, false, true, null, true, true
          );
-      $propTypes['SegmentTerminator'] = new PropertyType(
-         'string', 1, 1, false, true, null
+      $propTypes['interchangeReceiverID'] = new PropertyType(
+         'string', 1, 15, false, true, null, true, true
          );
-      $propTypes['ReleaseCharacter'] = new PropertyType(
-         'string', 1, 1, false, true, null
+      $propTypes['interchangeSenderID'] = new PropertyType(
+         'string', 1, 15, false, true, null, true, true
          );
-      $propTypes['DecimalPoint'] = new PropertyType(
-         'string', 1, 1, false, true, null
+      $propTypes['interchangeSenderQualifier'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
          );
+      $propTypes['interchangeReceiverQualifier'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes['applicationSenderCode'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes['applicationReceiverCode'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes['transactionSetIdentifier'] = new PropertyType(
+         'string', 4, 8, false, true, null, true, true
+         );
+      $propTypes['ediVersionReleaseCode'] = new PropertyType(
+         'string', 4, 8, false, true, null, true, true
+         );
+      $propTypes['ediVersionReleaseCodeExtended'] = new PropertyType(
+         'string', 6, 8, false, true, null, true, true
+         );
+      $propTypes['fileDirection'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes['ediStandard'] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes['ediMemo'] = new PropertyType(
+         'array', 0, 20000, false, false, null, false, false
+         );
+      $propTypes['errorCount'] = new PropertyType(
+         'int', 0, 20000, false, false, null, false, false
+         );
+      $propTypes['errorList'] = new PropertyType(
+         'array', 0, 20000, false, false, null, false, false
+         );
+      $propTypes['fileDateTime'] = new PropertyType(
+         'datetime', 0, 0, false, false, null, false, false
+         );
+      $propTypes['leftPadControlNumber'] = new PropertyType(
+         'int', 0, 9, false, true, null, true, true
+         );
+      $propTypes['trimExtraDelimiters'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['writeOneLine'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['isTestFile'] = new PropertyType(
+         'bool', 0, 1, false, false, null, false, false
+         );
+      $propTypes['ediId'] = new PropertyType(
+         'int', 0, 20000000, false, false, null, false, false
+         );
+      $propTypes['dataInterchangeControlNumber'] = new PropertyType(
+         'int', 0, 20000000, false, true, null, true, true
+         );
+      $propTypes['useXDigitsFromControlNumber'] = new PropertyType(
+         'int', 1, 9, false, true, null, true, true
+         );
+      $propTypes['GSControlNumber'] = new PropertyType(
+         'int', 0, 20000000, false, true, null, true, true
+         );
+      $propTypes['needs997'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['needs999'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['fileName'] = new PropertyType(
+         'string', 0, 2000, false, false, null, false, false
+         );
+      $propTypes['detailSQL'] = new PropertyType(
+         'textarea', 0, 20000, true, false, null, true, true
+         );
+      $propTypes['useDetailQuery'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );      
+      $propTypes['overwriteFile'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['use4DigitYear'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['edi2DigitYearDate'] = new PropertyType(
+         'string', 6, 6, true, false, null, false, false
+         );
+      $propTypes['edi4DigitYearDate'] = new PropertyType(
+         'string', 8, 8, true, false, null, false, false
+         );
+      $propTypes['ediTime'] = new PropertyType(
+         'string', 0, 20, false, true, null, false, false
+         );
+/*      
+      $propTypes[''] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes[''] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+      $propTypes[''] = new PropertyType(
+         'string', 2, 2, false, true, null, true, true
+         );
+*/      
       return $propTypes;
    }
 

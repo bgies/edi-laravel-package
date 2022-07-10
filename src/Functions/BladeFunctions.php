@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\View;
 class BladeFunctions 
 {
     
-    public static function showObject(string $objName, object $inObj, int $indentLevel) {
+    public static function showObject(string $parentObjectName, string $objName, object $inObj, int $indentLevel) {
        
        //\Log::info('BladeFunction showObject START');
        $fieldType = gettype($inObj);  
@@ -35,6 +35,7 @@ class BladeFunctions
        \Log::info('BladeFunction showObject curObjectProperties: ' . print_r($curObjectProperties, true));
        
        $data = [
+          'parentObjectName' => $parentObjectName,
           'objName' => $objName,
           'inObj' => $inObj,
           'indentLevel' => $indentLevel          
@@ -42,15 +43,16 @@ class BladeFunctions
        
        $html = View::make('edilaravel::ediTypes.object', $data);
        
-       \Log::info('BladeFunction showObject html: ' . $html);
+       //\Log::info('BladeFunction showObject html: ' . $html);
        
        return $html;
-       
+/*       
       return view('edilaravel::ediTypes.object', [
          'objName' => $objName,
          'inObj' => $inObj, 
          'indentLevel' => $indentLevel 
       ]);
+*/     
     }
     
     

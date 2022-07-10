@@ -21,8 +21,7 @@ class EDIReadOptions extends BaseEdiOptions
       
       $this->needs997 = false;
       $this->needs990 = false;
-      
-      
+            
    }
    
    

@@ -18,6 +18,7 @@ Route::prefix('edilaravel')->group(function () {
    Route::get('/editype/index', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@index');
    Route::get('/editype/{ediTypeId}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@edit');
    Route::get('/field/{ediTypeId}/{fieldName}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldEdit');
+   Route::post('/updatefield', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldUpdate');
    
    Route::get('/admin', function () {
       

@@ -6,7 +6,8 @@
 @section('content')
 	<div class="">{{ $ediType->edt_name }} - {{ $fieldName }}</div>
 	@php( $indentLevel = 0)
-
+	@php( method_exists($fieldObject,'getPropertyTypes') ? $propertyTypes = $fieldObject->getPropertyTypes() : $propertyTypes = null)
+	
 	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
 
 
@@ -17,13 +18,18 @@
 				<div class="mb-3">
 					<label for="edt_edi_standard" class="form-label">Transaction Set</label>   
 					<select class="mb-3 form-select" aria-label=".edt_transaction_set_name">
-		   <option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
-				<h5><a href="">Choose Object Type</a></h5>
+		   				<option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
+						<h5><a href="">Choose Object Type</a></h5>
+					</select>
+				</div>
 			@else
 				<h5>{{ get_class($fieldObject) }}</h5>
 			@endif   		
    		</div>
-   		<form class="edi-grid-bg needs-validation" novalidate>
+   		<form class="edi-grid-bg needs-validation" action="/edilaravel/updatefield" method="POST" novalidate>
+   		
+   			<input type="hidden" id="editype" name="editype" value="{{ $fieldName }}">
+   			<input type="hidden" id="editypeid" name="editypeid" value="{{ $ediType->id }}">
    			@foreach($objectProperties as $curField => $curFieldValue) 
    				@php( $fieldType = gettype($fieldObject->$curField) )  
    				
@@ -38,7 +44,7 @@
 
     				@case('integer')
     					<div class="mb-3">
-   							<label for="{{ $curField }}" class="form-label">{{ $curField }}</label>
+   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $curField }}</label>
    							<input type="input" class="form-control" id="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
 							<div id="{{ $curField }}Help" class="form-text">Help</div>
 						</div>
@@ -49,7 +55,7 @@
     					<div class="mb-3">
         					<div class="form-check">
   								<input class="form-check-input" type="checkbox" value="{{ $curFieldValue }}" id="{{ $curField }}">
-							   <label class="form-check-label" for="{{ $curField }}">
+							   <label class="form-check-label edi-field-name" for="{{ $curField }}">
 								    	{{ $curField }}
   									</label>
 								</div>
@@ -71,7 +77,7 @@
     						@php( $indentLevel++)
     						@if ( isset($curField) && isset($curFieldValue) )
     						    
-    							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject($curField, $curFieldValue, $indentLevel) }}
+    							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject($fieldName, $curField, $curFieldValue, $indentLevel) }}
     						@endif
     						@php( $indentLevel--)
     					   
@@ -92,8 +98,14 @@
 				@endswitch
    				
    			@endforeach
+   			
+   			<div class="form-button mt-3">
+    			<button id="submit" class="btn btn-primary" type="submit">Submit form</button>
+ 
+  			</div>
+   			
    		</form>  
-   		<div><br /></div>  
+   		</div>  
    </div>
 
 

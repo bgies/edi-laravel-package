@@ -58,29 +58,6 @@ class EdiTypesController extends Controller
       
    }
    
-   public function store()
-   {
-      // Let's assume we need to be authenticated
-      // to create a new post
-      if (! auth()->check()) {
-         abort (403, 'Only authenticated users can update EDI Types');
-      }
-      
-      request()->validate([
-         'title' => 'required',
-         'body'  => 'required',
-      ]);
-      
-      // Assume the authenticated user is the post's author
-      $author = auth()->user();
-      
-      $post = $author->posts()->create([
-         'title'     => request('title'),
-         'body'      => request('body'),
-      ]);
-      
-      return redirect(route('posts.show', $post));
-   }
    
    public function fieldEdit(Request $request, $ediTypeId, $fieldName)
    {
@@ -129,6 +106,30 @@ class EdiTypesController extends Controller
       
       
    }
-    
+
+   public function fieldUpdate()
+   {
+      // Let's assume we need to be authenticated
+      // to create a new post
+      if (! auth()->check()) {
+         abort (401, 'Only authenticated users can update EDI Types');
+      }
+      
+      request()->validate([
+         'title' => 'required',
+         'body'  => 'required',
+      ]);
+      
+      // Assume the authenticated user is the post's author
+      $author = auth()->user();
+      
+      $post = $author->posts()->create([
+         'title'     => request('title'),
+         'body'      => request('body'),
+      ]);
+      
+      return redirect(route('posts.show', $post));
+   }
+   
     
 }

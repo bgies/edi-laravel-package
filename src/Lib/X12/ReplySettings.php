@@ -16,8 +16,8 @@ class ReplySettings
    public string $ErrorSegment = '';
    public array $ErrorTransaction = array();
    public int $OnlyMatchControlNumberWithin = 0;
-   public array $SQLCommand824 = array();
-   public array $SQLCommand997 = array();
+   public string $SQLCommand824 = '';
+   public string $SQLCommand997 = '';
 
    public string $DetailQuery = '';
    public string $GESegment = '';
@@ -75,13 +75,13 @@ class ReplySettings
          'int', 0, 30, false, true, null, true, true
          );
       $propTypes['SQLCommand824'] = new PropertyType(
-         'array', 1, 255, false, true, null, true, true
+         'textarea', 3, 255, false, true, null, true, true
          );
       $propTypes['SQLCommand997'] = new PropertyType(
-         'array', 1, 255, false, true, null, true, true
+         'textarea', 3, 255, false, true, null, true, true
          );
       $propTypes['DetailQuery'] = new PropertyType(
-         'string', 1, 20000, false, true, null, true, true
+         'textarea', 4, 200, false, true, null, true, true
          );
       
       
@@ -103,22 +103,22 @@ class ReplySettings
          'int', 0, 255, true, false, null, false, false
          );
       $propTypes['GSSegment'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'string', 1, 255, true, false, null, false, false
          );
       $propTypes['GSSegmentFilePos'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'int', 1, 255, true, false, null, false, false
          );
       $propTypes['IEASegment'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'string', 1, 255, true, false, null, false, false
          );
       $propTypes['IEASegmentFilePos'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'int', 1, 255, true, false, null, false, false
          );
       $propTypes['ISASegment'] = new PropertyType(
          'array', 1, 255, true, false, null, false, false
          );
       $propTypes['ISASegmentFilePos'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'int', 1, 255, true, false, null, false, false
          );
       $propTypes['STSegmentFilePos'] = new PropertyType(
          'int', 1, 255, true, false, null, false, false
@@ -127,7 +127,7 @@ class ReplySettings
          'int', 1, 255, true, false, null, false, false
          );
       $propTypes['FShipmentMemo'] = new PropertyType(
-         'array', 1, 255, true, false, null, false, false
+         'textarea', 1, 255, true, false, null, false, false
          );
       
       return $propTypes;

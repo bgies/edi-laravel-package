@@ -40,6 +40,43 @@ class ObjectFunctions
        return $objectProperties;
     }
     
+    public static function breakFieldName($inStr) : string
+    {
+       $nameStrings = preg_split('/(?=[A-Z])/', $inStr, -1, PREG_SPLIT_NO_EMPTY); 
+     
+       $wordString = '';
+       $nameStringsCount = 0;
+       for ($i = 0; $i < count($nameStrings); $i++) {
+          //\Log::info('breakFieldName: ' . $inStr . ' - ' . $nameStrings[$i]);
+          if ($nameStrings[$i] == 'S') {
+             //\Log::info('breakFieldName if==S: ' . $inStr . ' - ' . $nameStrings[$i]);
+             if (count($nameStrings) >= $i + 2 && $nameStrings[$i + 1] == 'Q' && $nameStrings[$i + 2] == 'L') {
+               $wordString .= 'SQL ';
+               $i = $i + 2;
+             }
+          } else {
+             //\Log::info('breakFieldName else: ' . $inStr . ' - ' . $nameStrings[$i]);
+             if (strcspn($nameStrings[$i], '0123456789') != strlen($nameStrings[$i])) {
+                $numberPos = strcspn($nameStrings[$i], '0123456789');
+                //\Log::info('breakFieldName else: ' . $inStr . ' - ' . $nameStrings[$i] . ' numberPos: ' . $numberPos );
+                if (strlen($nameStrings[$i]) >= $i + 2 && is_numeric($nameStrings[$i][$numberPos + 1]) && is_numeric($nameStrings[$i][$numberPos + 2]) ) {
+                   $wordString .= ' ' . substr($nameStrings[$i], 0, $numberPos) . ' ' . substr($nameStrings[$i], $numberPos);
+                   $i = $i + 2;
+                }
+             } else {
+               $wordString .= $nameStrings[$i] . ' ' ;
+             }
+          }
+          
+       }
+       
+       $wordString = trim($wordString);
+       
+       $wordString = ucwords($wordString);   
+       //\Log::info('breakFieldName: ' . $inStr . ' - ' . print_r($wordString, true));
+       return print_r($wordString, true);
+    }
+    
     public static function is_serialized( $data, $strict = true ) {
        // If it isn't a string, it isn't serialized.
        if ( ! is_string( $data ) ) {
