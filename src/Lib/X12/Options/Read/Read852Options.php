@@ -28,14 +28,15 @@ class Read852Options extends EDIReadOptions
        
    }
    
-   
-
-   public function getJSONOptions () {
-       
-       
-       
-       
-       
+   public function getPropertyTypes() {
+      $propTypes = parent::getPropertyTypes();
+      return $propTypes;
    }
+   
+       
+       
+       
+       
+   
    
 }

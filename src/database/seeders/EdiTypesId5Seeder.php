@@ -32,7 +32,6 @@ class EdiTypesId5Seeder extends Seeder
         $options->applicationReceiverCode = 'FORGOTTEN_POA';
         $options->applicationSenderCode = 'AMAZON';
         $options->ediReplySettings = new ReplySettings();        
-        $options->errorOnMissingPrice = true;
         
         // Setup the AfterProcess object
         $afterSendProcessing = new \Bgies\Phpedi\DataHandling\SPMasterDetail();

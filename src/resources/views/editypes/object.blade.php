@@ -18,7 +18,7 @@
 				@endif
 				
 				@if ( $propertyAttributes->displayInForm )
-					@php( $fullFieldName = $parentObjectName . '.' . $objName . '.' . print_r($curObjectField, true) )
+					@php( $fullFieldName = (strlen($parentObjectName) > 0 ? $parentObjectName . '.' : '') . $objName . '.' . print_r($curObjectField, true) )
 					@php( $adjustedFieldName = Bgies\EdiLaravel\Functions\ObjectFunctions::breakFieldName($curObjectField) ) 
 					
 					
@@ -40,7 +40,7 @@
         				@case('boolean')
         					<div class="mb-3">
         						<div class="form-check">
-  									<input class="form-check-input" type="checkbox" value="{{ $curObjectFieldValue }}" id="{{ $curObjectField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }} {{ ($curObjectFieldValue == true ? 'checked' : '') }} {{ ($curObjectFieldValue == 1 ? 'checked' : '') }} >
+  									<input class="form-check-input" type="checkbox" value="{{ $curObjectFieldValue }}" name="{{ $fullFieldName }}" id="{{ $curObjectField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }} {{ ($curObjectFieldValue == true ? 'checked' : '') }} {{ ($curObjectFieldValue == 1 ? 'checked' : '') }} >
 								   <label class="form-check-label" for="{{ $curObjectField }}">
 								    	{{ $adjustedFieldName }}
   									</label>
@@ -63,7 +63,7 @@
     					@case('integer')
     						<div class="mb-3">
    								<label for="{{ $curObjectField }}" class="form-label">{{ $adjustedFieldName }}</label>
-   								<input type="input" class="form-control" id="{{ print_r($curObjectField, true) }}" aria-describedby="{{ print_r($curObjectField, true) }}Help" value="{{ print_r($curObjectFieldValue, true) }}">
+   								<input type="input" class="form-control" name="{{ $fullFieldName }}" id="{{ print_r($curObjectField, true) }}" aria-describedby="{{ print_r($curObjectField, true) }}Help" value="{{ print_r($curObjectFieldValue, true) }}">
 								<div id="{{ $curObjectField }}Help" class="form-text">Help</div>
 							</div>
         				
@@ -74,7 +74,7 @@
  					
 							<div class="mb-3">
    								<label for="{{ $curObjectField }}" class="form-label">{{ $adjustedFieldName }}</label>
-   								<input type="input" class="form-control" id="{{ $fullFieldName }}" aria-describedby="{{ print_r($curObjectField, true) }}Help" value="{{ print_r($curObjectFieldValue, true) }}">
+   								<input type="input" class="form-control" name="{{ $fullFieldName }}" id="{{ $curObjectField }}" aria-describedby="{{ print_r($curObjectField, true) }}Help" value="{{ print_r($curObjectFieldValue, true) }}">
 								<div id="{{ $curObjectField }}Help" class="form-text"></div>
 							</div>
 						
@@ -83,7 +83,7 @@
 						@case('textarea')
 							<div class="mb-3">
 								<label for="{{ $curObjectField }}" class="form-label">{{ $adjustedFieldName }}</label>
-  								<textarea class="form-control" id="{{ print_r($curObjectField, true) }}" rows="{{ $propertyAttributes->minLength }}">{{ print_r($curObjectFieldValue, true) }}</textarea>
+  								<textarea class="form-control" name="{{ $fullFieldName }}" id="{{ print_r($curObjectField, true) }}" rows="{{ $propertyAttributes->minLength }}">{{ print_r($curObjectFieldValue, true) }}</textarea>
 						
 							</div>
 						@break

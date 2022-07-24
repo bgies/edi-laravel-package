@@ -198,13 +198,21 @@ abstract class BaseEdiOptions
       $propTypes['ediTime'] = new PropertyType(
          'string', 0, 20, false, true, null, false, false
          );
-/*      
-      $propTypes[''] = new PropertyType(
-         'string', 2, 2, false, true, null, true, true
+      $propTypes['ediReplySettings'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
          );
-      $propTypes[''] = new PropertyType(
-         'string', 2, 2, false, true, null, true, true
+      $propTypes['identificationCodeQualifier'] = new PropertyType(
+         'string', 0, 0, false, true, null, false, false
          );
+      $propTypes['responsibleAgencyCode'] = new PropertyType(
+         'string', 0, 0, false, true, null, false, false
+         );
+      $propTypes['transactionSetControlNumber'] = new PropertyType(
+         'int', 2, 2, false, true, null, false, false
+         );
+      
+      
+/*
       $propTypes[''] = new PropertyType(
          'string', 2, 2, false, true, null, true, true
          );

@@ -28,24 +28,27 @@
    		</div>
    		<form class="edi-grid-bg needs-validation" action="/edilaravel/updatefield" method="POST" novalidate>
    		
-   			<input type="hidden" id="editype" name="editype" value="{{ $fieldName }}">
-   			<input type="hidden" id="editypeid" name="editypeid" value="{{ $ediType->id }}">
+   			<input type="hidden" id="ediTypeFieldName" name="ediTypeFieldName" value="{{ $fieldName }}">
+   			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">
+   			
    			@foreach($objectProperties as $curField => $curFieldValue) 
-   				@php( $fieldType = gettype($fieldObject->$curField) )  
+   				@php( $fieldType = gettype($fieldObject->$curField) ) 
+   				@php( $propertyAttributes = $propertyTypes[$curField] )
+ 				@php( $adjustedFieldName = Bgies\EdiLaravel\Functions\ObjectFunctions::breakFieldName($curField) )
    				
    				@switch($fieldType)
 					@case('string')
 						<div class="mb-3">
-   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $curField }}</label>
-   							<input type="input" class="form-control" id="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
+   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $adjustedFieldName }}</label>
+   							<input type="input" class="form-control" id="{{ $curField }}" name="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
 							<div id="{{ $curField }}Help" class="form-text"></div>
 						</div>
         			@break
 
     				@case('integer')
     					<div class="mb-3">
-   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $curField }}</label>
-   							<input type="input" class="form-control" id="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
+   							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $adjustedFieldName }}</label>
+   							<input type="input" class="form-control" id="{{ $curField }}" name="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
 							<div id="{{ $curField }}Help" class="form-text">Help</div>
 						</div>
         				
@@ -54,9 +57,9 @@
     				@case('boolean')
     					<div class="mb-3">
         					<div class="form-check">
-  								<input class="form-check-input" type="checkbox" value="{{ $curFieldValue }}" id="{{ $curField }}">
+  								<input class="form-check-input" type="checkbox" value="{{ $curFieldValue }}" name="{{ $curField }}" id="{{ $curField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }}>
 							   <label class="form-check-label edi-field-name" for="{{ $curField }}">
-								    	{{ $curField }}
+								    	{{ $adjustedFieldName }}
   									</label>
 								</div>
         				</div>
@@ -77,7 +80,7 @@
     						@php( $indentLevel++)
     						@if ( isset($curField) && isset($curFieldValue) )
     						    
-    							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject($fieldName, $curField, $curFieldValue, $indentLevel) }}
+    							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject('', $curField, $curFieldValue, $indentLevel) }}
     						@endif
     						@php( $indentLevel--)
     					   

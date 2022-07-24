@@ -43,7 +43,9 @@ class ObjectFunctions
     public static function breakFieldName($inStr) : string
     {
        $nameStrings = preg_split('/(?=[A-Z])/', $inStr, -1, PREG_SPLIT_NO_EMPTY); 
-     
+       //\Log::info('');
+       //\Log::info('breakFieldName inStr: ' . $inStr . ' - ' . print_r($nameStrings, true));
+       
        $wordString = '';
        $nameStringsCount = 0;
        for ($i = 0; $i < count($nameStrings); $i++) {
@@ -58,8 +60,33 @@ class ObjectFunctions
              //\Log::info('breakFieldName else: ' . $inStr . ' - ' . $nameStrings[$i]);
              if (strcspn($nameStrings[$i], '0123456789') != strlen($nameStrings[$i])) {
                 $numberPos = strcspn($nameStrings[$i], '0123456789');
-                //\Log::info('breakFieldName else: ' . $inStr . ' - ' . $nameStrings[$i] . ' numberPos: ' . $numberPos );
+                //\Log::info('breakFieldName else: ' . $inStr . ' - ' . $nameStrings[$i] . ' i: ' . $i . '  numberPos: ' . $numberPos );
+                $wordString .= substr($nameStrings[$i], 0, $numberPos)  . ' ' ;
+                $nameStrings[$i] = substr($nameStrings[$i], $numberPos);
+                
+                //\Log::info('breakFieldName wordString: ' . $wordString . ' - ' . $nameStrings[$i]);
+                   
+                if (is_numeric($nameStrings[$i])) {
+                   $wordString .= substr($nameStrings[$i], 0, 1);
+                   $nameStrings[$i] = substr($nameStrings[$i], 1);
+
+                   if (is_numeric($nameStrings[$i])) {
+                      $wordString .= substr($nameStrings[$i], 0, 1);
+                      $nameStrings[$i] = substr($nameStrings[$i], 1);
+                
+                      if (is_numeric($nameStrings[$i])) {
+                         $wordString .= substr($nameStrings[$i], 0, 1) . ' ';
+                         $nameStrings[$i] = substr($nameStrings[$i], 1);
+                      } else {
+                         $wordString .= ' ';
+                      }
+                   } else {
+                      $wordString .= ' ';
+                   }
+                }
+                
                 if (strlen($nameStrings[$i]) >= $i + 2 && is_numeric($nameStrings[$i][$numberPos + 1]) && is_numeric($nameStrings[$i][$numberPos + 2]) ) {
+                   \Log::info('breakFieldName 3 Digits wordString: ' . $wordString . ' - ' . $nameStrings[$i]);
                    $wordString .= ' ' . substr($nameStrings[$i], 0, $numberPos) . ' ' . substr($nameStrings[$i], $numberPos);
                    $i = $i + 2;
                 }

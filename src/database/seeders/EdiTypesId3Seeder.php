@@ -29,12 +29,11 @@ class EdiTypesId3Seeder extends Seeder
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Read\Read852Options();
         $options->dataInterchangeControlNumber = 0;
         $options->fileDirection = 'outgoing';
-        $options->interchangeReceiverID = 'INTERCHANGERECEIVERID';
+        $options->interchangeReceiverID = 'INTERCHRECID';
         $options->interchangeSenderID = 'AMAZON';
-        $options->applicationReceiverCode = 'APPRECEIVERCODE';
+        $options->applicationReceiverCode = 'APPRECCODE';
         $options->applicationSenderCode = 'AMAZON';
         $options->ediReplySettings = new ReplySettings();
-        $options->errorOnMissingPrice = true;
 
         // Setup the AfterProcess object
         $afterSendProcessing = new StoredProcedure();
@@ -44,8 +43,15 @@ class EdiTypesId3Seeder extends Seeder
         $fileDrop = new FileDrop();
         $fileDrop->filePath = '';
 
-
+        // check to see if it already exists
+        // if it exists delete the record, and reenter it. 
+        // you can comment out the delete to keep the existing info, and just update it.
         $ediType = EdiTypes::find(3); //   findOrFail($edi_type_id);
+        if ($ediType) {
+           $ediType->errorOnMissingPrice = null;
+           $ediType->delete();
+           $ediType = null;
+        }
         if (!$ediType) {
             $ediType = new EdiTypes();
             // we need to be able to set the id, so unguard the model.
@@ -59,8 +65,8 @@ class EdiTypesId3Seeder extends Seeder
         $ediType->edt_enabled = 1;
         $ediType->edt_file_directory = '';
         $ediType->edt_edi_object =  serialize($options);
-        $ediType->interchange_sender_id = 'AMAZON';
-        $ediType->interchange_receiver_id = 'INTERCHANGERECEIVERID';
+        $ediType->interchange_sender_id = $options->interchangeSenderID;
+        $ediType->interchange_receiver_id = $options->interchangeReceiverID;
         $ediType->application_sender_code = 'AMAZON';
         $ediType->application_receiver_code = 'APPRECEIVERCODE';
         // specific to this object

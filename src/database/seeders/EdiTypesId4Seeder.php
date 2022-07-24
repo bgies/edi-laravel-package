@@ -39,7 +39,7 @@ class EdiTypesId4Seeder extends Seeder
         $options->applicationSenderCode = 'FORGOTTEN_856';
         $options->GSFunctionalIdentifierCode = 'SH';
         $options->ediReplySettings = new ReplySettings();
-        $options->errorOnMissingPrice = true;
+
         $options->transactionSetIdentifier = '856';
         $options->detailProcNameAndParams = 'proc_get_856_details :purchase_order_id';
         $options->hierarchicalStructureCode ='0001'; 
