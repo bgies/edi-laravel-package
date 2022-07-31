@@ -4,12 +4,15 @@
 
 
 @section('content')
+<!--
 	<div class="">{{ $ediType->edt_name }} - {{ $fieldName }}</div>
+ -->	
 	@php( $indentLevel = 0)
 	@php( method_exists($fieldObject,'getPropertyTypes') ? $propertyTypes = $fieldObject->getPropertyTypes() : $propertyTypes = null)
 	
+<!-- 	
 	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
-
+ -->
 
    <div class="container edi-grid edi-grid-bg column-gap: 10px">
    		<div class="row">
@@ -23,7 +26,7 @@
 					</select>
 				</div>
 			@else
-				<h5>{{ get_class($fieldObject) }}</h5>
+				<div class="edi-grid-title">{{ get_class($fieldObject) }}</div>
 			@endif   		
    		</div>
    		<form class="edi-grid-bg needs-validation" action="/edilaravel/updatefield" method="POST" novalidate>

@@ -1,0 +1,61 @@
+
+.header-wrapper {
+   min-height: 2em;
+   color: red;
+}
+
+
+.sidebar-wrapper {
+	float: left;
+	max-width: 30%;
+	min-height: 100%;
+}
+
+.modal-header-logo {
+   width: 28px;
+   float: left;
+   margin-left: 6px;
+   margin-top: -4px;
+}
+
+.edi-grid {
+   
+   
+}
+
+.edi-grid-title {
+	font-weight: bold;
+}
+
+.edi-grid-bg {
+	background-color: #ebebeb;
+	overflow: hidden;
+	padding: 0.2em;
+}
+
+.edi-object-wrapper {
+   padding: 0.1em 0.2em;
+   border: thin;
+   border-color: #333333;
+   background-color: #dadada;
+}   
+
+
+
+.edi-field-name {
+	padding: 0 0.3em;
+   font-weight: bold;
+}
+ 
+   
+.edi-padleft1 {
+   padding-left: 1em;
+   pad-left: 1em;
+ 
+}
+
+.edi-padleft2 {
+   pad-left: 2em;
+}
+   
+   

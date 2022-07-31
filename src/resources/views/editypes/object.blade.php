@@ -38,8 +38,11 @@
         				        			
         				@case('bool')
         				@case('boolean')
+        				   @php( \Log::info('BOOL curObjectField: ' . $curObjectField . '  curObjectFieldValue: ' . $curObjectFieldValue) )
         					<div class="mb-3">
+        						
         						<div class="form-check">
+        							<input type="hidden" name="{{ $fullFieldName }}" id="{{ $curObjectField }}" value="0">
   									<input class="form-check-input" type="checkbox" value="{{ $curObjectFieldValue }}" name="{{ $fullFieldName }}" id="{{ $curObjectField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }} {{ ($curObjectFieldValue == true ? 'checked' : '') }} {{ ($curObjectFieldValue == 1 ? 'checked' : '') }} >
 								   <label class="form-check-label" for="{{ $curObjectField }}">
 								    	{{ $adjustedFieldName }}

@@ -105,6 +105,8 @@ class EdiTypesController extends Controller
 //         abort (401, 'Only authenticated users can update EDI Types');
 //      }
       
+      \Log::info(' ');
+      \Log::info(' ');      
       \Log::info('EdiTypesController fieldUpdate START REQUEST: ' . print_r($request->all(), true));
       request()->validate([
          'ediTypeId' => 'required',
