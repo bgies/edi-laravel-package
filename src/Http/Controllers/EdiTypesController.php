@@ -158,6 +158,8 @@ class EdiTypesController extends Controller
                   \Log::info('EdiTypesController curInnerProperty: ' . print_r($curInnerProperty, true));
                   //$propertyInfo = $innerObjectPropertyTypes[];
                   //UpdateFunctions::updateObjectProperty($innerObject, $curInnerProperty, $requestProperyName, $propertyInfo)
+                  
+                  
                }
             break;
             

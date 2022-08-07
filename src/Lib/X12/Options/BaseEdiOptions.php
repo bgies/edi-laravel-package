@@ -54,7 +54,7 @@ abstract class BaseEdiOptions
    public bool $overwriteFile = false;
 
    public bool $use4DigitYear = false;
-   public $edi2DigitYearDate = '';
+   public string $edi2DigitYearDate = '';
    public $edi4DigitYearDate = '';
    public $ediTime = '';
 
@@ -190,7 +190,7 @@ abstract class BaseEdiOptions
          'bool', 0, 1, false, true, null, true, true
          );
       $propTypes['edi2DigitYearDate'] = new PropertyType(
-         'string', 6, 6, true, false, null, false, false
+         'string', 6, 6, true, false, null, false, false, ''
          );
       $propTypes['edi4DigitYearDate'] = new PropertyType(
          'string', 8, 8, true, false, null, false, false
@@ -213,6 +213,12 @@ abstract class BaseEdiOptions
       
       
 /*
+  public function __construct(string $propertyType,
+       int $minLength, int $maxLength, bool $allowNull,
+       bool $required, ?int $dataElement, ?bool $canEdit = true,
+       ?bool $displayInForm = true, ?string $propertyHelp = '')
+    {
+  
       $propTypes[''] = new PropertyType(
          'string', 2, 2, false, true, null, true, true
          );

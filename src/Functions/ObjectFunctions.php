@@ -84,14 +84,20 @@ class ObjectFunctions
                       $wordString .= ' ';
                    }
                 }
-                
+
                 if (strlen($nameStrings[$i]) >= $i + 2 && is_numeric($nameStrings[$i][$numberPos + 1]) && is_numeric($nameStrings[$i][$numberPos + 2]) ) {
                    \Log::info('breakFieldName 3 Digits wordString: ' . $wordString . ' - ' . $nameStrings[$i]);
                    $wordString .= ' ' . substr($nameStrings[$i], 0, $numberPos) . ' ' . substr($nameStrings[$i], $numberPos);
                    $i = $i + 2;
                 }
              } else {
-               $wordString .= $nameStrings[$i] . ' ' ;
+                if (count($nameStrings) >= $i + 1 &&  $nameStrings[$i] == 'G' && $nameStrings[$i+1] == 'S' ) {
+                   $wordString .= 'GS ';
+                   $i = $i + 1;
+                } else {
+                
+                  $wordString .= $nameStrings[$i] . ' ' ;
+                }
              }
           }
           

@@ -9,6 +9,8 @@
  -->	
 	@php( $indentLevel = 0)
 	@php( method_exists($fieldObject,'getPropertyTypes') ? $propertyTypes = $fieldObject->getPropertyTypes() : $propertyTypes = null)
+	@php( $parentObjectName = '' )
+	@php( $objName = '' )
 	
 <!-- 	
 	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
@@ -35,9 +37,20 @@
    			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">
    			
    			@foreach($objectProperties as $curField => $curFieldValue) 
-   				@php( $fieldType = gettype($fieldObject->$curField) ) 
-   				@php( $propertyAttributes = $propertyTypes[$curField] )
- 				@php( $adjustedFieldName = Bgies\EdiLaravel\Functions\ObjectFunctions::breakFieldName($curField) )
+				@if ( $propertyTypes && isset($propertyTypes[$curField]) )
+					@php( $fieldType = $propertyTypes[$curField]->propertyType )
+					@php( $propertyAttributes = $propertyTypes[$curField] )
+				@else
+					@php( $fieldType = gettype($curObjectField) )
+					@php( $propertyAttributes = new \Bgies\EdiLaravel\Lib\PropertyType(
+						$fieldType, 0, 255, true, false, null, true, true					
+					) )
+				@endif
+				
+				@if ( $propertyAttributes->displayInForm )
+					@php( $fullFieldName = (strlen($parentObjectName) > 0 ? $parentObjectName . '.' : '') . $objName . '.' . print_r($curField, true) )
+					@php( $adjustedFieldName = Bgies\EdiLaravel\Functions\ObjectFunctions::breakFieldName($curField) ) 
+   			
    				
    				@switch($fieldType)
 					@case('string')
@@ -48,6 +61,7 @@
 						</div>
         			@break
 
+					@case('int')
     				@case('integer')
     					<div class="mb-3">
    							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $adjustedFieldName }}</label>
@@ -56,7 +70,8 @@
 						</div>
         				
         			@break
-
+        			
+					@case('bool')
     				@case('boolean')
     					<div class="mb-3">
         					<div class="form-check">
@@ -89,6 +104,15 @@
     					   
         				</div>
         			@break
+        			
+					@case('textarea')
+						<div class="mb-3">
+							<label for="{{ $curField }}" class="form-label">{{ $adjustedFieldName }}</label>
+							<textarea class="form-control" name="{{ $curField }}" id="{{ print_r($curField, true) }}" rows="{{ $propertyAttributes->minLength }}">{{ print_r($curFieldValue, true) }}</textarea>
+						
+						</div>
+					@break
+        			
 
 
     				@default
@@ -103,6 +127,7 @@
         				</div>	
 				@endswitch
    				
+   				@endif
    			@endforeach
    			
    			<div class="form-button mt-3">

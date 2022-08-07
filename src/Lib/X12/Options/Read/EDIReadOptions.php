@@ -29,6 +29,7 @@ class EDIReadOptions extends BaseEdiOptions
    
    public function getPropertyTypes() {
       $propTypes = parent::getPropertyTypes();
+      
       $propTypes['clientFileFormat'] = new PropertyType(
          'string', 0, 30, false, true, null, true, true
          );
