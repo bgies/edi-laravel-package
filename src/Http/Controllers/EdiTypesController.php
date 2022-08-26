@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiTypes;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
+use Bgies\EdiLaravel\Functions\UpdateFunctions;
 
 
 class EdiTypesController extends Controller
@@ -106,8 +107,9 @@ class EdiTypesController extends Controller
 //      }
       
       \Log::info(' ');
-      \Log::info(' ');      
-      \Log::info('EdiTypesController fieldUpdate START REQUEST: ' . print_r($request->all(), true));
+      \Log::info(' ');  
+      $input = $request->all();
+      \Log::info('EdiTypesController fieldUpdate START REQUEST: ' . print_r($input, true));
       request()->validate([
          'ediTypeId' => 'required',
          'ediTypeFieldName'  => 'required',
@@ -116,12 +118,11 @@ class EdiTypesController extends Controller
       // Assume the authenticated user is the post's author
 //      $author = auth()->user();
       //\Log::info('EdiTypesController fieldUpdate Validated');
-      $input = $request->all();
       $ediTypeId = $input['ediTypeId'];
       $fieldName = $input['ediTypeFieldName'];
-            
-      $ediType = EdiTypes::find($ediTypeId);
+      $errorList = [];
       
+      $ediType = EdiTypes::find($ediTypeId);
       
       if (! $ediType) {
          \Log::info('EdiTypesController fieldUpdate EDI Type does not exist');
@@ -132,58 +133,43 @@ class EdiTypesController extends Controller
       if (!$fieldObject) {
          abort (401, 'EDI Type (' . $ediTypeId . ' - ' . $ediTypeName . ' does not exist');
       }
+      // we can remove the ediTypeId and ediTypeFieldName from the input array here
+      unset( $input['ediTypeId'] );
+      unset( $input['ediTypeFieldName'] );
+      
       
       $objectTypes = [];
       $ObjectPropertyTypes = $fieldObject->getPropertyTypes();
       //\Log::info('EdiTypesController fieldUpdate ' . $fieldName . ' objectPropertyTypes: ' . print_r($ObjectPropertyTypes, true));
       $ObjectProperties = ObjectFunctions::getVars($fieldObject);
       \Log::info('EdiTypesController fieldUpdate ' . $fieldName . ' objectProperties: ' . print_r($ObjectProperties, true));
-      
-      foreach ($ObjectProperties as $curName => $curValue) {
+
+      $updatesMade = false;
+      foreach ($input as $curName => $curValue) {
+      //foreach ($ObjectProperties as $curName => $curValue) {
          
          $fieldType = gettype($curValue);   
-         \Log::info('EdiTypesController fieldUpdate ' . $fieldName . ' objectProperties: ' . $curName . '  fieldType: ' . $fieldType . '  ' . print_r($curValue, true));
-         
-         
-         switch ($fieldType) {
-            case('object'):
-               \Log::info('EdiTypesController OBJECT curName: ' . $curName . '  fieldType: ' . $fieldType . '  ' . print_r($curValue, true));
-               //\Log::info('EdiTypesController OBJECT innerObject: ' . print_r($innerObject, true));
-               
-               $innerObjectProperties = ObjectFunctions::getVars($curValue);
-               $innerObjectPropertyTypes = $curValue->getPropertyTypes();
-               \Log::info('EdiTypesController OBJECT innerObjectPropertyTypes: ' . print_r($innerObjectPropertyTypes, true));
-               
-               foreach ($innerObjectProperties as $curInnerProperty) {
-                  \Log::info('EdiTypesController curInnerProperty: ' . print_r($curInnerProperty, true));
-                  //$propertyInfo = $innerObjectPropertyTypes[];
-                  //UpdateFunctions::updateObjectProperty($innerObject, $curInnerProperty, $requestProperyName, $propertyInfo)
-                  
-                  
-               }
-            break;
-            
-            case('string'):
-
-            break;
-            
-            default:
-
-            
+         \Log::info('curName: ' . $curName . '  fieldType: ' . $fieldType . '  curValue: ' . print_r($curValue, true));
+         if (is_null($curValue)) {
+            $curValue = '';
          }
-            
+           
+         $wasUpdated = UpdateFunctions::updateObjectProperty($fieldObject, $curName, $curValue, $ObjectPropertyTypes, $errorList);
+           
+         if ($wasUpdated) {
+            $updatesMade = true;
+         }
+           
+           
          
       }
+         
+      if ($updatesMade) {
+         $ediType->$fieldName = serialize($fieldObject);
+         $ediType->save();
+         \Log::info('EdiTypesController fieldUpdate SAVED: ');
+      }
       
-      
-      
-      
-/*      
-      $post = $author->posts()->create([
-         'title'     => request('title'),
-         'body'      => request('body'),
-      ]);
-*/      
       return redirect('/edilaravel/field/' . $ediTypeId . '/' . $fieldName . '/edit');
       //return redirect(route('posts.show', $post));
    }

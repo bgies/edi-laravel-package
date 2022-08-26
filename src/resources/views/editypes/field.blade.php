@@ -75,7 +75,8 @@
     				@case('boolean')
     					<div class="mb-3">
         					<div class="form-check">
-  								<input class="form-check-input" type="checkbox" value="{{ $curFieldValue }}" name="{{ $curField }}" id="{{ $curField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }}>
+        						<input type="hidden" name="{{ $curField }}" value="0">
+  								<input class="form-check-input" type="checkbox" value="1" name="{{ $curField }}" id="{{ $curField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }}  {{ ($curFieldValue == 1 ? 'checked' : '') }}>
 							   <label class="form-check-label edi-field-name" for="{{ $curField }}">
 								    	{{ $adjustedFieldName }}
   									</label>

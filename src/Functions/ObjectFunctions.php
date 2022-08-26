@@ -95,8 +95,13 @@ class ObjectFunctions
                    $wordString .= 'GS ';
                    $i = $i + 1;
                 } else {
+                   if (count($nameStrings) >= $i + 1 &&  $nameStrings[$i] == 'I' && $nameStrings[$i+1] == 'D' ) {
+                      $wordString .= 'ID ';
+                      $i = $i + 1;
+                   } else {
                 
-                  $wordString .= $nameStrings[$i] . ' ' ;
+                     $wordString .= $nameStrings[$i] . ' ' ;
+                   }
                 }
              }
           }
