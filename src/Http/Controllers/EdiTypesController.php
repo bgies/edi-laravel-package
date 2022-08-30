@@ -12,6 +12,9 @@ use Bgies\EdiLaravel\Functions\UpdateFunctions;
 class EdiTypesController extends Controller
 {
 //    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+   
+   
    public function index()
    {
       $ediTypes = EdiTypes::all();
@@ -25,7 +28,7 @@ class EdiTypesController extends Controller
       \Log::info('EdiTypesController edit ediTypeId: ' . $ediTypeId);
       $ediType = EdiTypes::find($ediTypeId);
       if (!$ediType) {
-         throw new NoSuchEdiTypeException('Division by zero.');
+         throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
       }
       
       $beforeProcessObjectProperties = [];
@@ -158,9 +161,7 @@ class EdiTypesController extends Controller
            
          if ($wasUpdated) {
             $updatesMade = true;
-         }
-           
-           
+         }           
          
       }
          

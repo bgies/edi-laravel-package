@@ -1,13 +1,16 @@
 @extends('layouts.layout')
 
-@section('title', 'EDI Types')
+@section('title', 'EDI Dashboard')
 
 
 @section('content')
 
 
 
-<h2>EDI Types</h2>
+<h2>EDI Dashboard</h2>
+
+
+
 
 <div class="container edi-grid">
 	<div class="row header">
@@ -29,12 +32,11 @@
 		
 	</div>
 
-	@forelse ($ediTypes as $ediType)
-	
-   		{{-- $beforeProcessObject = (object) unserialize($ediType->edt_before_process_object); --}} 
+	@forelse ($ediFiles as $ediFile)
+
 		<div class="row">
 			<div class="col col-1">
-				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
+				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->id }}</a>
 			</div>
 			<div class="col ">   
    				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->edt_name }}</a>

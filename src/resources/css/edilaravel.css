@@ -19,8 +19,12 @@
 }
 
 .edi-grid {
+   border: thin;   
    
-   
+}
+
+.edi-grid .row {
+   border: thin;
 }
 
 .edi-grid-title {

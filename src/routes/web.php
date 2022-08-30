@@ -20,6 +20,9 @@ Route::prefix('edilaravel')->group(function () {
    Route::get('/field/{ediTypeId}/{fieldName}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldEdit');
    Route::post('/updatefield', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldUpdate');
    
+   Route::get('/manage/index', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@index');
+   
+   
    Route::get('/admin', function () {
       
       // Matches The "/admin/users" URL
