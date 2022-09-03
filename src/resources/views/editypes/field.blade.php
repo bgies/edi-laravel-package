@@ -41,7 +41,7 @@
 					@php( $fieldType = $propertyTypes[$curField]->propertyType )
 					@php( $propertyAttributes = $propertyTypes[$curField] )
 				@else
-					@php( $fieldType = gettype($curObjectField) )
+					@php( $fieldType = gettype($fieldObject) )
 					@php( $propertyAttributes = new \Bgies\EdiLaravel\Lib\PropertyType(
 						$fieldType, 0, 255, true, false, null, true, true					
 					) )
@@ -98,7 +98,9 @@
     					<div class="mb-3">
     						@php( $indentLevel++)
     						@if ( isset($curField) && isset($curFieldValue) )
-    						    
+    	@php( \Log::info('field.blade.php object $curField: ' . print_r($curField, true))  )					
+		@php( \Log::info('field.blade.php object $curFieldValue: ' . print_r($curFieldValue, true))  )
+		    						    
     							{{ Bgies\EdiLaravel\Functions\BladeFunctions::showObject('', $curField, $curFieldValue, $indentLevel) }}
     						@endif
     						@php( $indentLevel--)

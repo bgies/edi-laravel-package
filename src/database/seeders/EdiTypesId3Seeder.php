@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Bgies\EdiLaravel\FileHandling\FileFromDirectory;
 use Bgies\EdiLaravel\FileHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
+use Bgies\EdiLaravel\
 use Bgies\EdiLaravel\Models\EdiTypes;
 
 use Bgies\EdiLaravel\Lib\X12\ReplySettings;
@@ -23,7 +24,6 @@ class EdiTypesId3Seeder extends Seeder
         // Setup the preProcess object
         $beforeProcessObject = new FileFromDirectory();
         $beforeProcessObject->directoryName = 'incoming/Read852';
-
 
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Read\Read852Options();

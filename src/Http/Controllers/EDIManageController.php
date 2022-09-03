@@ -12,17 +12,18 @@ use Bgies\EdiLaravel\Functions\UpdateFunctions;
 
 class EdiManageController extends Controller 
 {
+   public $navPage = "manage";
    
    public function index()
    {
-      $navPage = "manage";
+
       $ediFiles = EdiFiles::paginate();
       $ediTypes = EdiTypes::all();
 
       return view('edilaravel::manage.dashboard')
          ->with('ediFiles', $ediFiles)
          ->with('ediTypes', $ediTypes)
-         ->with('navPage', $navPage);
+         ->with('navPage', $this->navPage);
       
 //      return view('edilaravel::manage.dashboard', [
 //            'ediTypes' => compact('ediTypes'), 

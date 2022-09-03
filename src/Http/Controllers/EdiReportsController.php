@@ -6,12 +6,16 @@ use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiTypes;
 
 
-class EdiLaravelController extends Controller
+class EdiReportsController extends Controller
 {
 //    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+   public $navPage = 'reports';
+   
    public function dashboard()
    {
-      return view('edilaravel::dashboard');
+      return view('edilaravel::reports.dashboard')
+               ->with('ediReports', [])
+               ->with('navPage', $this->navPage);
 //      return view('view.dashboard');   
    }   
    

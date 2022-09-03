@@ -29,6 +29,15 @@ Route::prefix('edilaravel')->group(function () {
    });
    
    
-   
+   Route::prefix('reports')->group(function () {
+      Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiReportsController@dashboard');
+      Route::get('/index', '\Bgies\EdiLaravel\Http\Controllers\EdiReportsController@dashboard');
+   });
+      
+   Route::prefix('users')->group(function () {
+         Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiUsersController@dashboard');
+         Route::get('/index', '\Bgies\EdiLaravel\Http\Controllers\EdiUsersController@dashboard');
+   });
+         
 });
 

@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\FileHandling;
 
-
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class StoredProcedure 
 {
@@ -65,6 +65,15 @@ class StoredProcedure
    }
    
    
+   public function getPropertyTypes() {
+      //$propTypes = parent::getPropertyTypes();
+      
+      $propTypes['storedProcedureName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'Name of Stored Procedure to Execute'
+         );
+      
+      return $propTypes;
+   }
    
    
 }

@@ -12,15 +12,25 @@ use Bgies\EdiLaravel\Functions\UpdateFunctions;
 class EdiTypesController extends Controller
 {
 //    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+   public $navPage = 'editypes';
    
    
    public function index()
    {
       $ediTypes = EdiTypes::all();
       
-      return view('edilaravel::ediTypes.editypes', compact('ediTypes'));
+      return view('edilaravel::ediTypes.editypes')
+               ->with('ediTypes', $ediTypes)
+               ->with('navPage', $this->navPage);
    }
+   
+/*   
+   return view('edilaravel::manage.dashboard')
+   ->with('ediFiles', $ediFiles)
+   ->with('ediTypes', $ediTypes)
+   ->with('navPage', $navPage);
+*/   
+   
    
    
    public function edit(Request $request, $ediTypeId)
@@ -37,12 +47,13 @@ class EdiTypesController extends Controller
          $fields = $ediType->getAttributes();
       }
       \Log::info('EdiTypesController edit $fieldNames: ' . print_r($fields, true));
-           
       
-      return view('edilaravel::ediTypes.editype', ['ediType' => $ediType, 
-         'fields' => $fields,
-         'beforeProcessObjectProperties' => $beforeProcessObjectProperties
-      ]);
+      return view('edilaravel::ediTypes.editype')
+               ->with('ediType', $ediType) 
+               ->with('fields', $fields)
+               ->with('navPage', $this->navPage)
+               ->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
+
    }
    
    
@@ -91,14 +102,13 @@ class EdiTypesController extends Controller
          
       }
       
-      return view('edilaravel::ediTypes.field', ['ediType' => $ediType,
-         'fieldName' => $fieldName,
-         'fieldObject' => $fieldObject,
-         'objectProperties' => $ObjectProperties, 
-         'objectTypes' => $objectTypes
-      ]);
-      
-      
+      return view('edilaravel::ediTypes.field')
+               ->with('ediType', $ediType)
+               ->with('fieldName', $fieldName)
+               ->with('fieldObject', $fieldObject)
+               ->with('navPage', $this->navPage)
+               ->with('objectProperties', $ObjectProperties) 
+               ->with('objectTypes', $objectTypes);
    }
 
    public function fieldUpdate(Request $request)

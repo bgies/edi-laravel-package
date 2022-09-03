@@ -354,6 +354,7 @@
 	<div class="mb-3 form-check">
   		<input class="form-check-input" type="checkbox" value="{{ $ediType->edt_enabled }}" id="edt_enabled" {{ $ediType->edt_enabled == '1' ? 'checked' : '' }}>
 	   <label class="form-check-label" for="edt_enabled">Enabled</label>
+		<div id="edtEnabledHelp" class="form-text">If this transaction set is automated, checking this box will automate it</div>	   
 	</div>	  
 	
 	<div class="mb-3">
@@ -411,7 +412,11 @@
 		<div class="row">
 		<div class="col-6">Alert Options</div>
 		<div class="col-6">
-			<a href="/edilaravel/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
+			@if (empty($ediType->edt_alert_object) )
+			   		<p>edt_alert_object is Null</p>
+			@else  
+				<a href="/edilaravel/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
+			@endif
 		</div>
 		</div>
 	</div>  
@@ -420,7 +425,11 @@
 		<div class="row">
 		<div class="col-6">File Drop Options</div>
 		<div class="col-6">
-			<a href="/edilaravel/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
+		   @if (empty($ediType->edt_file_drop) )
+		   		<p>edt_file_drop is Null</p>
+		   	@else  
+				<a href="/edilaravel/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
+			@endif
 		</div>
 		</div>
 	</div>  
@@ -429,7 +438,11 @@
 		<div class="row">
 			<div class="col-6">Transmission Options</div>
 			<div class="col-6">
-				<a href="/edilaravel/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
+				 @if (empty($ediType->edt_transmission_object) )
+			   		<p>edi_transmission_object is Null</p>
+			   	@else  
+					<a href="/edilaravel/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
+				@endif
 			</div>
 		</div>
 	</div>  
