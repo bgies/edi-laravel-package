@@ -39,24 +39,24 @@
 				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->id }}</a>
 			</div>
 			<div class="col ">   
-   				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->edt_name }}</a>
+   				<a href="/edilaravel/ediFile/{{ $ediFile->id }}/edit" >{{ $ediFile->edt_name }}</a>
    			</div>
 			<div class="col col-2 d-none d-sm-block text-center">   
-   				{{ $ediType->edt_enabled }}
+   				{{ $ediFile->edt_enabled }}
    			</div>
 			<div class="col col-2 d-none d-sm-block text-end">   
-   				{{ $ediType->edt_control_number }}
+   				{{ $ediFile->edt_control_number }}
    			</div>
 			<div class="col col-4 d-none d-sm-block fs-6">   
-   				<div>{{ $ediType->interchange_sender_id }}</div>
-   				<div>{{ $ediType->interchange_receiver_id }}</div>
+   				<div>{{ $ediFile->interchange_sender_id }}</div>
+   				<div>{{ $ediFile->interchange_receiver_id }}</div>
    			</div>
    			
    		</div>	
 
    		
 	@empty
-   		<p> 'No EDI Types yet' </p>
+   		<p class="edi-sub-header"><strong> No EDI Files yet</strong></p>
 	@endforelse   		
    
    

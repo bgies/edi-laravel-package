@@ -18,6 +18,7 @@ class EdiManageController extends Controller
    {
 
       $ediFiles = EdiFiles::paginate();
+      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
       $ediTypes = EdiTypes::all();
 
       return view('edilaravel::manage.dashboard')

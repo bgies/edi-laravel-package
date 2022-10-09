@@ -11,6 +11,16 @@
 
 <div class="container edi-grid">
 	<div class="row header">
+		<div class="bs-bars float-left">
+		<button id="copy" class="btn btn-warning" disabled="">
+	    	<i class="fa fa-trash"></i> Copy
+  		</button>
+		</div>
+	</div>
+	<div class="row header">
+		<div class="col col-1">
+			Selected
+		</div>
 		<div class="col col-1">
 			Id
 		</div>
@@ -24,7 +34,8 @@
 			Control Number
 		</div>
 		<div class="col col-4 d-none d-sm-block">
-			Interchange Sender/Receiver
+			<div>Interchange Sender</div>
+			<div>Interchange Receiver</div>
 		</div>
 		
 	</div>
@@ -33,6 +44,9 @@
 	
    		{{-- $beforeProcessObject = (object) unserialize($ediType->edt_before_process_object); --}} 
 		<div class="row">
+			<div class="col col-1">
+				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }}">
+			</div>
 			<div class="col col-1">
 				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
 			</div>

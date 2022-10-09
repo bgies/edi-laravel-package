@@ -23,7 +23,7 @@
 	<div class="mb-3">
    		<label for="edt_name" class="form-label">EDI Type Name</label>
    		<input type="input" class="form-control" id="edt_name" aria-describedby="edtNameHelp" value="{{ $ediType->edt_name }}">
-		<div id="edtNameHelp" class="form-text">Your EDI Type name should be short, but descriptive eg. "Read 850" or "Write 850"</div>
+		<div id="edtNameHelp" class="form-text">Your EDI Type name should be short, but descriptive eg. "Read 850 Customer 1" or "Write 850 Customer 2"</div>
 	</div>
   
    <div class="mb-3">
@@ -389,7 +389,7 @@
 		<div class="row">
 		<div class="col-6">EDI Options</div>
 		<div class="col-6">
-			<a href="/edilaravel/field/{{ $ediType->id . '/edt_edi_object'  }}/edit" >EDI Object</a>
+			<a href="/edilaravel/field/{{ $ediType->id . '/edt_edi_object'  }}/edit" >EDI Options</a>
 		</div>
 		</div>
 	</div>  
@@ -439,7 +439,7 @@
 			<div class="col-6">Transmission Options</div>
 			<div class="col-6">
 				 @if (empty($ediType->edt_transmission_object) )
-			   		<p>edi_transmission_object is Null</p>
+			   		<p>edt_transmission_object is Null</p>
 			   	@else  
 					<a href="/edilaravel/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
 				@endif
