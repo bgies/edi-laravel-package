@@ -7,7 +7,7 @@
 
 
 
-<h2>EDI Dashboard</h2>
+<h2>EDI Manage Dashboard</h2>
 
 
 

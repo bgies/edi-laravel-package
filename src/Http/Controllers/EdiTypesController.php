@@ -70,6 +70,11 @@ class EdiTypesController extends Controller
       
       $fieldObject = unserialize($ediType->$fieldName);
       $ObjectProperties = ObjectFunctions::getVars($fieldObject);
+
+      if (!$fieldObject) {
+         $fieldObject = '';
+      }
+      
       
       $objectTypes = [];
       if (!$fieldObject) {
@@ -78,6 +83,7 @@ class EdiTypesController extends Controller
             
             break;
             case 'edt_edi_object':
+               
                
             break;
             case 'edt_before_process_object':

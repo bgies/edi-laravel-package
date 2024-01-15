@@ -8,10 +8,11 @@
 	<p>
 		<div class="center"><h3> {{ $ediType->edt_name }}</h3></div>
 	</p>
-
+<!-- 
 	<h4>Field Names</h4>
 	<p>{{ print_r(array_keys($fields), true) }}</p>  
-
+ -->
+ 
 <form class="edi-grid-bg">
 	<div class="mb-3 row">
    		<label for="staticId" class="col-sm-2 col-form-label disabled">Id</label>
@@ -23,17 +24,9 @@
 	<div class="mb-3">
    		<label for="edt_name" class="form-label">EDI Type Name</label>
    		<input type="input" class="form-control" id="edt_name" aria-describedby="edtNameHelp" value="{{ $ediType->edt_name }}">
-		<div id="edtNameHelp" class="form-text">Your EDI Type name should be short, but descriptive eg. "Read 850 Customer 1" or "Write 850 Customer 2"</div>
+		<div id="edtNameHelp" class="form-text">Your EDI Type name should be short, but descriptive eg. "Read 850 Customer 1" or "Customer 2 Write 850"</div>
 	</div>
-  
-   <div class="mb-3">
-    <label for="edt_is_incoming" class="form-label">Read or Write</label>
-    <select class="form-select" aria-label="Read or Write">
-    	<option value="1" {{ $ediType->edt_is_incoming == 1 ? 'selected' : '' }}>Read</option>
-    	<option value="0" {{ $ediType->edt_is_incoming == 0 ? 'selected' : '' }}>Write</option>
-    </select>
-   </div>
-   
+ 
    <div class="mb-3">
    		<label for="edt_edi_standard" class="form-label">EDI Standard</label>
 		<select class="mb-3 form-select" aria-label=".edt_edi_standard">
@@ -350,6 +343,20 @@
 		   <option value="999" {{ $ediType->edt_transaction_set_name == '999' ? 'selected' : '' }}>999 - Implementation Acknowledgement</option>
 		</select>
 	</div>
+
+   <div class="mb-3">
+    <label for="edt_is_incoming" class="form-label">Read or Send</label>
+    <select class="form-select" aria-label="Read or Send">
+    	<option value="1" {{ $ediType->edt_is_incoming == 1 ? 'selected' : '' }}>Read</option>
+    	<option value="0" {{ $ediType->edt_is_incoming == 0 ? 'selected' : '' }}>Send</option>
+    </select>
+   </div>
+
+	<div class="mb-3">
+   		<label for="edt_control_number" class="form-label">Control Number</label>
+   		<input type="input" class="form-control" id="edt_control_number" aria-describedby="edtControlNumberHelp" value="{{ $ediType->edt_control_number }}">
+		<div id="edtControlNumberHelp" class="form-text">Only change the Control Number if you know what you are doing</div>
+	</div>
 	   
 	<div class="mb-3 form-check">
   		<input class="form-check-input" type="checkbox" value="{{ $ediType->edt_enabled }}" id="edt_enabled" {{ $ediType->edt_enabled == '1' ? 'checked' : '' }}>
@@ -357,24 +364,26 @@
 		<div id="edtEnabledHelp" class="form-text">If this transaction set is automated, checking this box will automate it</div>	   
 	</div>	  
 	
-	<div class="mb-3">
-   		<label for="edt_control_number" class="form-label">Control Number</label>
-   		<input type="input" class="form-control" id="edt_control_number" aria-describedby="edtControlNumberHelp" value="{{ $ediType->edt_control_number }}">
-		<div id="edtControlNumberHelp" class="form-text">Only change the Control Number if you know what you are doing</div>
-	</div>
-	
 	<div class="mb-3 form-check">
   		<input class="form-check-input" type="checkbox" value="{{ $ediType->edt_manual_create }}" id="edt_manual_create" {{ $ediType->edt_manual_create == '1' ? 'checked' : '' }}>
 	   <label class="form-check-label" for="edt_manual_create">Manual Create</label>
+		<div id="edtManualHelp" class="form-text">If this is checked, you will be able to manually create EDI files in the dashboard</div>	   
 	</div>	  
 
 	<div class="mb-3">
 		<div class="row">
 			<div class="col-6">Before Processing</div>
 			<div class="col-6">
-				<a href="/edilaravel/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
-					Before Processing Options
-				</a>
+				@if (empty($ediType->edt_before_process_object) )
+			   	<p>edt_before_process_object is null</p>
+			   	@php( $beforeProcessObject =    )
+			   	
+				@else
+					<a href="/edilaravel/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
+						Before Processing Options
+					</a>
+				@endif
+			
 			</div>
 		</div>		   
 	</div>  
