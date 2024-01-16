@@ -11,7 +11,8 @@
 	"minimum-stability" : "dev",
 	"autoload" : {
 		"psr-4" : {
-			"bgies\\edilaravel\\" : "src/"
+			"bgies\\edilaravel\\" : "src/",
+			"bgies\\edilaravel\\Functions\\" : "Functions"
 		}
 	},
 	"extra" : {

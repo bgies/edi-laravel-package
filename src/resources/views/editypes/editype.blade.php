@@ -28,16 +28,16 @@
 	</div>
  
    <div class="mb-3">
-   		<label for="edt_edi_standard" class="form-label">EDI Standard</label>
-		<select class="mb-3 form-select" aria-label=".edt_edi_standard">
+   	<label for="edt_edi_standard" class="form-label">EDI Standard</label>
+		<select id="edt_edi_standard" class="mb-3 form-select" aria-label=".edt_edi_standard">
 			<option value="X12" {{ $ediType->edt_edi_standard == 'X12' ? 'selected' : '' }}>X12</option>
 			<option value="EDIFACT" {{ $ediType->edt_edi_standard == 'EDIFACT' ? 'selected' : '' }}>EDIFACT</option>
 		</select>
 	</div>
 	  
 	<div class="mb-3">
-		<label for="edt_edi_standard" class="form-label">Transaction Set</label>   
-		<select class="mb-3 form-select" aria-label=".edt_transaction_set_name">
+		<label for="edt_transaction_set_name" class="form-label">Transaction Set</label>   
+		<select id="edt_transaction_set_name" class="mb-3 form-select" aria-label=".edt_transaction_set_name">
 		   <option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
 		   <option value="101" {{ $ediType->edt_transaction_set_name == '101' ? 'selected' : '' }}>101 - Name and Address Lists</option>
 		   <option value="102" {{ $ediType->edt_transaction_set_name == '102' ? 'selected' : '' }}>102 - Associated Data</option>
@@ -346,7 +346,7 @@
 
    <div class="mb-3">
     <label for="edt_is_incoming" class="form-label">Read or Send</label>
-    <select class="form-select" aria-label="Read or Send">
+    <select id="edt_is_incoming" class="form-select" aria-label="Read or Send">
     	<option value="1" {{ $ediType->edt_is_incoming == 1 ? 'selected' : '' }}>Read</option>
     	<option value="0" {{ $ediType->edt_is_incoming == 0 ? 'selected' : '' }}>Send</option>
     </select>
@@ -375,9 +375,13 @@
 			<div class="col-6">Before Processing</div>
 			<div class="col-6">
 				@if (empty($ediType->edt_before_process_object) )
-			   	<p>edt_before_process_object is null</p>
-			   	@php( $beforeProcessObject =    )
-			   	
+			   	@php( $beforeProcessObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling')   )
+    				<select id="new-before-process-select" class="form-select" aria-label="Choose Before Process Object" hidden>
+    				@foreach($beforeProcessObject as $curFile)
+	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
+    				@endforeach
+    				</select>
+			   	<button id="before_process_button" type="button" class="btn btn-primary create-object-button">Choose Object</button>
 				@else
 					<a href="/edilaravel/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
 						Before Processing Options
@@ -542,6 +546,61 @@
    </div>
    
    
+<div class="modal" id="edi-new-object-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="edi-new-object-title" class="modal-title">Create Object</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p class="edi-new-object-body">
+           	<label id="new-object-select-label" for="new-object-select" class="form-label">Choose Object</label>
+    				<select id="new-object-select" class="form-select" aria-label="Choose Object to Create">
+    					
+    				</select>
+          	  </p>
+          <p class="edi-new-object-body">Note - clicking the "Create New Object" button will submit all your current changes.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cancelNewObject()" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="createNewObject()">Create New Object</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
+   
+   
+   <script>
+   
+   
+   	// Add click event to ALL create object buttons  - Inline JS
+	var buttons = document.querySelectorAll('.create-object-button');
+	Array.prototype.slice.call(buttons)
+   	 .forEach(function (button) {
+			button.addEventListener('click', function (event) {
+	alert('button: ' + button.id);
+			let modalSelect1 = document.getElementById("new-object-select"); 
+			switch (button.id) {
+				case 'before_process_button': 
+				   let modalLabel = document.getElementById("new-object-select-label");
+				   modalLabel.innerHTML = "Choose Object for Before Process Options";
+					let modalSelect2 = document.getElementById("new-before-process-select");
+					modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+				break;
+			}
+				let myModal = new bootstrap.Modal(document.getElementById('edi-new-object-modal'));					
+				myModal.show();
+	
+			});
+		});
+			
+	 function cancelNewType() {
+		myModal.dismiss();
+	 }
+   
+   </script>
     
 @endsection
 

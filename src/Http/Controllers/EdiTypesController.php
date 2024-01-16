@@ -5,6 +5,7 @@ namespace Bgies\EdiLaravel\Http\Controllers;
 use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiTypes;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
+use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
 
@@ -52,6 +53,7 @@ class EdiTypesController extends Controller
                ->with('ediType', $ediType) 
                ->with('fields', $fields)
                ->with('navPage', $this->navPage)
+//               ->with('FileFunctions', FileFunctions)
                ->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
 
    }
