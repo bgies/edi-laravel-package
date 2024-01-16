@@ -23,19 +23,25 @@ class UpdateFunctions
       
    public static function verifyValue($propertyName, $newValue, $propertyInfo, Array &$errorList) {
       \Log::info('UpdateFunctions verifyValue START newValue: ' . print_r($newValue, true) . '  propertyInfo: ' . print_r($propertyInfo, true));
-      $retVal = true;
-      if ($propertyInfo->canEdit != 1) {
+         return true;
+/*      
+      $propertyInfoValues = $propertyInfo[$propertyName];
+      if ($propertyInfoValues == null) {
+         $retVal = 
+      }
+*/
+      if ($propertyInfo[$propertyName]->canEdit != 1) {
          $retVal = false; 
       }
       
-      switch ($propertyInfo->propertyType) {
+      switch ($propertyInfo[$propertyName]->propertyType) {
          case 'string':
-            if (strlen($newValue) < $propertyInfo->minLength) {
-               $errorList[] = $propertyName . ' must be a minimum of ' . $propertyInfo->minLength . ' characters';
+            if (strlen($newValue) < $propertyInfo[$propertyName]->minLength) {
+               $errorList[] = $propertyName . ' must be a minimum of ' . $propertyInfo[$propertyName]->minLength . ' characters';
                $retVal = false;
             }
             if (strlen($newValue) > $propertyInfo->maxLength) {
-               $errorList[] = $propertyName . ' must be a maximum of ' . $propertyInfo->maxLength . ' characters';
+               $errorList[] = $propertyName . ' must be a maximum of ' . $propertyInfo[$propertyName]->maxLength . ' characters';
                $retVal = false;
             }
             

@@ -30,7 +30,7 @@ EDI-Laravel will have the most extensive and thorough documentation and video tu
 We would like to extend our thanks to the following sponsors for funding EDI-Laravel development. 
 
 ##### Premium Partners
-•EDI Shack
+- **[EDI Shack](https://edishack.com/)**
 
 ##### Contributing
 

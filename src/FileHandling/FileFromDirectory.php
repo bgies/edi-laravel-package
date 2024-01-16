@@ -3,6 +3,7 @@
 namespace Bgies\EdiLaravel\FileHandling;
 
 use Illuminate\Support\Facades\Storage;
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class FileFromDirectory 
 {
@@ -34,7 +35,20 @@ class FileFromDirectory
       return $files;
    }
    
-  
+   public function getPropertyTypes() {
+      //$propTypes = parent::getPropertyTypes();
+      
+      $propTypes['directoryName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'Directory path'
+         );
+      $propTypes['fileName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'File Name'
+         );
+      
+      return $propTypes;
+   }
+   
+   
    
    
 }

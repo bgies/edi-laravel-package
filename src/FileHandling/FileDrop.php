@@ -32,6 +32,18 @@ class FileDrop
       
    }
    
+   public function getPropertyTypes() {
+      //$propTypes = parent::getPropertyTypes();
+      
+      $propTypes['filePath'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'File Path to put files in'
+         );
+      $propTypes['fileName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'The File Name to Use'
+         );
+      
+      return $propTypes;
+   }
    
    
    

@@ -394,7 +394,7 @@
 	
 	<div class="mb-3">
    		<label for="edt_file_directory" class="form-label">EDI File Directory</label>
-   		<input type="file" class="form-control" id="edt_file_directory" aria-describedby="edtFileDirectoryHelp" value="{{ $ediType->edt_file_directory }}">
+   		<input type="input" class="form-control" id="edt_file_directory" aria-describedby="edtFileDirectoryHelp" value="{{ $ediType->edt_file_directory }}">
 		<div id="edtFileDirectoryHelp" class="form-text">For incoming files, this should be the directory the (FTP, FTPS, AS2) server puts them in. For outgoing files, it will be the directory to put the file in so it will be sent</div>
 	</div>
 	
@@ -513,7 +513,7 @@
 
 	
 
-    
+<!--     
    <div class="container edi-grid edi-grid-bg column-gap: 10px">
    		@foreach($fields as $curField => $curFieldValue)   
    			<div class="row edi-grid-name">
@@ -544,7 +544,7 @@
    
    		@endforeach    
    </div>
-   
+ -->   
    
 <div class="modal" id="edi-new-object-modal" tabindex="-1">
   <div class="modal-dialog">
@@ -559,7 +559,7 @@
     				<select id="new-object-select" class="form-select" aria-label="Choose Object to Create">
     					
     				</select>
-          	  </p>
+          </p>
           <p class="edi-new-object-body">Note - clicking the "Create New Object" button will submit all your current changes.</p>
       </div>
       <div class="modal-footer">
@@ -580,16 +580,19 @@
 	Array.prototype.slice.call(buttons)
    	 .forEach(function (button) {
 			button.addEventListener('click', function (event) {
-	alert('button: ' + button.id);
-			let modalSelect1 = document.getElementById("new-object-select"); 
-			switch (button.id) {
-				case 'before_process_button': 
-				   let modalLabel = document.getElementById("new-object-select-label");
-				   modalLabel.innerHTML = "Choose Object for Before Process Options";
-					let modalSelect2 = document.getElementById("new-before-process-select");
-					modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
-				break;
-			}
+
+				let modalSelect1 = document.getElementById("new-object-select"); 
+				switch (button.id) {
+					case 'before_process_button': 
+					   let modalLabel = document.getElementById("new-object-select-label");
+					   modalLabel.innerHTML = "Choose Object for Before Process Options";
+						let modalSelect2 = document.getElementById("new-before-process-select");
+						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+					break;
+				
+				
+				
+				}
 				let myModal = new bootstrap.Modal(document.getElementById('edi-new-object-modal'));					
 				myModal.show();
 	
@@ -598,6 +601,19 @@
 			
 	 function cancelNewType() {
 		myModal.dismiss();
+	 }
+	 
+	 function createNewObject() {
+
+	 	let dropdownList = document.getElementById("new-object-select");
+	 	let dropdownValue = dropdownList.options[dropdownList.selectedIndex].text;
+	 	let idElement = document.getElementById("staticId");
+	 	let ediTypeId = idElement.value;
+	 	
+	 	
+	 	alert('ediTypeId: ' + ediTypeId);	 	
+	 	
+	 	
 	 }
    
    </script>
