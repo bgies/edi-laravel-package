@@ -1,8 +1,9 @@
-<div class="edi-object">
+<div class="edi-object {{ $indentLevel == 1 ? 'edi-padleft1' : 'edi-padleft2' }}">
 	<div class="edi-object-wrapper">
-	   <div><strong>{{ $objName }}</strong></div>
-	
+
+	   <div><strong>{{ $objName }}</strong></div>	
 	   <div class="{{ $indentLevel == 1 ? 'edi-padleft1' : 'edi-padleft2' }}">
+	   	
 		   @php( $curObjectProperties = Bgies\EdiLaravel\Functions\ObjectFunctions::getVars($inObj) )
 		   @php( method_exists($inObj,'getPropertyTypes') ? $propertyTypes = $inObj->getPropertyTypes() : $propertyTypes = null)
 

@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\FileHandling;
 
-
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class FileGet 
 {
@@ -43,6 +43,21 @@ class FileGet
       return $files;
    }
    
+   public function getPropertyTypes() {
+      //$propTypes = parent::getPropertyTypes();
+      
+      $propTypes['fileDirectory'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'Directory path'
+         );
+      $propTypes['fileDriver'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'File Name'
+         );
+      $propTypes['fileName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'File Name'
+         );
+      
+      return $propTypes;
+   }
    
    
    

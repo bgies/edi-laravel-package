@@ -10,7 +10,7 @@ class EDIReadOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;
-   public bool $needs997 = false;
+   
    
    
    
@@ -36,10 +36,6 @@ class EDIReadOptions extends BaseEdiOptions
       $propTypes['needs990'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
-      $propTypes['needs997'] = new PropertyType(
-         'bool', 0, 1, false, true, null, true, true
-         );
-      
       
       
       return $propTypes;

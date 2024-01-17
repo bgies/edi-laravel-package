@@ -2,6 +2,7 @@
 
 namespace Bgies\EdiLaravel\FileHandling;
 
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 
 class FileDrop 

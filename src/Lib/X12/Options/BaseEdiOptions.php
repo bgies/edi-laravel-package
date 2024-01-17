@@ -69,7 +69,7 @@ abstract class BaseEdiOptions
     */
    public function __construct()
    {
-      \Log::info('classBaseEdiOptions __construct() ');
+      //\Log::info('classBaseEdiOptions __construct() ');
       $this->delimiters = new Delimiters();
       $this->edi2DigitYearDate = DateTimeFunctions::GetDateStr(now(), false);
       $this->edi4DigitYearDate = DateTimeFunctions::GetDateStr(now(), true);

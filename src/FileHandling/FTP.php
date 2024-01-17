@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\FileHandling;
 
-
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class FTP 
 {
@@ -57,6 +57,28 @@ class FTP
       return $dbResults;
    }
    
+
+   public function getPropertyTypes() {
+      //$propTypes = parent::getPropertyTypes();
+      
+      $propTypes['url'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'FTP Component'
+         );
+      $propTypes['userName'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'FTP Component'
+         );
+      $propTypes['password'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'FTP Component'
+         );
+      $propTypes['commands'] = new PropertyType(
+         'array', 0, 255, true, false, null, true, true, 'FTP Component'
+         );
+      $propTypes['renameFile'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true, 'FTP Component'
+         );
+      
+      return $propTypes;
+   }
    
    
    
