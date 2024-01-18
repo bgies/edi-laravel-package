@@ -2,12 +2,12 @@
 
 namespace Bgies\EdiLaravel\database\factories;
 
-use Bgies\EdiLaravel\Models\EdiFiles;
+use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EdiFilesFactory extends Factory
+class EdiOutgoingFilesFactory extends Factory
 {
-    protected $model = EdiFiles::class;
+    protected $model = EdiOutgoingFiles::class;
 
     public function definition()
     {

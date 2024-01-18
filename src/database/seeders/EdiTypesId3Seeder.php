@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use Bgies\EdiLaravel\FileHandling\FileFromDirectory;
 use Bgies\EdiLaravel\FileHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
-use Bgies\EdiLaravel\
 use Bgies\EdiLaravel\Models\EdiTypes;
 
 use Bgies\EdiLaravel\Lib\X12\ReplySettings;

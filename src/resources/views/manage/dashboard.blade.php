@@ -9,10 +9,16 @@
 
 <h2>EDI Manage Dashboard</h2>
 
-
+<nav class="nav">
+  <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+  <a class="nav-link" href="#">Link</a>
+  <a class="nav-link" href="#">Link</a>
+  <a class="nav-link disabled">Disabled</a>
+</nav>
 
 
 <div class="container edi-grid">
+	<div class="row header">Incoming</div>
 	<div class="row header">
 		<div class="col col-1">
 			Id
@@ -21,7 +27,7 @@
 			Name
 		</div>
 		<div class="col col-2 d-none d-sm-block">
-			Enabled
+			Date
 		</div>
 		<div class="col col-2 d-none d-sm-block">
 			Control Number
@@ -32,7 +38,7 @@
 		
 	</div>
 
-	@forelse ($ediFiles as $ediFile)
+	@forelse ($ediIncomingFiles as $ediFile)
 
 		<div class="row">
 			<div class="col col-1">
@@ -56,7 +62,7 @@
 
    		
 	@empty
-   		<p class="edi-sub-header"><strong> No EDI Files yet</strong></p>
+   		<p class="edi-sub-header"><strong> No Incoming EDI Files yet</strong></p>
 	@endforelse   		
    
    

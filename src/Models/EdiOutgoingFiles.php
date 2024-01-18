@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EdiFiles extends Model
+class EdiOutgoingFiles extends Model
 {
   use HasFactory;
 
@@ -14,6 +14,6 @@ class EdiFiles extends Model
   
   protected static function newFactory()
   {
-     return \Bgies\EdiLaravel\Database\Factories\EdiFilesFactory::new();
+     return \Bgies\EdiLaravel\Database\Factories\EdiOutgoingFilesFactory::new();
   }
 }
