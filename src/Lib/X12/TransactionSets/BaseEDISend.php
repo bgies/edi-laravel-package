@@ -1,9 +1,9 @@
 <?php
 
-namespace Bgies\Phpedi\lib\x12;
+namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
 
-//use Bgies\Phpedi\lib\x12\BaseEdiObject;
-use Bgies\Phpedi\lib\x12\options\EDISendOptions;
+//use Bgies\EdiLavavel\lib\x12\BaseEdiObject;
+use Bgies\EdiLavavel\Lib\X12\Options\Send\EDISendOptions;
 use Illuminate\Database\Eloquent\Collection;
 
 

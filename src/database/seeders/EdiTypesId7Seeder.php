@@ -51,7 +51,7 @@ class EdiTypesId7Seeder extends Seeder
             EdiTypes::unguard();
             $ediType->id = 7;
         }
-        $ediType->edt_name = 'Send810Invoice';
+        $ediType->edt_name = 'Send 810 Invoice';
         $ediType->edt_is_incoming = 2;
         $ediType->edt_edi_standard = 'X12';
         $ediType->edt_transaction_set_name = '810';

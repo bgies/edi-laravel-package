@@ -34,9 +34,9 @@ class EdiTypesId4Seeder extends Seeder
         $options->dataInterchangeControlNumber = 1;
         $options->fileDirection = 'outgoing';
         $options->interchangeReceiverID = 'AMAZON';
-        $options->interchangeSenderID = 'FORGOTTENBOOKS';
+        $options->interchangeSenderID = 'FORGOT_US';
         $options->applicationReceiverCode = 'AMAZON';
-        $options->applicationSenderCode = 'FORGOTTEN_856';
+        $options->applicationSenderCode = 'FORGOT_856';
         $options->GSFunctionalIdentifierCode = 'SH';
         $options->ediReplySettings = new ReplySettings();
 
@@ -67,7 +67,7 @@ class EdiTypesId4Seeder extends Seeder
             $ediType->id = 4;
         }
         
-        $ediType->edt_name = 'Send856ASN';
+        $ediType->edt_name = 'Send 856 ASN';
         $ediType->edt_is_incoming = 1;
         $ediType->edt_edi_standard = 'X12';
         $ediType->edt_transaction_set_name = '856';

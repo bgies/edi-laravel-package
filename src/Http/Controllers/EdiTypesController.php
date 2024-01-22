@@ -189,8 +189,18 @@ class EdiTypesController extends Controller
          \Log::info('EdiTypesController fieldUpdate SAVED: ');
       }
       
-      return redirect('/edilaravel/field/' . $ediTypeId . '/' . $fieldName . '/edit');
+      return redirect('/edilaravel/editype/field/' . $ediTypeId . '/' . $fieldName . '/edit');
       //return redirect(route('posts.show', $post));
+   }
+
+   public function createfiles()
+   {
+      $ediTypes = EdiTypes::all();
+      
+      return view('edilaravel::ediTypes.chooseeditype')
+      ->with('ediTypes', $ediTypes)
+      ->with('edi_test_file', 'T')
+      ->with('navPage', $this->navPage);
    }
    
     

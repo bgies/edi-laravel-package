@@ -62,5 +62,12 @@
    pad-left: 2em;
 }
 
+#edi_test_file option[value="T"] {
+  background: #35dc51;
+}
+
+#edi_test_file option[value="P"] {
+  background: #fa5d81;
+}
 
    

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgies\Phpedi\lib\x12;
+namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
 
 //use Illuminate\Console\Command;
 

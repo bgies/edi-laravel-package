@@ -31,7 +31,7 @@
 				<div class="edi-grid-title">{{ get_class($fieldObject) }}</div>
 			@endif   		
    		</div>
-   		<form class="edi-grid-bg needs-validation" action="/edilaravel/updatefield" method="POST" novalidate>
+   		<form class="edi-grid-bg needs-validation" action="/edilaravel/editype/updatefield" method="POST" novalidate>
    		
    			<input type="hidden" id="ediTypeFieldName" name="ediTypeFieldName" value="{{ $fieldName }}">
    			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">

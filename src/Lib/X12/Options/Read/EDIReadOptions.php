@@ -10,9 +10,7 @@ class EDIReadOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;
-   
-   
-   
+       
    
    /**
     * Create a new instance.
@@ -25,8 +23,7 @@ class EDIReadOptions extends BaseEdiOptions
       
             
    }
-   
-   
+      
    public function getPropertyTypes() {
       $propTypes = parent::getPropertyTypes();
       
@@ -40,7 +37,6 @@ class EDIReadOptions extends BaseEdiOptions
       
       return $propTypes;
    }
-   
    
    
    

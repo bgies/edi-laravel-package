@@ -31,16 +31,31 @@ class EdiManageController extends Controller
       
    }
    
-   public function phpinfo()
+   
+   public function incoming()
    {
-      return view('edilaravel::manage.phpinfo')
-         ->with('navPage', $this->navPage);
-//      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
-//      phpinfo();
+      $ediIncomingFiles = EdiIncomingFiles::paginate();
+      $ediTypes = EdiTypes::all();
+      
+      return view('edilaravel::manage.incoming')
+      ->with('ediIncomingFiles', $ediIncomingFiles)
+      ->with('ediTypes', $ediTypes)
+      ->with('navPage', $this->navPage);
       
    }
    
    
+   public function outgoing()
+   {
+      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      $ediTypes = EdiTypes::all();
+      
+      return view('edilaravel::manage.outgoing')
+      ->with('ediOutgoingFiles', $ediOutgoingFiles)
+      ->with('ediTypes', $ediTypes)
+      ->with('navPage', $this->navPage);   
+      
+   }
    
    
    

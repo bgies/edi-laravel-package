@@ -1,9 +1,9 @@
 <?php
 
-namespace Bgies\Phpedi\lib\x12;
+namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
 
 use Illuminate\Database\Eloquent\Collection;
-use Bgies\Phpedi\lib\x12\BaseEDIObject;
+use Bgies\EdiLavavel\Lib\X12\TransactionSets\BaseEDIObject;
 
 
 

@@ -383,7 +383,7 @@
     				</select>
 			   	<button id="before_process_button" type="button" class="btn btn-primary create-object-button">Choose Object</button>
 				@else
-					<a href="/edilaravel/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
 						Before Processing Options
 					</a>
 				@endif
@@ -402,7 +402,7 @@
 		<div class="row">
 		<div class="col-6">EDI Options</div>
 		<div class="col-6">
-			<a href="/edilaravel/field/{{ $ediType->id . '/edt_edi_object'  }}/edit" >EDI Options</a>
+			<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_edi_object'  }}/edit" >EDI Options</a>
 		</div>
 		</div>
 	</div>  
@@ -411,7 +411,7 @@
 		<div class="row">
 			<div class="col-6">After Processing</div>
 			<div class="col-6">
-				<a href="/edilaravel/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >After Processing</a>
+				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >After Processing</a>
 			</div>
 		</div>
 	</div>  
@@ -428,7 +428,7 @@
 			@if (empty($ediType->edt_alert_object) )
 			   		<p>edt_alert_object is Null</p>
 			@else  
-				<a href="/edilaravel/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
+				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
 			@endif
 		</div>
 		</div>
@@ -441,7 +441,7 @@
 		   @if (empty($ediType->edt_file_drop) )
 		   		<p>edt_file_drop is Null</p>
 		   	@else  
-				<a href="/edilaravel/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
+				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
 			@endif
 		</div>
 		</div>
@@ -454,7 +454,7 @@
 				 @if (empty($ediType->edt_transmission_object) )
 			   		<p>edt_transmission_object is Null</p>
 			   	@else  
-					<a href="/edilaravel/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
 				@endif
 			</div>
 		</div>

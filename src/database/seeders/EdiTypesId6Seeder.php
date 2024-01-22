@@ -49,7 +49,7 @@ class EdiTypesId6Seeder extends Seeder
             EdiTypes::unguard();
             $ediType->id = 6;
         }
-        $ediType->edt_name = 'Read856Replies997';
+        $ediType->edt_name = 'Read 856 Replies 997';
         $ediType->edt_is_incoming = 1;
         $ediType->edt_edi_standard = 'X12';
         $ediType->edt_transaction_set_name = 997;

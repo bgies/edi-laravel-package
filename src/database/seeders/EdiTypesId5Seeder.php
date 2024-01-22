@@ -52,7 +52,7 @@ class EdiTypesId5Seeder extends Seeder
             $ediType->id = 5;
         }
         
-        $ediType->edt_name = 'Read855Replies997';
+        $ediType->edt_name = 'Read 855 Replies 997';
         $ediType->edt_is_incoming = 1;
         $ediType->edt_edi_standard = 'X12';
         $ediType->edt_transaction_set_name = '997';
