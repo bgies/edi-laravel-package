@@ -7,7 +7,7 @@
 
 
 
-<h2>Choose the EDI Type</h2>
+<h2>Create EDI file - Choose the EDI Type</h2>
 
 <div class="container edi-grid">
 	<div class="row header">
@@ -111,13 +111,12 @@
 <script>
 
 	let runselect = document.getElementById('edi_test_file');
-	let selectOriginalClasses = runselect.className;
+	//let selectOriginalClasses = runselect.className;
 	function selectChanged(val) {
     	if (val == 'P') {
-    		runselect.className = selectOriginalClasses + ' redBorder';
-    	}
-    	if (val == 'T') {
-    		runselect.className = selectOriginalClasses;
+    		runselect.style.border = "4px solid #f40404";
+    	} else {
+    		runselect.style.border = "1px solid #ced4da";
     	}
 			
 	};
