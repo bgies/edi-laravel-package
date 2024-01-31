@@ -97,7 +97,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="cancelDuplicateType()" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="duplicateType()">Create New File</button>
+        <button type="button" class="btn btn-primary" onclick="createFile()">Create New File</button>
       </div>
     </div>
   </div>
@@ -182,13 +182,16 @@
    	 });	
 
 	 function cancelDuplicateType() {
-		myModal.dismiss();
-	 }
-
-	function duplicateType() {
 		var existingModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));
 	   existingModal.dispose();
-		alert('inside duplicateType ' + ediTypeID);
+	 
+//		myModal.dismiss();
+	 }
+
+	function createFile() {
+		var existingModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));
+	   existingModal.dispose();
+		alert('inside createFile ' + ediTypeID);
 	
 	}
 	

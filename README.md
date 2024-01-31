@@ -8,6 +8,16 @@ The full package for the EDI Laravel project
 
 EDI-Laravel is a Laravel based EDI framework. This package can be installed in a new project or existing Laravel project. 
 
+## Features of edi-laravel
+- Complete management of your EDI Files
+- Automate generating and sending files
+- Automatically reads incoming files
+- FTP, FPTS, SFPT, HTTP, HTTPS, AS2 Connectors
+- Extremely low resource usage
+- Manage ASCII, EDIFACT and custom files with the same interface
+
+
+
 ## Please Note - EDI Laravel is not ready for public use, and there is NO public documentation yet 
 
 #### Benefits of using Laravel

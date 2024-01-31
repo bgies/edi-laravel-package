@@ -9,6 +9,13 @@
 	"type" : "project",
 	"license" : "MIT",
 	"minimum-stability" : "dev",
+	"require" : {
+      "php" : "^8.0",
+		"tiamo/phpas2": "^2.0.1"
+      
+      
+      
+   },
 	"autoload" : {
 		"psr-4" : {
 			"bgies\\edilaravel\\" : "src/",

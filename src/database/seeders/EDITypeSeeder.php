@@ -16,11 +16,15 @@ class EDITypeSeeder extends Seeder
         \DB::table('edi_types')->delete(1);
         \DB::table('edi_types')->delete(2);
         
+        
+        
+        
+        
         \DB::table('edi_types')->insert([
           [
               // normal property settings
              'id' => 1,
-             'edt_name' => 'Read850',
+             'edt_name' => 'Read 850',
              'edt_is_incoming' => 1,
              'edt_edi_standard' => 'X12',
              'edt_transaction_set_name' => '850',
@@ -38,7 +42,7 @@ class EDITypeSeeder extends Seeder
             [
                 // normal property settings
                 'id' => 2,
-                'edt_name' => 'Send855',
+                'edt_name' => 'Send 855',
                 'edt_is_incoming' => 0,
                 'edt_edi_standard' => 'X12',
                 'edt_transaction_set_name' => '855',
