@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\Options;
 
-use Bgies\EdiLaravel\Lib\Delimiters;
+use Bgies\EdiLaravel\Lib\X12\Delimiters;
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;
 use Bgies\EdiLaravel\Lib\X12\ReplySettings;
 use Bgies\EdiLaravel\Lib\PropertyType;
@@ -14,7 +14,7 @@ abstract class BaseEdiOptions
     * @var unknown
     */
    public $delimiters = null; // Delimiters object;
-   public $testOptions = null;
+   public $testFileOptions = null;
    public $interchangeControlVersionNumber = '00401';
    public $interchangeReceiverID = '';
    public $interchangeSenderID = '';
@@ -72,7 +72,6 @@ abstract class BaseEdiOptions
    {
       //\Log::info('classBaseEdiOptions __construct() ');
       $this->delimiters = new Delimiters();
-      //$this->testOptions = new 
       $this->edi2DigitYearDate = DateTimeFunctions::GetDateStr(now(), false);
       $this->edi4DigitYearDate = DateTimeFunctions::GetDateStr(now(), true);
       $this->ediTime = DateTimeFunctions::GetTimeStr(now(), 8);

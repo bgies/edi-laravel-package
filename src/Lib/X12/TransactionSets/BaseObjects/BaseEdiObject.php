@@ -1,10 +1,10 @@
 <?php
 
-namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
+namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
-//use Illuminate\Console\Command;
 
-abstract class BaseEDIObject 
+
+abstract class BaseEdiObject 
 {
    /**
     * The connection name for the Object.
@@ -33,8 +33,7 @@ abstract class BaseEDIObject
    abstract protected function execute() : string; 
    
    
-   
-   
+    
    
    
    

@@ -3,7 +3,7 @@
 namespace Bgies\EdiLaravel\Lib\X12\Options\TestOptions;
 
 
-use Bgies\EdiLaravel\Lib\X12\Options\BaseTestOptions;
+use Bgies\EdiLaravel\Lib\X12\Options\TestOptions\BaseTestOptions;
 
 
 class TestFile210 extends BaseTestOptions
@@ -25,8 +25,7 @@ class TestFile210 extends BaseTestOptions
    public function __construct()
    {
       parent::__construct();
-      
-      
+            
    }
    
    

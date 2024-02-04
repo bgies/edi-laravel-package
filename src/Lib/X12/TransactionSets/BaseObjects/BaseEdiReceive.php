@@ -1,13 +1,13 @@
 <?php
 
-namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
+namespace Bgies\EdiLavavel\Lib\X12\TransactionSets\BaseObjects;
 
 use Illuminate\Database\Eloquent\Collection;
 use Bgies\EdiLavavel\Lib\X12\TransactionSets\BaseEDIObject;
 
 
 
-abstract class BaseEDIReceive extends BaseEDIObject 
+abstract class BaseEdiReceive extends BaseEDIObject 
 {
    
 

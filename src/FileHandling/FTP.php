@@ -13,7 +13,7 @@ class FTP
    
    public $renameFile = false;
  
-   
+    
    /**
     * Create a new instance.
     *
@@ -32,7 +32,7 @@ class FTP
    public function execute(array $params = null)
    {
       if (! $this->url) {
-         //throw new \Exception("Stored Procedure Name is Blank");
+         throw new \Exception("URL is Blank");
          return false;
       }
    

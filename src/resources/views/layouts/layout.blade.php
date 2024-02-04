@@ -1,8 +1,8 @@
-@include('partials.headcontent')
+@include('edilaravel::partials.headcontent')
 
 <body>
 
-@include('partials.navbar')
+@include('edilaravel::partials.navbar')
 
 
 <div class="container">
@@ -20,6 +20,6 @@
  -->
   
    		
-@include('partials.footercontent')   		
+@include('edilaravel::partials.footercontent')   		
    		
         

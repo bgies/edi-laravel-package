@@ -3,22 +3,25 @@
 </p>
 
 
-## edi-laravel package
+## EDI-Laravel package
 The full package for the EDI Laravel project
 
 EDI-Laravel is a Laravel based EDI framework. This package can be installed in a new project or existing Laravel project. 
 
-## Features of edi-laravel
+
+### Features of EDI-Laravel
+- Can be used with ANSII X12, EDIFACT, TRADACOMS orebXML
+- Create or read any EDI Transaction Set
 - Complete management of your EDI Files
 - Automate generating and sending files
 - Automatically reads incoming files
 - FTP, FPTS, SFPT, HTTP, HTTPS, AS2 Connectors
 - Extremely low resource usage
 - Manage ASCII, EDIFACT and custom files with the same interface
+- Easily create, test and automate any Transaction set with limited programming 
 
 
-
-## Please Note - EDI Laravel is not ready for public use, and there is NO public documentation yet 
+### Please Note - EDI Shack is working hard on EDI Laravel but EDI Laravel is not ready for public use yet. There is NO public documentation.
 
 #### Benefits of using Laravel
 •Simple, fast routing engine.

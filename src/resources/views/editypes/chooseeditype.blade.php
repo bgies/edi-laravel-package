@@ -182,16 +182,16 @@
    	 });	
 
 	 function cancelDuplicateType() {
-		var existingModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));
-	   existingModal.dispose();
-	 
-//		myModal.dismiss();
+	//	let myModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));	 
+	//	myModal.dismiss();
 	 }
 
 	function createFile() {
-		var existingModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));
+	//	alert('inside createFile ' + ediTypeID);
+		let existingModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));
 	   existingModal.dispose();
-		alert('inside createFile ' + ediTypeID);
+	   
+		
 	
 	}
 	

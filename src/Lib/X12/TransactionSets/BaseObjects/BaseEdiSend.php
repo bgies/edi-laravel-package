@@ -1,9 +1,10 @@
 <?php
 
-namespace Bgies\EdiLavavel\Lib\X12\TransactionSets;
+namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
-//use Bgies\EdiLavavel\lib\x12\BaseEdiObject;
-use Bgies\EdiLavavel\Lib\X12\Options\Send\EDISendOptions;
+use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiObject as BaseEdiObject;
+use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
+use Bgies\EdiLaravel\Lib\X12\Options\Send\EdiSendOptions;
 use Illuminate\Database\Eloquent\Collection;
 
 
@@ -28,7 +29,7 @@ use JsonSerializable;
 */
 
 
-abstract class BaseEDISend extends BaseEDIObject 
+abstract class BaseEdiSend extends BaseEdiObject 
 {
    
 /*

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgies\EdiLaravel\Lib\X12\Options;
+namespace Bgies\EdiLaravel\Lib\X12\Options\TestOptions;
 
 
 
@@ -17,7 +17,7 @@ class BaseTestOptions
     */
    public function __construct()
    {
-      parent::__construct();
+      //parent::__construct();
       
       
    }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgies\EdiLaravel\Lib;
+namespace Bgies\EdiLaravel\Lib\X12;
 
 use Bgies\EdiLaravel\Lib\PropertyType;
 
