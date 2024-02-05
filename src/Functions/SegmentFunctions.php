@@ -383,9 +383,9 @@ class SegmentFunctions
              throw new EdiException('The test indicator in the ISA line is not "T" or a "P". Aborting read');
          } else {
             if ($TempStr == 'P') {
-               $EDIObj->TestFile = false;
+               $EDIObj->isTestFile = false;
             } else {
-               $EDIObj->TestFile = true;
+               $EDIObj->isTestFile = true;
             }
          }
                

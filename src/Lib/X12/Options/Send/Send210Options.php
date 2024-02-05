@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\Options\Send;
 
-
+use Bgies\EdiLaravel\Lib\PropertyType;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\EDISendOptions;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\B3Options;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\Seg210Loop0100;
@@ -24,17 +24,16 @@ class Send210Options extends EDISendOptions
    
    public $B3Options = null;
    public $Loop0100Options = null;
-  
+   public $Loop0400Options = null;
+   
    public $N9Segments = 'BM:BillOfLading:BOLDate|CN:InvoiceNumber:InvoiceDate'; // NOTE  
    public $Loop0060ConvertValueToUpperCase = false;
    public $Loop0060UseFieldNameAsDescription = false;
-   public $Loop0400Options = null;
+
    
    public $MakeGSTFirstLXLoop = false;
    
    public $RemoveSpaceFromCanadianPostalCode = false;
-   
-   public $TestFileOptions = null; 
    
    public $UseR3Segment = false;
    public $UseH3Segment = false;
@@ -53,8 +52,9 @@ class Send210Options extends EDISendOptions
       
       $this->B3Options = new B3Options();
       $this->Loop0100Options = new Seg210Loop0100();
-      $this->TestFileOptions = new TestFile210();
       $this->Loop0400Options = new Loop0400Options();
+      $this->testFileOptions = new TestFile210();
+
       
    }
    
@@ -66,6 +66,54 @@ class Send210Options extends EDISendOptions
          'string', 0, 30, false, true, null, true, true
          );
       $propTypes['UseSeparateGSSegmentForEachCarrier'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['ErrorOnZeroInvoiceAmount'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['ErrorOnBlankLocationCode'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['ErrorOnBlankLocationAddress'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['ConvertInvoiceNumberToUpperCase'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['B3Options'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
+         );
+      $propTypes['Loop0100Options'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
+         );
+      $propTypes['Loop0400Options'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
+         );
+      $propTypes['N9Segments'] = new PropertyType(
+         'string', 0, 255, false, true, null, true, true
+         );
+      $propTypes['Loop0060ConvertValueToUpperCase'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['Loop0060UseFieldNameAsDescription'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['Loop0400Options'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
+         );
+      $propTypes['MakeGSTFirstLXLoop'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['RemoveSpaceFromCanadianPostalCode'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['UseR3Segment'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['UseH3Segment'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['UseK1Segment'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
       

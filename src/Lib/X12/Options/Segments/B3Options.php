@@ -2,6 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\Options\Segments;
 
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class B3Options {
    

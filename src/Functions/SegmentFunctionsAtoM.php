@@ -65,10 +65,10 @@ class SegmentFunctionsAtoM
       $TempStr .= $row['PaymentMethod'] . $EDIObj->delimiters->ElementDelimiter;   // B3 04
       // Datetime less than 1 is considered blank
       if ($row['InvoiceDate'] < 1) {
-         if ($EDIObj->TestFile && $EDIObj->EDI210TestFile->ErrorOnBlankInvoiceDate) {
+         if ($EDIObj->isTestFile && $EDIObj->testFileOptions->ErrorOnBlankInvoiceDate) {
             throw new EdiException('The Invoice Date of Invoice ' . $row['InvoiceId'] . ' is blank.');
          }
-         if (!EDI.TestFile && $EDIObj->ErrorOnBlankInvoiceDate) {
+         if (!EDI.isTestFile && $EDIObj->testFileOptions->ErrorOnBlankInvoiceDate) {
             throw new EdiException('The Invoice Date of Shipment ' . $row['ShpID'] . ' is blank.');
          }
       }
@@ -225,27 +225,27 @@ class SegmentFunctionsAtoM
          
       // compare total charges here
       // first the test file and negative amounts
-      if ($EDIObj->isTestFile && $EDIObj->TestFile->ErrorOnNegativeInvoiceAmount) {
+      if ($EDIObj->isTestFile && $EDIObj->testFileOptions->ErrorOnNegativeInvoiceAmount) {
          if (($row['InvoiceAmount'] < 0.0) && (abs($row['InvoiceAmount']) > 0.004)) {
             array_push($EDIObj->ErrorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is negative.');
          }
       }
       // then test file and zero amounts
-      if ($EDIObj->isTestFile && ($EDIObj->TestFile->ErrorOnZeroInvoiceAmount)) {
+      if ($EDIObj->isTestFile && ($EDIObj->testFileOptions->ErrorOnZeroInvoiceAmount)) {
          if (abs($row['InvoiceAmount']) < 0.004) {
             array_push($EDIObj->ErrorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is zero.');
          }
       }
          
       // then production files and negative amounts
-      if ((! $EDIObj->isTestFile) && $EDIObj->TestFile->ErrorOnNegativeInvoiceAmount) {
+      if ((! $EDIObj->isTestFile) && $EDIObj->testFileOptions->ErrorOnNegativeInvoiceAmount) {
          if (($row['InvoiceAmount'] < 0.0) && (abs($row['InvoiceAmount']) > 0.004)) {
             throw new \App\Exceptions\EdiFatalException('The InvoiceAmount for shipment # ' . $row['ShpID'] . ' is negative.');
          }
       }
 
       // then production files and zero amounts.
-      if ((! $EDIObj->isTestFile) && $EDIObj->TestFile->ErrorOnZeroInvoiceAmount) {
+      if ((! $EDIObj->isTestFile) && $EDIObj->testFileOptions->ErrorOnZeroInvoiceAmount) {
          if (abs($row['InvoiceAmount']) < 0.004) {
             throw new \App\Exceptions\EdiFatalException('The Invoice Amount for shipment # ' . FieldByName('ShpID').AsString . ' is zero.');
          }

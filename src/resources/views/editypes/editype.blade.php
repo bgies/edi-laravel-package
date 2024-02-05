@@ -513,38 +513,7 @@
 
 	
 
-<!--     
-   <div class="container edi-grid edi-grid-bg column-gap: 10px">
-   		@foreach($fields as $curField => $curFieldValue)   
-   			<div class="row edi-grid-name">
-   				<div class="col-6">
-   					{{ $curField }}   			
-   				</div>
-  					
-  					@php( $fieldType = \DB::getSchemaBuilder()->getColumnType('edi_types', $curField) )
-   					@if(in_array($curField, ['edt_before_process_object', 'edt_edi_object',
-   					   'edt_after_process_object', 'edt_alert_object', 'edt_file_drop', 'edt_transmission_object']))
-   					   <div class="col-6 edi-object">
-   						<div class="edi-field-name">{{ $curField }}</div>
-	
-				   		@php( $serObject = unserialize($curFieldValue) )
-   				      
-   						<div>serObject : {{{ is_null($serObject) ? 'null' : print_r($serObject, true)    }}} </div>
-   						<div>Field Type: {{ $fieldType }}</div>	
-   				
-   					@else
-   						<div class="col-6 edi-grid-value">
-   							
-   							{{ $curFieldValue }}
-					@endif
-					   						   			
-	   				</div>
-   					
-   			</div>
    
-   		@endforeach    
-   </div>
- -->   
    
 <div class="modal" id="edi-new-object-modal" tabindex="-1">
   <div class="modal-dialog">

@@ -501,13 +501,13 @@ class X12Send210 extends BaseEdiSend
       if (trim($row[$FieldNamePrefix . 'LocationCode']) == '') {
          // if either the test or production ErrorOnBlankLocationCode is true then
          // report this.
-         if ($EDIObj->ErrorOnBlankLocationCode || $EDIObj->TestFile->ErrorOnBlankLocationCode) {
+         if ($EDIObj->ErrorOnBlankLocationCode || $EDIObj->testFileOptions->ErrorOnBlankLocationCode) {
             array_push($EDIObj->errorList, 'The Code for location (' . $row[$FieldNamePrefix . 'Name'] . ') shipment # ' . $row['INvoiceId'] + ' is blank (Field ' . $LocTypeFieldName . ').');
          }
    
          // Abort if it should be aborted.
          if (((! $EDIObj->isTestFile) && $EDIObj->ErrorOnBlankLocationCode) ||
-            ($EDIObj->TestFile && $EDIObj->TestFile->ErrorOnBlankLocationCode)) {
+            ($EDIObj->TestFile && $EDIObj->testFileOptions->ErrorOnBlankLocationCode)) {
                throw new EdiException('The Code for location (' + $row[$FieldNamePrefix . 'Name'] . ') shipment # ' . $row['InvoiceId'] . ' is blank (Field ' . $LocTypeFieldName + ').');
             }
              // it's blank so set it to the default location code if there is one
@@ -541,7 +541,7 @@ class X12Send210 extends BaseEdiSend
          }
             
          if ((strlen($LcpCode) < 2) &&  (((! $EDIObj->isTestFile) && $EDIObj->ErrorOnBlankLocationCode)
-            || ($EDIObj->isTestFile && $EDIObj->TestFile->ErrorOnBlankLocationCode))) {
+            || ($EDIObj->isTestFile && $EDIObj->testFileOptions->ErrorOnBlankLocationCode))) {
                array_push($EDIObj->errorList, 'The Code for ' . $row[FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for invoice ' .  $row['InvoiceId'] . '. Aborting.....');
                throw new EdiException('The Code for ' . $row[FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for shipment ' . $row['InvoiceId'] . '. Aborting.....');
          }
@@ -559,13 +559,13 @@ class X12Send210 extends BaseEdiSend
 
            // if either the test or production ErrorOnBlankLocationCode is true then
            // report this.
-            if ($EDIObj->ErrorOnBlankLocationAddress || $EDIObj->TestFile->ErrorOnBlankLocationAddress) {
+            if ($EDIObj->ErrorOnBlankLocationAddress || $EDIObj->testFileOptions->ErrorOnBlankLocationAddress) {
                array_push($EDIObj->errorList, 'The Address1 field for location (' . $row[$FieldNamePrefix . 'Name'] . ') Invoice # ' . $row['InvoiceId'] . ' is blank (Field ' . $LocTypeFieldName + ').');
             }
                
             // Abort if it should be aborted.
-            if (((! $EDIObj.TestFile) && $EDIObj->ErrorOnBlankLocationAddress) ||
-               ($EDIObj.TestFile && $EDIObj->TestFile->ErrorOnBlankLocationAddress)) {
+            if (((! $EDIObj.isTestFile) && $EDIObj->testFileOptions->ErrorOnBlankLocationAddress) ||
+               ($EDIObj.isTestFile && $EDIObj->testFileOptions->ErrorOnBlankLocationAddress)) {
                throw new EdiException('The Address1 field for location (' . $row[FieldNamePrefix . 'Name'] . ') shipment # ' . $row['InvoiceId'] . ' is blank (Field ' . $LocTypeFieldName + ').');
             }
          }

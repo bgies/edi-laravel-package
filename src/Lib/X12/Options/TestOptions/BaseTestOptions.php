@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\Options\TestOptions;
 
-
+use Bgies\EdiLaravel\Lib\PropertyType;
 
 class BaseTestOptions
 {
@@ -18,7 +18,6 @@ class BaseTestOptions
    public function __construct()
    {
       //parent::__construct();
-      
       
    }
    

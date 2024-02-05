@@ -30,7 +30,9 @@ class Send856Options extends EDISendOptions
    }
    
    public function getPropertyTypes() {
+      
       $propTypes = parent::getPropertyTypes();
+      
       return $propTypes;
    }
    

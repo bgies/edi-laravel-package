@@ -3,11 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Bgies\EdiLaravel\Lib\X12\ReplySettings;
 use Bgies\EdiLaravel\FileHandling\FileFromDirectory;
 use Bgies\EdiLaravel\FileHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
 use Bgies\EdiLaravel\Models\EdiTypes;
-use Bgies\EdiLaravel\Lib\X12\ReplySettings;
+
 
 
 class EdiTypesId8_210_Seeder extends Seeder
@@ -41,14 +42,14 @@ class EdiTypesId8_210_Seeder extends Seeder
         $options->useXDigitsFromControlNumber = 6;
         $options->dataInterchangeControlNumber = 1;
         
-        $options->B3Options = new B3Options();
-        $options->Loop0100Options = new Seg210Loop0100();
+        $options->B3Options = new \Bgies\EdiLaravel\Lib\X12\Options\Segments\B3Options();
+        $options->Loop0100Options = new \Bgies\EdiLaravel\Lib\X12\Options\Segments\Seg210Loop0100();
         $options->Loop0100Options->LoopCount = 3;
         $options->Loop0100Options->MaxCount = 3;
         $options->Loop0100Options->UseN4 = true;
         
-        $options->TestFile210 = new TestFile210();
-        $options->TestFile = new TestFile210();
+        $options->testFileOptions = new \Bgies\EdiLaravel\Lib\X12\Options\TestOptions\TestFile210();
+        $options->testFileOptions->errorOnZeroInvoiceAmount = true;
         
         $options->N9Segments = 'BM:BillOfLading|CN:InvoiceNumber';
         $options->Loop0060ConvertValueToUpperCase = false;
@@ -64,7 +65,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         
         $options->ediReplySettings = new ReplySettings();        
 //        $options->errorOnMissingPrice = true;
-        $options->delimiters = new Delimiters();
+        $options->delimiters = new \Bgies\EdiLaravel\Lib\X12\Delimiters();
 
         // Setup the AfterProcess object
         $afterSendProcessing = new FileDrop();
@@ -74,8 +75,8 @@ class EdiTypesId8_210_Seeder extends Seeder
         $fileDrop = new FileDrop();
         $fileDrop->filePath = '';
 
-        $transmissionObject = new FTPS();
-        $transmissionObject->
+        $transmissionObject = null; //new FTPS();
+
         
 
         $ediType = EdiTypes::find(8); 
@@ -103,7 +104,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         $ediType->edt_before_process_object = serialize($beforeProcessObject);
         $ediType->edt_after_process_object = serialize($afterSendProcessing);
         $ediType->edt_file_drop = serialize($fileDrop);
-        $ediType->edt_transmission_object = serialize($transmissionObject);
+        $ediType->edt_transmission_object = null; //serialize($transmissionObject);
         
         $ediType->save();
 

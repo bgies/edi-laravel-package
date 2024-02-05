@@ -97,6 +97,9 @@ abstract class BaseEdiOptions
       $propTypes['delimiters'] = new PropertyType(
          'object', 0, 1, false, true, null, true, true
          );
+      $propTypes['testFileOptions'] = new PropertyType(
+         'object', 0, 1, false, true, null, true, true
+         );
       $propTypes['interchangeControlVersionNumber'] = new PropertyType(
          'string', 1, 15, false, true, null, true, true
          );
