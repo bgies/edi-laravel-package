@@ -12,7 +12,7 @@ use function Opis\Closure\serialize;
 use function Opis\Closure\unserialize;
 use Bgies\EdiLaravel\Models\Editypes as ediType;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options as Send210Options;
-use Bgies\EdiLaravel\FileHandling\StoredProcedure;
+use Bgies\EdiLaravel\DataHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
 
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;

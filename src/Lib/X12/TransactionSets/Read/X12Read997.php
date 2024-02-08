@@ -11,7 +11,7 @@ use Bgies\EdiLavavel\lib\x12\options\read\Read997Options;
 use Bgies\EdiLavavel\lib\x12\BaseEDIReceive;
 use function Opis\Closure\serialize;
 use Bgies\EdiLavavel\Models\Editypes as ediType;
-use Bgies\EdiLavavel\StoredProcedure;
+use Bgies\EdiLavavel\DataHandling\StoredProcedure;
 use Bgies\EdiLavavel\FileDrop;
 use Bgies\EdiLavavel\FileFromDirectory;
 use function Opis\Closure\unserialize;

@@ -14,7 +14,8 @@ use Bgies\EdiLaravel\Models\Edifiledetails;
 class DbFunctions //extends BaseController
 {
    
-   public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : edifiles 
+   //public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : edifiles
+   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : edifiles 
    {
       $ediFile = new Edifiles();
       $ediFile->edf_edt_id = $model->id;

@@ -1,8 +1,10 @@
 <?php
 
-namespace Bgies\EdiLaravel\FileHandling;
+namespace Bgies\EdiLaravel\DataHandling;
 
 use Bgies\EdiLaravel\Lib\PropertyType;
+use Bgies\EdiLaravel\Exeptions\EdiDbException;
+use Illuminate\Support\Facades\DB;
 
 class StoredProcedure 
 {
@@ -17,7 +19,7 @@ class StoredProcedure
     */
    public function __construct()
    {
-      \Log::info('class StoredProcedure construct');
+      \Log::info('class StoredProcedure construct storedProcedureName: ' . $storedProcedureName);
       
       //parent::__construct();
       
@@ -28,14 +30,16 @@ class StoredProcedure
    public function execute($dataset = null)
    {
       if (! $this->storedProcedureName) {
-         //throw new \Exception("Stored Procedure Name is Blank");
+         throw new EdiDbException("Stored Procedure Name is Blank");
          return false;
       }
       
+      \Log::info('class StoredProcedure execute storedProcedureName: ' . $this->storedProcedureName);
       $procNameStr = "CALL " . $this->storedProcedureName;
       // if there are no params 
-      if (!strpos($this->storedProcedureName, ':') > 0) {
-          $dbResults = \DB::select(\DB::raw( $procNameStr . ';' ));
+      if ( ! strpos($this->storedProcedureName, ':') > 0) {
+          //$dbResults = \DB::select(\DB::raw( $procNameStr . ';' ));
+          $dbResults = \DB::statement( $procNameStr );
           return $dbResults;
       }
 
