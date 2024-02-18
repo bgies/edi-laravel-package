@@ -193,8 +193,10 @@ class EdiTypesController extends Controller
       //return redirect(route('posts.show', $post));
    }
 
+   // GET only, shows the createFiles view
    public function createfiles()
    {
+      \Log::info('EdiTypesController createfiles ');
       $ediTypes = EdiTypes::all();
       
       return view('edilaravel::ediTypes.chooseeditype')
@@ -203,5 +205,35 @@ class EdiTypesController extends Controller
       ->with('navPage', $this->navPage);
    }
    
-    
+   // POST only creates a new file and return the files view
+   public function createNewFiles(Request $request) {
+      \Log::info(' ');
+      
+      $input = $request->all();
+      \Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
+      $vaidated = request()->validate([
+         'ediTypeId' => 'required',
+         'isTestFile'  => 'required',
+      ]);
+      \Log::info('EdiTypesController createNewFiles validated: ' . print_r($validatedt, true));\Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
+      
+      
+      $ediTypeId = $input['ediTypeId'];
+      $fieldName = $input['ediTypeFieldName'];
+      $errorList = [];
+      
+      $ediType = EdiTypes::find($ediTypeId);
+
+      $ediIncomingFiles = EdiIncomingFiles::paginate();
+      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      //      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
+      $ediTypes = EdiTypes::all();
+      
+      return view('edilaravel::manage.dashboard')
+      ->with('ediIncomingFiles', $ediIncomingFiles)
+      ->with('ediOutgoingFiles', $ediOutgoingFiles)
+      ->with('ediTypes', $ediTypes)
+      ->with('navPage', $this->navPage);
+      
+   }
 }

@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Functions;
 
 use Illuminate\Database\Eloquent\Model;
 use Bgies\EdiLaravel\lib\x12\options\EDISendOptions;
-use Bgies\EdiLaravel\Models\Edifiles;
+use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
 use Bgies\EdiLaravel\Models\Edifiledetails;
 
 //use lib\x12\SharedTypes;
@@ -15,14 +15,17 @@ class DbFunctions //extends BaseController
 {
    
    //public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : edifiles
-   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : edifiles 
+   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : EdiOutgoingFiles
    {
-      $ediFile = new Edifiles();
-      $ediFile->edf_edt_id = $model->id;
+      $ediFile = new EdiOutgoingFiles();
+//      $ediFile->id = $model->id;
+      $ediFile->edf_edi_type_id = $EDIObj->ediId;
+      $ediFile->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
       $ediFile->edf_cancelled = 1;
       $ediFile->edf_test_file = $EDIObj->isTestFile;
       $ediFile->edf_state = 1;
       $ediFile->edf_filedate = now();
+      
       $ediFile->save();
       
       return $ediFile;
@@ -58,13 +61,17 @@ class DbFunctions //extends BaseController
    {
 
       $filesModel->edf_edt_id = $typesModel->id;
-      $filesModel->edf_transaction_control_number = $EDIObj->transactionSetControlNumber;
-//      $filesModel->edf_records_tablename = $EDIObj->ediTableName;
-//      $filesModel->edf_sender_id = $EDIObj->interchangeSenderID;
-//      $filesModel->edf_receiver_id = $EDIObj->interchangeReceiverID;
+      $filesModel->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
+      $filesModel->edf_records_tablename = $EDIObj->ediTableName;
+      $filesModel->interchange_sender_id = $EDIObj->interchangeSenderID;
+      $filesModel->interchange_receiver_id = $EDIObj->interchangeReceiverID;
+      $filesModel->applicatione_sender_code = $EDIObj->applicationSenderCode;
+      $filesModel->application_receiver_code = $EDIObj->applicationReceiverCode;
       
+      $filesModel->edf_state = 3;
       $filesModel->edf_filename = $ShortFileName;
       $filesModel->edf_cancelled = 0;
+      //$filesModel->edf_records_parsed = 
       
       $filesModel->save();  
       return $filesModel;

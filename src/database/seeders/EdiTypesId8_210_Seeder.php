@@ -26,6 +26,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options();
+        $options->ediId = 8;
         $options->fileDirection = 'outgoing';
         $options->interchangeReceiverQualifier = 'ZZ';
         $options->interchangeReceiverID = 'AMAZON';        
@@ -38,6 +39,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         $options->useDetailQuery = 1;
         $options->detailSQL = 'proc_test_210_detail';
         
+        $options->transactionSetIdentifier = '210';
         $options->transactionSetControlNumber = 0;
         $options->useXDigitsFromControlNumber = 6;
         $options->dataInterchangeControlNumber = 1;
@@ -90,6 +92,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         $ediType->edt_name = 'Send 210 Invoice';
         $ediType->edt_is_incoming = 2;
         $ediType->edt_edi_standard = 'X12';
+        
         $ediType->edt_transaction_set_name = '210';
         $ediType->edt_enabled = 1;
         $ediType->edt_file_directory = '';

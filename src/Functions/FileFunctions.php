@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 class FileFunctions
 {
    
+   public static function getDirectoryDateString() {
+      return  substr(\Bgies\EdiLaravel\Functions\DateTimeFunctions::GetDateStr(now(),true), 0, 6);
+   }
+   
 
    public static function getFileNames($fromDirectory) {
       $files = Storage::disk('diskName')->allFiles($fromDirectory);
@@ -50,4 +54,31 @@ class FileFunctions
       return $fileNamesArray;
 */      
    }
+   
+   // NOTE - The short file name is what's stored in the edi_outgoing_files and edi_incoming_files Table
+   public static function getShortFileName($ediTypeName, $EDIID) {
+      $DirectoryDateString = FileFunctions::getDirectoryDateString();
+      $ShortFileName = $ediTypeName . '/' . $DirectoryDateString . '/' . $EDIID . '.txt';
+      return $ShortFileName;
+   }
+   
+   
+   public static function getFileName(int $EDIID, string $ediTypeName)
+   {
+      $TopDirectory = FileFunctions::getTopDirectory();
+      
+      $FTPFileName = $TopDirectory . '/' . FileFunctions::getShortFileName($ediTypeName, $EDIID) ;
+      
+      return $FTPFileName;
+   }
+   
+   
+   public static function getTopDirectory() {
+      $topPath = \Storage::disk('edi')->path('');
+      $midPath = ENV('EDI_TOP_DIRECTORY', '');
+      
+      return $topPath . $midPath;
+   }
+   
+   
 }

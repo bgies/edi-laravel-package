@@ -6,6 +6,7 @@ namespace Bgies\EdiLaravel\Functions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
 use phpDocumentor\Reflection\Types\Boolean;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 use Carbon\Carbon;
 
 //use lib\x12\SharedTypes;

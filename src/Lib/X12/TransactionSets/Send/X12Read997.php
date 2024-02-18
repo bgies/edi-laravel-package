@@ -18,7 +18,7 @@ use function Opis\Closure\unserialize;
 use Bgies\Phpedi\Functions\DateTimeFunctions;
 use Bgies\Phpedi\Functions\FileFunctions;
 use Bgies\Phpedi\Functions\ReadFileFunctions;
-use Bgies\Phpedi\Functions\SegmentFunctions;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 use Bgies\Phpedi\Models\Edifiles;
 use Bgies\Phpedi\lib\x12\objects\Delimiters;
 use Carbon\Exceptions\Exception;

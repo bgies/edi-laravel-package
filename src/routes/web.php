@@ -41,7 +41,7 @@ Route::prefix('edilaravel')->group(function () {
       Route::get('/field/{ediTypeId}/{fieldName}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldEdit');
       Route::post('/updatefield', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldUpdate');
       Route::get('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createfiles');
-      
+      Route::post('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewFiles');
       
    });
    

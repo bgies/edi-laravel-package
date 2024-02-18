@@ -7,7 +7,7 @@ namespace Bgies\EdiLaravel\Functions;
 use Bgies\EdiLaravel\Lib\X12\Delimiters;
 use Bgies\EdiLaravel\Exceptions\EdiException;
 use Bgies\EdiLaravel\Exceptions\EdiFatalException;
-
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 
 class ReadFileFunctions //extends BaseController
 {

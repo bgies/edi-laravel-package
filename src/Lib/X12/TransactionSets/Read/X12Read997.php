@@ -18,7 +18,7 @@ use function Opis\Closure\unserialize;
 use Bgies\EdiLavavel\Functions\DateTimeFunctions;
 use Bgies\EdiLavavel\Functions\FileFunctions;
 use Bgies\EdiLavavel\Functions\ReadFileFunctions;
-use Bgies\EdiLavavel\Functions\SegmentFunctions;
+use Bgies\EdiLavavel\Lib\X12\SegmentFunctions;
 use Bgies\EdiLavavel\Models\Edifiles;
 use Bgies\EdiLavavel\lib\x12\objects\Delimiters;
 use Carbon\Exceptions\Exception;

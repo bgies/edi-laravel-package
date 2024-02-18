@@ -17,7 +17,7 @@ use Bgies\EdiLaravel\FileHandling\FileDrop;
 
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;
 use Bgies\EdiLaravel\Functions\DbFunctions;
-use Bgies\EdiLaravel\Functions\SegmentFunctions;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 use Bgies\EdiLaravel\Functions\FileFunctions;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\B3Options;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\Seg210Loop0100;
@@ -74,14 +74,21 @@ class X12Send210 extends BaseEdiSend
          return 0;
          throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
          
-         exit;
-         
+         exit;         
 
       }
       
       
       // NOTE - The actual object is at ediOptions and the string representation is edt_edi_object
       $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      // the ediOption object will be passed to the EDI Objectd so set a couple
+      // of properties on it from the EDI type so we don't have to pass the 
+      // model also. 
+      $this->ediOptions->ediId = $edi_type_id;
+      $this->ediOptions->transactionSetIdentifier = '210';
+      //$this->ediOptions->transaction_control_number = $this->ediType->edf_transaction_control_number;
+      
+      
       $this->ediBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
       $this->ediAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
       $this->ediFileDrop = unserialize($this->ediType->edt_file_drop);
@@ -138,15 +145,17 @@ class X12Send210 extends BaseEdiSend
 
       try {
          $dataResults = $this->ediBeforeProcessObject->execute();
+         \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 getData() dataResults: ' . print_r($dataResults, true));
+         
          $this->data = $dataResults;
          
       } catch (Exception $e) {
          \Log::error('Bgies\EdiLaravel\Lib\X12 X12Send210 getData EXCEPTION: ' . $e->getMessage());
       }   
-         
-      return $dataResults;
-      
+
       \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 getData() dataResults: ' . print_r($dataResults, true));
+      
+      return $dataResults;
    }
    
    /**
@@ -187,11 +196,11 @@ class X12Send210 extends BaseEdiSend
       try {
           $ediFile = DbFunctions::insertEDIFilesRecord($this->ediType, $this->ediOptions);
           $this->EDIID = $ediFile->id;
-          $ediFile->edf_records_parsed = count($this->data);
+          $ediFile->edf_records_parsed = 0;// count($this->data);
           $ediFile->edf_records_tablename = $tableName;
           $this->ediFile = $ediFile;
                     
-          $DirectoryDateString = \Bgies\Phpedi\Functions\DateTimeFunctions::GetDateStr(now(),true);
+          $DirectoryDateString = \Bgies\EdiLaravel\Functions\DateTimeFunctions::GetDateStr(now(),true);
           $TopDirectory = FileFunctions::getTopDirectory();
           
           // Note shortFileName is the dir/file name string entered into the database. 

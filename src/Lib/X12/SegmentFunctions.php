@@ -1,16 +1,16 @@
 <?php
 
-namespace Bgies\EdiLaravel\Functions;
+namespace Bgies\EdiLaravel\Lib\X12;
 
 //use lib\x12\SharedTypes;
 use Bgies\EdiLaravel\Lib\X12\Delimiters;
 use Bgies\EdiLaravel\Lib\X12\Options\EDISendOptions;
 use Bgies\EdiLaravel\Lib\X12\Options\read\EDIReadOptions;
-use Bgies\EdiLaravel\Exceptions\EdiException;
+use App\Exceptions\EdiException;
 use Bgies\EdiLaravel\Functions\FileFunctions;
 use Carbon\Carbon;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
-use Bgies\EdiLaravel\Exceptions\EdiFatalException;
+use App\Exceptions\EdiFatalException;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\Read997Options;
 
 
@@ -64,10 +64,10 @@ class SegmentFunctions
       
    
    
-  
-   public static function GetISASegment(EDISendOptions $EDIObj) : string
+   //public static function GetISASegment(EDISendOptions $EDIObj) : string
+   public static function GetISASegment($EDIObj) : string
    {
-      \Log::info('Bgies\EdiLaravel\Functions\SegmentFunctions  GetISASegment');
+      \Log::info('Bgies\EdiLaravel\Lib\X12\SegmentFunctions  GetISASegment');
       $TempStr = '';
       // write the header
       $TempStr .= 'ISA' .  $EDIObj->delimiters->ElementDelimiter . '00' . $EDIObj->delimiters->ElementDelimiter; // ISA01 101
@@ -156,7 +156,7 @@ class SegmentFunctions
        $TempStr .= 'P' . $EDIObj->delimiters->ElementDelimiter;   // ISA 15
      }
      $TempStr .= '<';
-     \Log::info('Bgies\EdiLaravel\Functions\SegmentFunctions: ' . $TempStr . '  Length: ' . strlen($TempStr));
+     \Log::info('Bgies\EdiLaravel\Lib\X12\SegmentFunctions: ' . $TempStr . '  Length: ' . strlen($TempStr));
      
      return $TempStr;
    }
@@ -168,9 +168,10 @@ class SegmentFunctions
    }  
    
       
-   
-   public static function GetGSSegment(EDISendOptions $EDIObj)
+   //public static function GetGSSegment(EDISendOptions $EDIObj)
+   public static function GetGSSegment($EDIObj)
    {
+      \Log::info('Bgies\EdiLaravel\Lib\X12\SegmentFunctions::GetGSSegment  $EDIObj: ' . print_r($EDIObj, true));
       $Continue = true;
       
       $TempStr = 'GS' . $EDIObj->delimiters->ElementDelimiter;
@@ -206,7 +207,8 @@ class SegmentFunctions
             }
             case '997' : $TempStr .= 'FA' + $EDIObj->delimiters->ElementDelimiter; break; // GS01 479
             //    ft999 : TempStr := TempStr + '' + $EDIObj->delimiters->elementDelimiter;  // GS01 479
-            default : $Continue = false; break;
+            default : $Continue = false; 
+               break;
          }
          
          // most customer's use the same code for Interchange sender and

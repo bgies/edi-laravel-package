@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgies\EdiLaravelExceptions;
+namespace Bgies\EdiLaravel\Exceptions;
 
 use Throwable;
 use Exception;

@@ -13,6 +13,8 @@ abstract class BaseEdiOptions
     *
     * @var unknown
     */
+   public int $ediId = 0;
+
    public $delimiters = null; // Delimiters object;
    public $testFileOptions = null;
    public $interchangeControlVersionNumber = '00401';
@@ -40,7 +42,7 @@ abstract class BaseEdiOptions
    public bool $writeOneLine = true;
    public bool $isTestFile = true;
 
-   public int $ediId = 0;
+   
    public $dataInterchangeControlNumber = 0;
    public $ediReplySettings = null; // : TEDIReplySettings;
    public int $useXDigitsFromControlNumber = 9;
