@@ -8,6 +8,8 @@ use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
+use Bgies\EdiLaravel\Models\EdiIncomingFiles;
+use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
 
 
 class EdiTypesController extends Controller
@@ -147,12 +149,12 @@ class EdiTypesController extends Controller
       
       if (! $ediType) {
          \Log::info('EdiTypesController fieldUpdate EDI Type does not exist');
-         abort (401, 'EDI Type (' . $ediTypeId . ' does not exist');
+         abort (401, 'EDI Type (' . $ediTypeId . ') does not exist');
       }
       
       $fieldObject = unserialize($ediType->$fieldName);
       if (!$fieldObject) {
-         abort (401, 'EDI Type (' . $ediTypeId . ' - ' . $ediTypeName . ' does not exist');
+         abort (401, 'EDI Type (' . $ediTypeId . ' - ' . $ediTypeName . ') does not exist');
       }
       // we can remove the ediTypeId and ediTypeFieldName from the input array here
       unset( $input['ediTypeId'] );
@@ -211,29 +213,71 @@ class EdiTypesController extends Controller
       
       $input = $request->all();
       \Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
-      $vaidated = request()->validate([
-         'ediTypeId' => 'required',
-         'isTestFile'  => 'required',
+      
+      $validated = request()->validate([
+         'modal-ediTypeId' => 'required',
+         'edi_test_file'  => 'required'
       ]);
-      \Log::info('EdiTypesController createNewFiles validated: ' . print_r($validatedt, true));\Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
+   
+      \Log::info('EdiTypesController createNewFiles validated: ' . print_r($validated, true));
+      \Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
       
-      
-      $ediTypeId = $input['ediTypeId'];
-      $fieldName = $input['ediTypeFieldName'];
-      $errorList = [];
-      
+      $ediTypeId = $input['modal-ediTypeId'];
       $ediType = EdiTypes::find($ediTypeId);
+      if (!$ediType) {
+         throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
+      }
+   
+      $errorList = [];
+      $transactionSetName = "Bgies\EdiLaravel\Lib\\";
 
+      switch ($ediType->edt_edi_standard) {
+
+         case ($ediType->edt_edi_standard == 'X12') : 
+            if ($ediType->edt_is_incoming == 1) {
+               $transactionSetName .= 'X12\TransactionSets\Read\X12Read';
+            } else {
+               $transactionSetName .= 'X12\TransactionSets\Send\X12Send';
+            }
+            $transactionSetName .= $ediType->edt_transaction_set_name;
+            break;
+         case ($ediType->edt_edi_standard == 'EDIFACT') : 
+            if ($ediType->edt_is_incoming == 1) {
+               $transactionSetsName .= 'Edifact\TransactionSets\Read\EdifactRead' . $ediType->edt_transaction_set_name;
+            } else {
+               $transactionSetName .= 'Edifact\TransactionSets\Send\EdifactSend' . $ediType->edt_transaction_set_name;
+            }
+            $transactionSetName .= $ediType->edt_transaction_set_name;
+            break;   
+
+         default: {
+            break;
+         }
+      }
+      \Log::info('EdiTypesController createNewFiles transactionSetName: ' . $transactionSetName);
+
+      // NOTE - this method relies on having the class name to call plus the edi Type Id
+      $ObjectToRun = new $transactionSetName($ediTypeId);
+      \Log::info('EdiTypesController createNewFiles before $retVal = $edi->execute()');
+      
+      
+      $retVal = $ObjectToRun->execute();
+      \Log::info('EdiTypesController createNewFiles $edi->execute returned: ' . $retVal);
+      
+      
       $ediIncomingFiles = EdiIncomingFiles::paginate();
       $ediOutgoingFiles = EdiOutgoingFiles::paginate();
-      //      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
-      $ediTypes = EdiTypes::all();
+      //\Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
+      $ediTypes = EdiTypes::paginate();
       
       return view('edilaravel::manage.dashboard')
       ->with('ediIncomingFiles', $ediIncomingFiles)
       ->with('ediOutgoingFiles', $ediOutgoingFiles)
       ->with('ediTypes', $ediTypes)
-      ->with('navPage', $this->navPage);
+      ->with('navPage', 'manage');
+
+
       
    }
+
 }

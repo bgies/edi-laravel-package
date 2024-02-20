@@ -89,7 +89,7 @@
       </div>
             
 	      <div class="modal-body">
-      <form id="modal-run-form" name="modal-run-form" method="post">
+      <form id="modal-run-form" name="modal-run-form" action="" method="post">
 	         <input type="text" id="modal-ediTypeId" name="modal-ediTypeId" class="form-control" hidden value="">
    	   	<p class="edi-duplicate-body"> 
       			<label for="edi_test_file" class="form-label">Test File</label>   
@@ -179,7 +179,8 @@
 	function createFile(modalForm) {
 		let formData = new FormData(modalForm);
 		alert(JSON.stringify(Object.fromEntries(formData)));
-	   alert( JSON.stringify(formData));
+		
+//	   alert( JSON.stringify(formData));
 	   
 		var myModalEl = document.querySelector('#edi-test-file-modal')
 		var myModal = bootstrap.Modal.getOrCreateInstance(myModalEl) // Returns a Bootstrap modal instance

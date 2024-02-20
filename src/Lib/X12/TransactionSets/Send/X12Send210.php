@@ -35,7 +35,6 @@ use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 
 class X12Send210 extends BaseEdiSend
 {
-   private $ediTypeId = null;
    private $ediType = null;
    public $ediOptions = null;
    private $ediBeforeProcessObject = null;

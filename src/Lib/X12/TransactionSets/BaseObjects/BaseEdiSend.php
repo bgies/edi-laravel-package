@@ -7,51 +7,71 @@ use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\EdiSendOptions;
 use Illuminate\Database\Eloquent\Collection;
 
-
-/*
-use ArrayAccess;
-use Exception;
-use Illuminate\Contracts\Queue\QueueableCollection;
-use Illuminate\Contracts\Queue\QueueableEntity;
-use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\Concerns\AsPivot;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection as BaseCollection;
-use Illuminate\Support\Str;
-use Illuminate\Support\Traits\ForwardsCalls;
-use JsonSerializable;
-*/
+use function Opis\Closure\serialize;
+use function Opis\Closure\unserialize;
 
 
 abstract class BaseEdiSend extends BaseEdiObject 
 {
    
-/*
-   use Concerns\HasAttributes,
-   Concerns\HasEvents,
-   Concerns\HasGlobalScopes,
-   Concerns\HasRelationships,
-   Concerns\HasTimestamps,
-   Concerns\HidesAttributes,
-   Concerns\GuardsAttributes,
-   ForwardsCalls;
-*/   
- /*  
-   public function __construct()
+ 
+   public function __construct(int $edi_type_id)
    {
-      //parent::__construct();
+      parent::__construct($edi_type_id);
+      
+   }
+  
+   
+   protected function getData() {
+      \Log::info('BaseEdiSend getData $edi_type_id: ' . $this->edi_type_id);
+      
+      $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
+      
+      if (!$this->ediType) {
+         \Log::error('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
+         return 0;
+         throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
+         
+         exit;
+      }
+      
+      // make sure it's a 210, otherwise ABORT
+      if ($this->ediType->edt_transaction_set_name != '210') {
+         \Log::error('X12Send210 edi_type ' . $edi_type_id . ' is not a 210');
+         return 0;
+         throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
+         
+         exit;
+         
+      }
+      
+      
+      // NOTE - The actual object is at ediOptions and the string representation is edt_edi_object
+      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      // the ediOption object will be passed to the EDI Objectd so set a couple
+      // of properties on it from the EDI type so we don't have to pass the
+      // model also.
+      $this->ediOptions->ediId = $edi_type_id;
+      $this->ediOptions->transactionSetIdentifier = '210';
+      //$this->ediOptions->transaction_control_number = $this->ediType->edf_transaction_control_number;
+      
+      
+      $this->ediBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
+      $this->ediAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
+      $this->ediFileDrop = unserialize($this->ediType->edt_file_drop);
+      
+      
+      
+      \Log::info('');
+      \Log::info('class X12Send210 edi_type serialize: ' . serialize($this->ediType));
+      
+      return 1;
+      
+      
+      
       
       
    }
- */  
-   abstract protected function getData() ;
-   
    
    abstract protected function composeFile($dataResults, string $tableName);
    

@@ -6,6 +6,19 @@ namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
 abstract class BaseEdiObject 
 {
+   public int $edi_type_id;
+
+   /**
+    * Create a new instance.
+    *
+    * @return void
+    */
+   public function __construct(int $edi_type_id)
+   {
+      $this->edi_type_id = $edi_type_id;
+   }
+      
+      
    /**
     * The connection name for the Object.
     *
@@ -33,7 +46,7 @@ abstract class BaseEdiObject
    abstract protected function execute() : string; 
    
    
-    
+  
    
    
    
