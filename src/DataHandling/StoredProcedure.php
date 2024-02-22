@@ -39,7 +39,8 @@ class StoredProcedure
       // if there are no params 
       if ( ! strpos($this->storedProcedureName, ':') > 0) {
           //$dbResults = \DB::select(\DB::raw( $procNameStr . ';' ));
-          $dbResults = \DB::statement( $procNameStr );
+          //$dbResults = \DB::statement( $procNameStr );
+          $dbResults = \DB::select( $procNameStr );
           return $dbResults;
       }
 

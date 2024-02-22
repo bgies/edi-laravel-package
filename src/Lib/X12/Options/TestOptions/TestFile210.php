@@ -8,13 +8,13 @@ use Bgies\EdiLaravel\Lib\X12\Options\TestOptions\BaseTestOptions;
 
 class TestFile210 extends BaseTestOptions
 {
-   public $errorOnBlankLocationCode =true;
-   public $errorOnBlankLocationAddress = true;
+   public $ErrorOnBlankLocationCode =true;
+   public $ErrorOnBlankLocationAddress = true;
    
-   public $errorOnNegativeInvoiceAmount = true;
+   public $ErrorOnNegativeInvoiceAmount = true;
 
-   public $errorOnBlankInvoiceDate = true;
-   public $errorOnZeroInvoiceAmount = true;
+   public $ErrorOnBlankInvoiceDate = true;
+   public $ErrorOnZeroInvoiceAmount = true;
 
    
    /**
@@ -34,21 +34,21 @@ class TestFile210 extends BaseTestOptions
    public function getPropertyTypes() {
       $propTypes = parent::getPropertyTypes();
       
-      $propTypes['errorOnBlankLocationCode'] = new PropertyType(
+      $propTypes['ErrorOnBlankLocationCode'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
-      $propTypes['errorOnBlankLocationAddress'] = new PropertyType(
-         'bool', 0, 1, false, true, null, true, true
-         );
-      
-      $propTypes['errorOnNegativeInvoiceAmount'] = new PropertyType(
+      $propTypes['ErrorOnBlankLocationAddress'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
       
-      $propTypes['errorOnBlankInvoiceDate'] = new PropertyType(
+      $propTypes['ErrorOnNegativeInvoiceAmount'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      
+      $propTypes['ErrorOnBlankInvoiceDate'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );      
-      $propTypes['errorOnZeroInvoiceAmount'] = new PropertyType(
+      $propTypes['ErrorOnZeroInvoiceAmount'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
       

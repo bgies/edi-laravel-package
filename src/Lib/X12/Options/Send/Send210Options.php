@@ -29,7 +29,6 @@ class Send210Options extends EDISendOptions
    public $N9Segments = 'BM:BillOfLading:BOLDate|CN:InvoiceNumber:InvoiceDate'; // NOTE  
    public $Loop0060ConvertValueToUpperCase = false;
    public $Loop0060UseFieldNameAsDescription = false;
-
    
    public $MakeGSTFirstLXLoop = false;
    
@@ -38,7 +37,8 @@ class Send210Options extends EDISendOptions
    public $UseR3Segment = false;
    public $UseH3Segment = false;
    public $UseK1Segment = false;
-   
+      
+   public $identificationCodeQualifier = 'ZZ';
    
    
    /**

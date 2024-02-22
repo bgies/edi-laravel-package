@@ -16,7 +16,7 @@ abstract class BaseEdiOptions
    public int $ediId = 0;
 
    public $delimiters = null; // Delimiters object;
-   public $testFileOptions = null;
+   public $TestFileOptions = null;
    public $interchangeControlVersionNumber = '00401';
    public $interchangeReceiverID = '';
    public $interchangeSenderID = '';
@@ -61,7 +61,6 @@ abstract class BaseEdiOptions
    public $edi4DigitYearDate = '';
    public $ediTime = '';
 
-//   public $identificationCodeQualifier = 'ZZ';
 //   public $responsibleAgencyCode = ''; // str2;
 //   public $transactionSetControlNumber = 0;
 

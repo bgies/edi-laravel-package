@@ -8,6 +8,7 @@ use Bgies\EdiLaravel\Lib\X12\Options\EDISendOptions;
 use Bgies\EdiLaravel\Lib\X12\Options\read\EDIReadOptions;
 use App\Exceptions\EdiException;
 use Bgies\EdiLaravel\Functions\FileFunctions;
+use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Carbon\Carbon;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use App\Exceptions\EdiFatalException;
@@ -543,7 +544,7 @@ class SegmentFunctions
     
    
   // File type is the EDI type ie 210, 214, 0r 997
-  public static function getSTSegment($EDIFileType, \Bgies\EdiLaravel\lib\x12\options\EDISendOptions $EDIObj, int $Counter, string &$UniqueNumberStr ) : string 
+  public static function getSTSegment($EDIFileType, \Bgies\EdiLaravel\Lib\X12\Options\Send\EDISendOptions $EDIObj, int $Counter, string &$UniqueNumberStr ) : string 
   {
      $TempStr = 'ST';
      
@@ -554,7 +555,7 @@ class SegmentFunctions
         throw new \App\Exceptions\EdiException('The TransactionSetControlNumber is not valid. Aborting....');
      }
          
-     $UniqueNumberStr = FileFunctions::GetUniqueControlNumberStr($EDIObj, $Counter);
+     $UniqueNumberStr = EdiFileFunctions::GetUniqueControlNumberStr($EDIObj, $Counter);
      
      $TempStr .= $EDIObj->delimiters->ElementDelimiter . $UniqueNumberStr; // ST 02
      

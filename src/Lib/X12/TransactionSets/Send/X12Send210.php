@@ -203,16 +203,15 @@ class X12Send210 extends BaseEdiSend
           $TopDirectory = FileFunctions::getTopDirectory();
           
           // Note shortFileName is the dir/file name string entered into the database. 
-          $ShortFileName = FileFunctions::getShortFileName($this->ediType->edt_name, $this->EDIID);
-          $this->ShortFileName = $ShortFileName;
+          $this->ShortFileName = FileFunctions::getShortFileName($this->ediType->edt_name, $this->EDIID);
           $this->ediOptions->ediTableName = $this->ediType->table;
           
          if ($this->WriteTheFile()) {
             
             WriteFileToDisk::WriteEDIFile($this->ediOptions->ediMemo,
-                 $ShortFileName, $this->ediOptions);
+                 $this->ShortFileName, $this->ediOptions);
            
-            $ediFile = DbFunctions::updateEDIFilesRecord($ShortFileName, $this->EDIID, $ediFile, $this->ediType, $this->ediOptions );
+            $ediFile = DbFunctions::updateEDIFilesRecord($this->ShortFileName, $this->EDIID, $ediFile, $this->ediType, $this->ediOptions );
             $retVal = DbFunctions::insertFileDetailRecords($this->data, $this->ediType,
                   $ediFile, $this->ediOptions, $this->EDIID);
             
@@ -229,8 +228,7 @@ class X12Send210 extends BaseEdiSend
          \Log::error('There was an error. e.Message=' + e.Message + ' Aborting.....');
          throw Exception ($e);
          return false;
-      }
-      
+      }      
       
       return true;
    }
@@ -297,7 +295,7 @@ class X12Send210 extends BaseEdiSend
       $groupCount = 1;
       $LastCarrierID = $this->ediType['CarrierId'];
 
-     
+\Log::info('X12Send210 addInvoices data: ' . print_r($this->data, true));
       foreach ($this->data as $rowVals) {
          Try {
             //Need to strip special EDI characters from all string fields
@@ -357,6 +355,9 @@ class X12Send210 extends BaseEdiSend
 
          $TotalCharges = 0.00;
         
+         $sendOptions = get_parent_class($this->ediOptions);
+         \Log::info('X12Send210 addInvoices sendOptions: ' . print_r($sendOptions, true));
+         
          $TempStr = SegmentFunctions::GetSTSegment('210', $this->ediOptions, $TotalInvoiceCount, $UniqueNumberStr);
          $row['UniqueNumberStr'] = $UniqueNumberStr;
          array_push($this->ediOptions->ediMemo, $TempStr);
@@ -510,12 +511,12 @@ class X12Send210 extends BaseEdiSend
          // if either the test or production ErrorOnBlankLocationCode is true then
          // report this.
          if ($EDIObj->ErrorOnBlankLocationCode || $EDIObj->testFileOptions->ErrorOnBlankLocationCode) {
-            array_push($EDIObj->errorList, 'The Code for location (' . $row[$FieldNamePrefix . 'Name'] . ') shipment # ' . $row['INvoiceId'] + ' is blank (Field ' . $LocTypeFieldName . ').');
+            array_push($EDIObj->errorList, 'The Code for location (' . $row[$FieldNamePrefix . 'Name'] . ') shipment # ' . $row['InvoiceId'] . ' is blank (Field ' . $LocTypeFieldName . ').');
          }
    
          // Abort if it should be aborted.
          if (((! $EDIObj->isTestFile) && $EDIObj->ErrorOnBlankLocationCode) ||
-            ($EDIObj->TestFile && $EDIObj->testFileOptions->ErrorOnBlankLocationCode)) {
+            ($EDIObj->TestFileOptions && $EDIObj->TestFileOptions->ErrorOnBlankLocationCode)) {
                throw new EdiException('The Code for location (' + $row[$FieldNamePrefix . 'Name'] . ') shipment # ' . $row['InvoiceId'] . ' is blank (Field ' . $LocTypeFieldName + ').');
             }
              // it's blank so set it to the default location code if there is one
@@ -550,8 +551,8 @@ class X12Send210 extends BaseEdiSend
             
          if ((strlen($LcpCode) < 2) &&  (((! $EDIObj->isTestFile) && $EDIObj->ErrorOnBlankLocationCode)
             || ($EDIObj->isTestFile && $EDIObj->testFileOptions->ErrorOnBlankLocationCode))) {
-               array_push($EDIObj->errorList, 'The Code for ' . $row[FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for invoice ' .  $row['InvoiceId'] . '. Aborting.....');
-               throw new EdiException('The Code for ' . $row[FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for shipment ' . $row['InvoiceId'] . '. Aborting.....');
+               array_push($EDIObj->errorList, 'The Code for ' . $row[$FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for invoice ' .  $row['InvoiceId'] . '. Aborting.....');
+               throw new EdiException('The Code for ' . $row[$FieldNamePrefix . 'Name'] . ' is less than 2 characters and therefore invalid for shipment ' . $row['InvoiceId'] . '. Aborting.....');
          }
                
          $TempStr .= substr($LcpCode, 0, 17) ;  // N104

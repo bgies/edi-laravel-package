@@ -3,8 +3,8 @@
 namespace Bgies\EdiLaravel\Functions;
 
 //use lib\x12\SharedTypes;
-use Bgies\EdiLaravel\lib\x12\options\EDISendOptions;
-use Bgies\EdiLaravel\lib\x12\options\Send210Options;
+use Bgies\EdiLaravel\Lib\X12\Options\Send\EDISendOptions;
+use Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options;
 use Bgies\EdiLaravel\Exceptions\EdiException;
 use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 

@@ -268,7 +268,7 @@ class EdiTypesController extends Controller
       $ediIncomingFiles = EdiIncomingFiles::paginate();
       $ediOutgoingFiles = EdiOutgoingFiles::paginate();
       //\Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
-      $ediTypes = EdiTypes::paginate();
+      $ediTypes = EdiTypes::simplePaginate(25);
       
       return view('edilaravel::manage.dashboard')
       ->with('ediIncomingFiles', $ediIncomingFiles)

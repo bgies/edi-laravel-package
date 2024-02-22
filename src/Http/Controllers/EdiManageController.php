@@ -18,10 +18,11 @@ class EdiManageController extends Controller
    public function index()
    {
 
-      $ediIncomingFiles = EdiIncomingFiles::paginate();
-      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      $ediIncomingFiles = EdiIncomingFiles::orderBy('id', 'DESC')->paginate();
+      $ediOutgoingFiles = EdiOutgoingFiles::orderBy('id', 'DESC')->paginate();
+      
 //      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
-      $ediTypes = EdiTypes::all();
+      $ediTypes = EdiTypes::orderBy('id', 'ASC')->paginate();;
 
       return view('edilaravel::manage.dashboard')
          ->with('ediIncomingFiles', $ediIncomingFiles)
@@ -34,7 +35,7 @@ class EdiManageController extends Controller
    
    public function incoming()
    {
-      $ediIncomingFiles = EdiIncomingFiles::paginate();
+      $ediIncomingFiles = EdiIncomingFiles::orderBy('id', 'DESC')->paginate();
       $ediTypes = EdiTypes::all();
       
       return view('edilaravel::manage.incoming')
@@ -47,7 +48,7 @@ class EdiManageController extends Controller
    
    public function outgoing()
    {
-      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      $ediOutgoingFiles = EdiOutgoingFiles::orderBy('id', 'DESC')->paginate();
       $ediTypes = EdiTypes::all();
       
       return view('edilaravel::manage.outgoing')

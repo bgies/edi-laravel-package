@@ -28,7 +28,7 @@ abstract class BaseEdiSend extends BaseEdiObject
       $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
       
       if (!$this->ediType) {
-         \Log::error('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
+         \Log::error('BaseEdiSend getData edi_type ' . $this->edi_type_id . ' NOT FOUND');
          return 0;
          throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
          
