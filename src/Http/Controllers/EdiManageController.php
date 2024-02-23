@@ -59,7 +59,12 @@ class EdiManageController extends Controller
    }
    
    
-   
+   public function phpinfo() 
+   {
+      
+      return view('edilaravel::manage.phpinfo')
+               ->with('navPage', $this->navPage);   
+   }
    
    
    

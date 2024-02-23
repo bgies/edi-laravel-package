@@ -60,3 +60,9 @@ The EDI-Laravel framework is open-sourced software licensed under the MIT licens
 
 ## Installation
 EDI-Laravel is installed via composer. 
+
+### Donate with [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=)
+
+Developing EDI is expensive, decent programmers who know EDI charge from US$45-US$110 per hour. If you think this package is useful and saves you a lot of work, perhaps you would donate a small percentage of the money saved. You will sleep much better, and donating a small amount would be very cool.
+
+[![Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=)

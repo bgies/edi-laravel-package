@@ -31,6 +31,7 @@ use Bgies\EdiLaravel\Functions\SegmentFunctionsAtoM;
 use Bgies\EdiLaravel\Functions\StringFunctions;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\Loop0400Options;
 use Bgies\EdiLaravel\Functions\CurrencyFunctions;
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 
 class X12Send210 extends BaseEdiSend
@@ -55,12 +56,12 @@ class X12Send210 extends BaseEdiSend
    public function __construct(int $edi_type_id)
    {
       //parent::__construct();
-      \Log::info('Bgies\EdiLaravel\X12\X12Send210 construct $edi_type_id: ' . $edi_type_id);
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type_id: ' . $edi_type_id);
       
       $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
 
       if (!$this->ediType) {
-         \Log::error('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
+         LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type ' . $edi_type_id . ' NOT FOUND');
          return 0;
          throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
          
@@ -69,7 +70,7 @@ class X12Send210 extends BaseEdiSend
       
       // make sure it's a 210, otherwise ABORT
       if ($this->ediType->edt_transaction_set_name != '210') {
-         \Log::error('X12Send210 edi_type ' . $edi_type_id . ' is not a 210');
+         LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type ' . $edi_type_id . ' is not a 210');
          return 0;
          throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('X12Send210 edi_type ' . $edi_type_id . ' NOT FOUND');
          
@@ -144,7 +145,7 @@ class X12Send210 extends BaseEdiSend
 
       try {
          $dataResults = $this->ediBeforeProcessObject->execute();
-         \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 getData() dataResults: ' . print_r($dataResults, true));
+         LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\X12\X12Send210 getData()', 'dataResults: ' . print_r($dataResults, true));
          
          $this->data = $dataResults;
          
