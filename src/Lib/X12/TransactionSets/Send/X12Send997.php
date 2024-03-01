@@ -29,7 +29,7 @@ use Bgies\EdiLaravel\Models\Ediincoming;
 
 
 
-class X12Read997 extends BaseEDIReceive
+class X12Send997 extends BaseEDISend
 {
    private $dataset = array();
    

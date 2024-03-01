@@ -36,7 +36,8 @@ class WriteFileToDisk
    
    
    //WriteEDIFile(EDI.EDIMemo, FileName, ord(EDI.ComponentElementSeparator), EDI.TrimExtraDelimiters, EDI.WriteOneLine, EDI.Delimiter);
-   public static function WriteEDIFile(array $fileArray, string $shortFileName, EDISendOptions $ediOptions)
+   //public static function WriteEDIFile(array $fileArray, string $shortFileName, EDISendOptions $ediOptions)
+   public static function WriteEDIFile(array $fileArray, string $shortFileName, $ediOptions)
    {
       $topDirectory = FileFunctions::getTopDirectory();
       $fileNameOnDisk = ENV('EDI_TOP_DIRECTORY') . "/" . $shortFileName;
@@ -45,9 +46,9 @@ class WriteFileToDisk
          throw new EdiFatalException('WriteFileToDisk WriteEDIFile File already exists on disk. Aborting.....');
       }
       
-      $path = Storage::disk('edi')->path($fileNameOnDisk);
+      //$path = Storage::disk('edi')->path($fileNameOnDisk);
       
-      $retVal = Storage::disk('edi')->makeDirectory($path);
+      $retVal = Storage::disk('edi')->makeDirectory($fileNameOnDisk);
      
       
       $FullStr = '';

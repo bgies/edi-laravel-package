@@ -3,12 +3,21 @@
 namespace Bgies\EdiLaravel\FileHandling;
 
 use Bgies\EdiLaravel\Lib\PropertyType;
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
+
+/*
+ * File Drop is designed to make a copy of an EDI file, and 
+ * deposit it in a specific location. Generally, the location
+ * will be a folder designated for an FTP (FTPS, SFTP, or AS2)
+ * server which will send all files in a particular folder to the 
+ * appropriate trading partner. 
+ */
 
 class FileDrop 
 {
-   public $filePath = '';
-   public $fileName = '';
+   public $storageDisk = 'edi';
+   public $shortFileName = '';
    
    /**
     * Create a new instance.
@@ -17,17 +26,20 @@ class FileDrop
     */
    public function __construct()
    {
-      \Log::info('class FileDrop construct');
-      
-      //parent::__construct();
-      
-      \Log::info('class Phpedi construct after parent');
-      
+      LoggingFunctions::logThis('info', 3, 'Bgies\EdiLaravel\FileHandling\FileDrop construct', 'Start');
    }
    
-   public function execute() {
+   public function execute(string $shortFileName, $EdiObj) {
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\FileHandling\FileDrop execute', 'Start');
       
+      if ($EdiObj->isTestFile && $EdiObj->TestFiles->)
       
+      if (! $this->filePath) {
+         throw new \Exception("FileDrop filePath is Blank");
+         return false;
+      }
+      
+      $retVal = Storage::disk('edi')->makeDirectory($this->shortFileNameOnDisk);
       
       
       

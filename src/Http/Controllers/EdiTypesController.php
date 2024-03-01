@@ -10,6 +10,8 @@ use Bgies\EdiLaravel\Functions\ObjectFunctions;
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
 use Bgies\EdiLaravel\Models\EdiIncomingFiles;
 use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
+use Bgies\EdiLaravel\Lib\RunEdiType;
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 
 class EdiTypesController extends Controller
@@ -212,7 +214,7 @@ class EdiTypesController extends Controller
       \Log::info(' ');
       
       $input = $request->all();
-      \Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController createNewFiles', 'input: ' . print_r($input, true));
       
       $validated = request()->validate([
          'modal-ediTypeId' => 'required',
@@ -223,50 +225,24 @@ class EdiTypesController extends Controller
       \Log::info('EdiTypesController createNewFiles input: ' . print_r($input, true));
       
       $ediTypeId = $input['modal-ediTypeId'];
-      $ediType = EdiTypes::find($ediTypeId);
-      if (!$ediType) {
-         throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
+//      $ediType = EdiTypes::find($ediTypeId);
+                  
+      try {
+         $runEdiType = new RunEdiType($ediTypeId);
+      } catch (Exception $e) {
+         LoggingFunctions::logThis('error', 10, 'EdiTypesController createNewFiles Exception creating RunEdiType: ', $e->message);
       }
-   
-      $errorList = [];
-      $transactionSetName = "Bgies\EdiLaravel\Lib\\";
-
-      switch ($ediType->edt_edi_standard) {
-
-         case ($ediType->edt_edi_standard == 'X12') : 
-            if ($ediType->edt_is_incoming == 1) {
-               $transactionSetName .= 'X12\TransactionSets\Read\X12Read';
-            } else {
-               $transactionSetName .= 'X12\TransactionSets\Send\X12Send';
-            }
-            $transactionSetName .= $ediType->edt_transaction_set_name;
-            break;
-         case ($ediType->edt_edi_standard == 'EDIFACT') : 
-            if ($ediType->edt_is_incoming == 1) {
-               $transactionSetsName .= 'Edifact\TransactionSets\Read\EdifactRead' . $ediType->edt_transaction_set_name;
-            } else {
-               $transactionSetName .= 'Edifact\TransactionSets\Send\EdifactSend' . $ediType->edt_transaction_set_name;
-            }
-            $transactionSetName .= $ediType->edt_transaction_set_name;
-            break;   
-
-         default: {
-            break;
-         }
+           
+      try {
+         $retVal = $runEdiType->runTransactionSet($ediTypeId);
+      } catch (Exception $e) {
+         LoggingFunctions::logThis('error', 10, 'EdiTypesController createNewFiles Exception in runTransactionSet: ', $e->message);
       }
-      \Log::info('EdiTypesController createNewFiles transactionSetName: ' . $transactionSetName);
-
-      // NOTE - this method relies on having the class name to call plus the edi Type Id
-      $ObjectToRun = new $transactionSetName($ediTypeId);
-      \Log::info('EdiTypesController createNewFiles before $retVal = $edi->execute()');
       
-      
-      $retVal = $ObjectToRun->execute();
-      \Log::info('EdiTypesController createNewFiles $edi->execute returned: ' . $retVal);
-      
-      
-      $ediIncomingFiles = EdiIncomingFiles::paginate();
-      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      LoggingFunctions::logThis('info', 5, 'EdiTypesController createNewFiles retVal: ', print_r($retVal, true));
+            
+      $ediIncomingFiles = EdiIncomingFiles::orderBy('id', 'DESC')->paginate();
+      $ediOutgoingFiles = EdiOutgoingFiles::orderBy('id', 'DESC')->paginate();
       //\Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
       $ediTypes = EdiTypes::simplePaginate(25);
       
@@ -275,8 +251,6 @@ class EdiTypesController extends Controller
       ->with('ediOutgoingFiles', $ediOutgoingFiles)
       ->with('ediTypes', $ediTypes)
       ->with('navPage', 'manage');
-
-
       
    }
 

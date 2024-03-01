@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EdiFiles extends Model
 {
    use HasFactory;
+   protected $table = 'edi_files';
    
    // Disable Laravel's mass assignment protection
    protected $guarded = [];

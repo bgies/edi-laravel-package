@@ -26,18 +26,12 @@ class FileGet
    }
    
    public function execute() {
-       $files = \Storage::disk(env('EDI_DiePraxisReadPRICAT_FileDriver'), 'local')->files(env('EDI_DiePraxisReadPRICAT_Get_Directory'));
+      $files = \Storage::disk('edi')->files($fileDirectory);
 
-/*       
-       if ($files[0] == 'edi_files\incoming\HOERHAGER_PRICAT_Test_Gender_Age.edi') {
-          $files = array();
-          $files[] = 'HOERHAGER_PRICAT_Test_Gender_Age.edi';
-       }
-*/       
        
 //      $fileContent = '';
 //      if (count($files) > 0) {
-//          $fileContent = \Storage::disk(env('EDI_DiePraxisReadPRICAT_FileDriver'), 'local')->get($files[0]);
+//          $fileContent = \Storage::disk('edi')->get($files[0]);
 //      }
 
       return $files;

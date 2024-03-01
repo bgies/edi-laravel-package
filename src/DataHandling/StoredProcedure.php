@@ -5,10 +5,11 @@ namespace Bgies\EdiLaravel\DataHandling;
 use Bgies\EdiLaravel\Lib\PropertyType;
 use Bgies\EdiLaravel\Exeptions\EdiDbException;
 use Illuminate\Support\Facades\DB;
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 class StoredProcedure 
 {
-   public $storedProcedureName;
+   public $storedProcedureName = '';
    
    
    
@@ -19,12 +20,9 @@ class StoredProcedure
     */
    public function __construct()
    {
-      \Log::info('class StoredProcedure construct storedProcedureName: ' . $storedProcedureName);
+      LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\DataHandling\StoredProcedure construct', 'storedProcedureName: ' . $this->storedProcedureName);
       
       //parent::__construct();
-      
-      //\Log::info('class StoredProcedure construct after parent');
-      
    }
    
    public function execute($dataset = null)
@@ -44,7 +42,7 @@ class StoredProcedure
           return $dbResults;
       }
 
-      // if there params
+      // if there are params
       $paramVals = [];
       $procNameStr = "CALL " . substr($this->storedProcedureName, 0, strpos($this->storedProcedureName, ':')) . ' (' ;
       $Str = substr(trim($this->storedProcedureName), strpos($this->storedProcedureName, ':')); 

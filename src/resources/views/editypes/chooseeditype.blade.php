@@ -104,7 +104,6 @@
 	      <div class="modal-footer">
    	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
       	  <button class="btn btn-primary" type="submit">Create File</button>
-	        <button type="submit" class="btn btn-primary" onclick="createFile(this.form)">Create New File</button>
    	   </div>
       	   
       </form>      	   

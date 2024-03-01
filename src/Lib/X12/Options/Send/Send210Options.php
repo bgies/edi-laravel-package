@@ -156,7 +156,7 @@ class Send210Options extends EDISendOptions
    public
    { Public declarations }
    N9Array : TN9Array;
-   ErrorList : TStringList;
+   errorList : TStringList;
    constructor Create(AOwner: TComponent);
    destructor Destroy; override;
    published

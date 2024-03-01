@@ -227,13 +227,13 @@ class SegmentFunctionsAtoM
       // first the test file and negative amounts
       if ($EDIObj->isTestFile && $EDIObj->testFileOptions->ErrorOnNegativeInvoiceAmount) {
          if (($row['InvoiceAmount'] < 0.0) && (abs($row['InvoiceAmount']) > 0.004)) {
-            array_push($EDIObj->ErrorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is negative.');
+            array_push($EDIObj->errorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is negative.');
          }
       }
       // then test file and zero amounts
       if ($EDIObj->isTestFile && ($EDIObj->testFileOptions->ErrorOnZeroInvoiceAmount)) {
          if (abs($row['InvoiceAmount']) < 0.004) {
-            array_push($EDIObj->ErrorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is zero.');
+            array_push($EDIObj->errorList, 'The Invoice Amount for shipment # ' . $row['ShpID'] . ' is zero.');
          }
       }
          
@@ -261,7 +261,7 @@ class SegmentFunctionsAtoM
       if (abs($TotalCharges) > 0.004) {
          if (abs( $TotalCharges - $row['InvoiceAmount']) > 0.004) {
             if ($EDIObj->isTestFile) {
-               array_push($EDIObj->ErrorList, 'The InvoiceAmount (' .  $fmt->format($row['InvoiceAmount']) .  ') for Invoice # ' . $row['InvoiceId'] . ' does not match the total line items (' . $fmt->format($TotalCharges) . ').');
+               array_push($EDIObj->errorList, 'The InvoiceAmount (' .  $fmt->format($row['InvoiceAmount']) .  ') for Invoice # ' . $row['InvoiceId'] . ' does not match the total line items (' . $fmt->format($TotalCharges) . ').');
             } else {
                throw new \App\Exceptions\EdiFatalException('The Invoice Amount (' .  $fmt->format($row['InvoiceAmount']) .  ') for shipment # ' . $row['InvoiceId'] . ' does not match the total line items (' . $fmt->format($TotalCharges) . ').');
             }

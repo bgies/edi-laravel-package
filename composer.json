@@ -10,16 +10,15 @@
 	"license" : "MIT",
 	"minimum-stability" : "dev",
 	"require" : {
-      "php" : "^8.0",
-		"tiamo/phpas2": "^2.0.1",
-      "opis/closure" : "^3.6"
-      
-      
-   },
+		"php" : "^8.0",
+		"tiamo/phpas2" : "^2.0.1",
+		"opis/closure" : "^3.6"
+	},
 	"autoload" : {
 		"psr-4" : {
 			"bgies\\edilaravel\\" : "src/",
-			"bgies\\edilaravel\\Functions\\" : "Functions"
+			"bgies\\edilaravel\\Functions\\" : "Functions",
+			"bgies\\edilaravel\\Lib\\X12\\TransactionSets\\Send\\" : "Send"
 		}
 	},
 	"extra" : {

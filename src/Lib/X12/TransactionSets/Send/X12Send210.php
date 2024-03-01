@@ -36,15 +36,12 @@ use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 class X12Send210 extends BaseEdiSend
 {
-   private $ediType = null;
-   public $ediOptions = null;
+
+   
+   
    private $ediBeforeProcessObject = null;
-   private $data = null;
    private $ediAfterProcessObject = null;
-   
    private $ediFile = array();
-   
-  
    private $errorCount = 0;
    
    
@@ -53,11 +50,14 @@ class X12Send210 extends BaseEdiSend
     *
     * @return void
     */
-   public function __construct(int $edi_type_id)
+
+   public function __construct($ediType)
    {
-      //parent::__construct();
-      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type_id: ' . $edi_type_id);
+      parent::__construct($ediType->id);
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type_id: ' . $ediType->id);
       
+      
+/*      
       $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
 
       if (!$this->ediType) {
@@ -77,23 +77,18 @@ class X12Send210 extends BaseEdiSend
          exit;         
 
       }
+*/      
       
-      
-      // NOTE - The actual object is at ediOptions and the string representation is edt_edi_object
-      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
-      // the ediOption object will be passed to the EDI Objectd so set a couple
-      // of properties on it from the EDI type so we don't have to pass the 
+      // NOTE - The actual object is at ediOptions 
+      //$this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      // the ediOption object will be passed anywhere it's needed, so 
+      // set a couple of properties on it from the EDI type so we don't have to pass the 
       // model also. 
-      $this->ediOptions->ediId = $edi_type_id;
-      $this->ediOptions->transactionSetIdentifier = '210';
+//      $this->ediOptions['ediId'] = $ediType->id;
+      //$this->ediOptions->transactionSetIdentifier = '210';
       //$this->ediOptions->transaction_control_number = $this->ediType->edf_transaction_control_number;
       
       
-      $this->ediBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
-      $this->ediAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
-      $this->ediFileDrop = unserialize($this->ediType->edt_file_drop);
-      
-       
        
       \Log::info('');
       \Log::info('class X12Send210 edi_type serialize: ' . serialize($this->ediType));
@@ -102,12 +97,12 @@ class X12Send210 extends BaseEdiSend
    }
    
    
-   public function execute() : string
+   public function execute(&$retValues) : string
    {
-      \Log::info('Bgies\EdiLaravel\X12 X12Send210 execute START');      
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 execute START', 'START');
       
       try {
-         $dataResult = $this->getData();
+//         $dataResult = $this->getData();
       } catch (EdiException $e) {
          \Log::error('Bgies\EdiLaravel\X12 X12Send210 execute EXCEPTION in getData: ' . $e->message);
       } catch (Exception $e) {
@@ -116,7 +111,7 @@ class X12Send210 extends BaseEdiSend
       
       
       try {
-         $retVal = $this->composeFile($dataResult, 'orders');
+         $retVal = $this->composeFile($this->data, 'orders');
          if (!$retVal) {
             \Log::error('Bgies\EdiLaravel\X12 X12Send210 execute composeFile Failed aborting...');
             return false;
@@ -139,10 +134,12 @@ class X12Send210 extends BaseEdiSend
       return print_r($this->ediOptions->ediMemo, true);
    }
    
-   
+/*   
    protected function getData() {
       \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 getData() START');
 
+      parent::getData();
+      
       try {
          $dataResults = $this->ediBeforeProcessObject->execute();
          LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\X12\X12Send210 getData()', 'dataResults: ' . print_r($dataResults, true));
@@ -157,6 +154,7 @@ class X12Send210 extends BaseEdiSend
       
       return $dataResults;
    }
+*/  
    
    /**
     * checkForRequiredFields simply checks every row to make sure it has all the required info
@@ -197,7 +195,7 @@ class X12Send210 extends BaseEdiSend
           $ediFile = DbFunctions::insertEDIFilesRecord($this->ediType, $this->ediOptions);
           $this->EDIID = $ediFile->id;
           $ediFile->edf_records_parsed = 0;// count($this->data);
-          $ediFile->edf_records_tablename = $tableName;
+//          $ediFile->edf_records_tablename = $tableName;
           $this->ediFile = $ediFile;
                     
           $DirectoryDateString = \Bgies\EdiLaravel\Functions\DateTimeFunctions::GetDateStr(now(),true);
@@ -503,7 +501,7 @@ class X12Send210 extends BaseEdiSend
       $LocTypeFieldName = $FieldNamePrefix . 'EntityIdentifier';
    
       if ($row[$LocTypeFieldName] == '') {
-         EDI210.ErrorList.Add('The EntityIdentifier for location (' . DataSet.FieldByName(FieldNamePrefix + 'Name').AsString + ') shipment # ' + DataSet.FieldByName('ShpID').AsString + ' is blank.');
+         EDI210.errorList.Add('The EntityIdentifier for location (' . DataSet.FieldByName(FieldNamePrefix + 'Name').AsString + ') shipment # ' + DataSet.FieldByName('ShpID').AsString + ' is blank.');
          throw new EdiException('The EntityIdentifier for location (' .  $row[$FieldNamePrefix] . 'Name' . ') shipment # ' . $row['InvoiceId'] . ' is blank.');
       }
    
@@ -771,6 +769,7 @@ class X12Send210 extends BaseEdiSend
          $TempFloatStr = CurrencyFunctions::ConvertMoneyToCents($detailRow['ItemTotal']);
          $TempFloatStr = CurrencyFunctions::RemoveCommas($TempFloatStr);
          
+         $TotalCharges = $TotalCharges + round($TempFloatStr, 2);
          //$TotalCharges = $TotalCharges + round($detailRow['ItemTotal'], 2);
       
          $TempStr = 'L1' . $EDIObj->delimiters->ElementDelimiter . $LXLoopCount . $EDIObj->delimiters->ElementDelimiter .  // L1 01
@@ -803,7 +802,7 @@ class X12Send210 extends BaseEdiSend
                case 402 : $TempStr .= 'SUC'; break;  // SCIP Fee
                default : {
                   $TempStr .= 'MSC';  // other accessorial charge
-                  array_push($EDIObj->ErrorList, 'Unknown ItemType for L1 Line ');
+                  array_push($EDIObj->errorList, 'Unknown ItemType for L1 Line ');
                }
 
             } //case
@@ -869,7 +868,7 @@ class X12Send210 extends BaseEdiSend
       
       
       try {
-         $this->ediAfterProcessObject->execute();
+//         $this->ediAfterProcessObject->execute();
          
       } catch (EdiException $e) {
             

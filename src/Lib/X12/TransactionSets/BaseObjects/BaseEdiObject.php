@@ -38,12 +38,12 @@ abstract class BaseEdiObject
     *
     * @var Child of EDI base ooption. This object contains ALL the options for this object
     */
-   protected $EdiOptions;
+   protected $ediOptions;
    
    
    
    
-   abstract protected function execute() : string; 
+   abstract protected function execute(&$retValues) : string; 
    
    
   

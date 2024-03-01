@@ -13,6 +13,7 @@ class CreateEdiOutgoingFilesTable extends Migration
      */
     public function up()
     {
+/*       
         Schema::create('edi_outgoing_files', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('edf_edi_type_id');
@@ -37,6 +38,7 @@ class CreateEdiOutgoingFilesTable extends Migration
             $table->timestamps();
             $table->softDeletes();            
         });
+*/        
     }
 
     /**

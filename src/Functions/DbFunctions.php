@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Functions;
 
 use Illuminate\Database\Eloquent\Model;
 use Bgies\EdiLaravel\lib\x12\options\EDISendOptions;
-use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
+use Bgies\EdiLaravel\Models\EdiFiles;
 use Bgies\EdiLaravel\Models\Edifiledetails;
 
 //use lib\x12\SharedTypes;
@@ -15,9 +15,9 @@ class DbFunctions //extends BaseController
 {
    
    //public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : edifiles
-   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : EdiOutgoingFiles
+   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : EdiFiles
    {
-      $ediFile = new EdiOutgoingFiles();
+      $ediFile = new EdiFiles();
 //      $ediFile->id = $model->id;
       $ediFile->edf_edi_type_id = $EDIObj->ediId;
       $ediFile->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
@@ -55,17 +55,17 @@ class DbFunctions //extends BaseController
       
    }
    
-   
+//   public static function updateEDIFilesRecord(string $ShortFileName, int $EDIID, Model $filesModel,
+//      Model $typesModel, EDISendOptions &$EDIObj ) : edifiles
    public static function updateEDIFilesRecord(string $ShortFileName, int $EDIID, Model $filesModel, 
-          Model $typesModel, EDISendOptions &$EDIObj ) : edifiles
+          Model $typesModel, &$EDIObj ) : edifiles
    {
 
-      $filesModel->edf_edt_id = $typesModel->id;
+      $filesModel->edf_edi_type_id = $typesModel->id;
       $filesModel->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
-      $filesModel->edf_records_tablename = $EDIObj->ediTableName;
       $filesModel->interchange_sender_id = $EDIObj->interchangeSenderID;
       $filesModel->interchange_receiver_id = $EDIObj->interchangeReceiverID;
-      $filesModel->applicatione_sender_code = $EDIObj->applicationSenderCode;
+      $filesModel->application_sender_code = $EDIObj->applicationSenderCode;
       $filesModel->application_receiver_code = $EDIObj->applicationReceiverCode;
       
       $filesModel->edf_state = 3;
@@ -77,9 +77,10 @@ class DbFunctions //extends BaseController
       return $filesModel;
    }
       
-   
+//   public static function insertFileDetailRecords(array $data, Model $typesModel,
+//      Model $filesModel, EDISendOptions &$EDIObj, $UniqueControlNumber)
    public static function insertFileDetailRecords(array $data, Model $typesModel,
-         Model $filesModel, EDISendOptions &$EDIObj, $UniqueControlNumber)
+         Model $filesModel, &$EDIObj, $UniqueControlNumber)
    {
       for ($i = 0; $i < count($data) - 1; $i++) {
          $curData = (array) $data[$i];

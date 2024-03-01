@@ -162,8 +162,8 @@ class SegmentFunctions
      return $TempStr;
    }
    
-   
-   public static function GetIEASegment(int $LineCount, EDISendOptions $EDIObj) : string
+   //public static function GetIEASegment(int $LineCount, EDISendOptions $EDIObj) : string
+   public static function GetIEASegment(int $LineCount, $EDIObj) : string
    {
       return 'IEA' . $EDIObj->delimiters->ElementDelimiter . $LineCount . $EDIObj->delimiters->ElementDelimiter . str_pad($EDIObj->dataInterchangeControlNumber, 9, '0', STR_PAD_LEFT);
    }  
@@ -278,7 +278,7 @@ class SegmentFunctions
          
    }
       
-   public static function GetGESegment(int $ItemsCount, EDISendOptions $EDIObj) : string
+   public static function GetGESegment(int $ItemsCount, $EDIObj) : string
    {
       $TempStr = 'GE' . $EDIObj->delimiters->ElementDelimiter;
       $TempStr .= $ItemsCount . $EDIObj->delimiters->ElementDelimiter;
