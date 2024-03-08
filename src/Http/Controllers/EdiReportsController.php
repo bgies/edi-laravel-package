@@ -13,6 +13,8 @@ class EdiReportsController extends Controller
    
    public function dashboard()
    {
+      
+      
       return view('edilaravel::reports.dashboard')
                ->with('ediReports', [])
                ->with('navPage', $this->navPage);

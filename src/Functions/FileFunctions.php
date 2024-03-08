@@ -33,7 +33,7 @@ class FileFunctions
     */  
    public static function getFileNamesFromPackageDirectory($fromDirectory) {
       //$path = __DIR__;
-      $path = dirname(__DIR__, 1) . '/FileHandling';
+      $path = dirname(__DIR__, 1) . '/' . $fromDirectory;
       $files = scandir($path);
       $fileNamesArray = [];
       foreach ($files as $file) {
@@ -79,6 +79,7 @@ class FileFunctions
       
       return $topPath . $midPath;
    }
+   
    
    
 }

@@ -411,7 +411,19 @@
 		<div class="row">
 			<div class="col-6">After Processing</div>
 			<div class="col-6">
-				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >After Processing</a>
+				@if (empty($ediType->edt_after_process_object) )
+			   	@php( $afterProcessObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling')   )
+    				<select id="new-after-process-select" class="form-select" aria-label="Choose After Process Object" hidden>
+    				@foreach($afterProcessObject as $curFile)
+	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
+    				@endforeach
+    				</select>
+			   	<button id="after_process_button" type="button" class="btn btn-primary create-object-button">Choose Object</button>
+				@else
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >
+						After Processing Options
+					</a>
+				@endif
 			</div>
 		</div>
 	</div>  
@@ -425,11 +437,19 @@
 		<div class="row">
 		<div class="col-6">Alert Options</div>
 		<div class="col-6">
-			@if (empty($ediType->edt_alert_object) )
-			   		<p>edt_alert_object is Null</p>
-			@else  
-				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >Alert Options</a>
-			@endif
+				@if (empty($ediType->edt_alert_object) )
+			   	@php( $alertObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('Alerts')   )
+    				<select id="new-alerts-select" class="form-select" aria-label="Create Alert Object">
+    				@foreach($alertObject as $curFile)
+	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
+    				@endforeach
+    				</select>
+			   	<button id="alert_button" type="button" class="btn btn-primary create-object-button">Create Alert Object</button>
+				@else
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >
+						Alert Options
+					</a>
+				@endif
 		</div>
 		</div>
 	</div>  
@@ -451,10 +471,18 @@
 		<div class="row">
 			<div class="col-6">Transmission Options</div>
 			<div class="col-6">
-				 @if (empty($ediType->edt_transmission_object) )
-			   		<p>edt_transmission_object is Null</p>
-			   	@else  
-					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >Transmission Object</a>
+				@if (empty($ediType->edt_transmission_object) )
+			   	@php( $transmissionObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('Lib/Transmission')   )
+    				<select id="new-transmission-select" class="form-select" aria-label="Create Transmission Object">
+    				@foreach($transmissionObject as $curFile)
+	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
+    				@endforeach
+    				</select>
+			   	<button id="transmission_button" type="button" class="btn btn-primary create-object-button">Create Transmission Object</button>
+				@else
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >
+						Transmission Options
+					</a>
 				@endif
 			</div>
 		</div>
@@ -557,8 +585,9 @@
 					   modalLabel.innerHTML = "Choose Object for Before Process Options";
 						let modalSelect2 = document.getElementById("new-before-process-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
-					break;
-				
+						break;
+				   case 'alert-button' : 
+				      
 				
 				
 				}

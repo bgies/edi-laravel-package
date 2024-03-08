@@ -14,7 +14,7 @@ use Bgies\EdiLaravel\Models\Editypes as ediType;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options as Send210Options;
 use Bgies\EdiLaravel\DataHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
-
+use Bgies\EdiLaravel\Lib\ReturnValues;
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;
 use Bgies\EdiLaravel\Functions\DbFunctions;
 use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
@@ -32,6 +32,7 @@ use Bgies\EdiLaravel\Functions\StringFunctions;
 use Bgies\EdiLaravel\Lib\X12\Options\Segments\Loop0400Options;
 use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
+use Bgies;
 
 
 class X12Send210 extends BaseEdiSend
@@ -97,7 +98,7 @@ class X12Send210 extends BaseEdiSend
    }
    
    
-   public function execute(&$retValues) : string
+   public function execute(&$retValues) : ReturnValues
    {
       LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 execute START', 'START');
       
@@ -131,7 +132,7 @@ class X12Send210 extends BaseEdiSend
            
       
       \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 execute END');
-      return print_r($this->ediOptions->ediMemo, true);
+      return $retValues;
    }
    
 /*   

@@ -16,8 +16,7 @@
            					<li>
            						<a class="dropdown-item" href="/edilaravel/dashboard/dashboard">Dashboard</a>
            					</li>
-				            <li><a class="dropdown-item" href="#">Incoming Files</a></li>
-            				<li><a class="dropdown-item" href="#">Outgoing Files</a></li>
+				            <li><a class="dropdown-item" href="#">EDI Files</a></li>
           				</ul>
         				</li>      			
       			

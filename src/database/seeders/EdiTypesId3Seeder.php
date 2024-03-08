@@ -40,7 +40,7 @@ class EdiTypesId3Seeder extends Seeder
 
         // Setup the FileDrop object
         $fileDrop = new FileDrop();
-        $fileDrop->filePath = '';
+        $fileDrop->moveFilesToDisk = 'edi';
 
         // check to see if it already exists
         // if it exists delete the record, and reenter it. 

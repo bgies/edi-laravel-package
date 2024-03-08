@@ -14,7 +14,7 @@ class CreateEdiIncomingFilesTable extends Migration
     public function up()
     {
         Schema::dropIfExists('edi_incoming_files');
-        
+/*        
         Schema::create('edi_incoming_files', function (Blueprint $table) {
             $table->id();
 //            $table->bigIncrements('id')->primary();
@@ -31,6 +31,7 @@ class CreateEdiIncomingFilesTable extends Migration
             $table->softDeletes();            
             
         });
+*/        
     }
 
     /**

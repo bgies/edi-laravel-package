@@ -8,8 +8,7 @@ use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
-use Bgies\EdiLaravel\Models\EdiIncomingFiles;
-use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
+use Bgies\EdiLaravel\Models\EdiFiles;
 use Bgies\EdiLaravel\Lib\RunEdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
@@ -106,7 +105,10 @@ class EdiTypesController extends Controller
             case 'edt_transmission_object':
                
             break;               
-         
+            case 'edt_file_drop':
+               
+            break;
+               
             default : 
                
             break;            
@@ -241,14 +243,27 @@ class EdiTypesController extends Controller
       
       LoggingFunctions::logThis('info', 5, 'EdiTypesController createNewFiles retVal: ', print_r($retVal, true));
             
-      $ediIncomingFiles = EdiIncomingFiles::orderBy('id', 'DESC')->paginate();
-      $ediOutgoingFiles = EdiOutgoingFiles::orderBy('id', 'DESC')->paginate();
-      //\Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
+      $ediFiles = EdiFiles::orderBy('id', 'DESC')->paginate();
+
       $ediTypes = EdiTypes::simplePaginate(25);
       
       return view('edilaravel::manage.dashboard')
-      ->with('ediIncomingFiles', $ediIncomingFiles)
-      ->with('ediOutgoingFiles', $ediOutgoingFiles)
+      ->with('ediFiles', $ediFiles)
+      ->with('ediTypes', $ediTypes)
+      ->with('navPage', 'manage');
+      
+   }
+   
+   public function chooseObject(Request $request) {
+      \Log::info(' ');
+      
+      $input = $request->all();
+      LoggingFunctions::logThis('info', 5, 'EdiTypesController chooseObjec input: ', print_r($input, true));
+      
+      
+      
+      return view('edilaravel::ediTypes.chooseobject')
+      ->with('ediFiles', $ediFiles)
       ->with('ediTypes', $ediTypes)
       ->with('navPage', 'manage');
       

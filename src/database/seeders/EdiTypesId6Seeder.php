@@ -40,7 +40,7 @@ class EdiTypesId6Seeder extends Seeder
 
         // Setup the FileDrop object
         $fileDrop = new FileDrop();
-        $fileDrop->filePath = '';
+        $fileDrop->moveFilesToDisk = 'edi';
 
         $ediType = EdiTypes::find(6); //   findOrFail($edi_type_id);
         if (!$ediType) {
@@ -60,7 +60,7 @@ class EdiTypesId6Seeder extends Seeder
         $ediType->interchange_receiver_id = 'FORGOT_ID';
         $ediType->application_sender_code = 'AMAZON_CODE';
         $ediType->application_receiver_code = 'FORGOT_856';
-        //$ediType->edt_alert_object = 1;
+        $ediType->edt_alert_object = null;
         // specific to this object
         $ediType->edt_before_process_object = serialize($beforeProcessObject);
         $ediType->edt_after_process_object = serialize($afterSendProcessing);

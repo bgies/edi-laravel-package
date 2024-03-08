@@ -3,8 +3,7 @@
 namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Bgies\EdiLaravel\Models\EdiIncomingFiles;
-use Bgies\EdiLaravel\Models\EdiOutgoingFiles;
+use Bgies\EdiLaravel\Models\EdiFiles;
 use Bgies\EdiLaravel\Models\EdiTypes;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
@@ -18,17 +17,14 @@ class EdiDashboardController extends Controller
    public function dashboard()
    {
 
-      $ediIncomingFiles = EdiIncomingFiles::paginate();
-      $ediOutgoingFiles = EdiOutgoingFiles::paginate();
+      $ediFiles = EdiFiles::paginate();
 //      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
       $ediTypes = EdiTypes::all();
 
       return view('edilaravel::dashboard.dashboard')
-         ->with('ediIncomingFiles', $ediIncomingFiles)
-         ->with('ediOutgoingFiles', $ediOutgoingFiles)
+         ->with('ediFiles', $ediFiles)
          ->with('ediTypes', $ediTypes)
-         ->with('navPage', $this->navPage);
-      
+         ->with('navPage', $this->navPage);      
    }
    
    

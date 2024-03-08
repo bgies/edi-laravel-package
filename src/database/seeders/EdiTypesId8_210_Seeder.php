@@ -71,12 +71,16 @@ class EdiTypesId8_210_Seeder extends Seeder
 
         // Setup the AfterProcess object
         $afterSendProcessing = new FileDrop();
-        $afterSendProcessing->filePath = '';
+        $afterSendProcessing->moveFilesToDisk = 'edi';
+        $afterSendProcessing->enabled = false;
         
         // Setup the FileDrop object
         $fileDrop = new FileDrop();
-        $fileDrop->filePath = '';
-
+        $fileDrop->moveFilesToDisk = 'edi';
+        $fileDrop->enabled = false;
+//        Log::info( print_r(serialize($fileDrop)));
+        
+        
         $transmissionObject = null; //new FTPS();
 
         
@@ -100,7 +104,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         $ediType->interchange_receiver_id = 'AMAZON';
         $ediType->application_sender_code = 'FORGOT_810';
         $ediType->application_receiver_code = 'AMAZON_810';
-        $ediType->edt_alert_object = 1;
+        $ediType->edt_alert_object = null;
         // specific to this object
         
         $ediType->edt_edi_object = serialize($options);

@@ -8,16 +8,25 @@ use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 /*
  * File Drop is designed to make a copy of an EDI file, and 
- * deposit it in a specific location. Generally, the location
+ * deposit it in a specific folder. Generally, the location
  * will be a folder designated for an FTP (FTPS, SFTP, or AS2)
- * server which will send all files in a particular folder to the 
+ * server which will send all files in that folder to the 
  * appropriate trading partner. 
+ * 
+ * NOTE - disk (oldDisk, moveFilesToDisk) refers to Laravel's 
+ * disk system in the config/filesystems file. 
+ * 
+ * if you need the copy 
  */
 
 class FileDrop 
 {
-   public $storageDisk = 'edi';
-   public $shortFileName = '';
+   public bool $enabled = true;
+   public bool $deleteFileAfterMove = false;
+   public bool $changeFileName = false;
+   public string $moveFilesToDisk = 'edi';
+   public string $changeFileNameMask = '';
+   
    
    /**
     * Create a new instance.
@@ -29,29 +38,42 @@ class FileDrop
       LoggingFunctions::logThis('info', 3, 'Bgies\EdiLaravel\FileHandling\FileDrop construct', 'Start');
    }
    
-   public function execute(string $shortFileName, $EdiObj) {
+   public function execute(string $originalDisk, string $shortFileName, $EdiObj) {
       LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\FileHandling\FileDrop execute', 'Start');
       
-      if ($EdiObj->isTestFile && $EdiObj->TestFiles->)
+      if ($EdiObj->isTestFile && !$EdiObj->testFileOptions->sendTestFile ) {
+         return;         
+      }
       
-      if (! $this->filePath) {
-         throw new \Exception("FileDrop filePath is Blank");
+      if (! $originalDisk) {
+         throw new \Exception("FileDrop originalDisk is Blank");
+         return false;
+      }
+      if (! $shortFileName) {
+         throw new \Exception("FileDrop shortFileName is Blank");
          return false;
       }
       
       $retVal = Storage::disk('edi')->makeDirectory($this->shortFileNameOnDisk);
-      
-      
+          
       
    }
    
    public function getPropertyTypes() {
       //$propTypes = parent::getPropertyTypes();
-      
-      $propTypes['filePath'] = new PropertyType(
-         'string', 0, 255, true, false, null, true, true, 'File Path to put files in'
+      $propTypes['enabled'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
          );
-      $propTypes['fileName'] = new PropertyType(
+      $propTypes['deleteFileAfterMove'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['changeFileName'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
+      $propTypes['moveFilesToDisk'] = new PropertyType(
+         'string', 0, 255, true, false, null, true, true, 'The Laravel Disk File to use (config/filesystems.php'
+         );
+      $propTypes['changeFileNameMask'] = new PropertyType(
          'string', 0, 255, true, false, null, true, true, 'The File Name to Use'
          );
       

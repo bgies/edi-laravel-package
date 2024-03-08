@@ -2,6 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
+use Bgies\EdiLaravel\Lib\ReturnValues;
 
 
 abstract class BaseEdiObject 
@@ -43,7 +44,7 @@ abstract class BaseEdiObject
    
    
    
-   abstract protected function execute(&$retValues) : string; 
+   abstract protected function execute(&$retValues) : ReturnValues; 
    
    
   

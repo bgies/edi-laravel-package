@@ -1,15 +1,15 @@
 @extends('layouts.layout')
 
-@section('title', 'Incoming EDI Files')
+@section('title', 'EDI Files')
 
 
 @section('content')
 
-<h2>Incoming EDI Files</h2>
+<h2>EDI Files</h2>
 
 
 <div class="container edi-grid">
-	<div class="row header">Incoming</div>
+	<div class="row header">EDI Files</div>
 	<div class="row header">
 		<div class="col col-1">
 			Id
@@ -32,7 +32,7 @@
 		
 	</div>
 
-	@forelse ($ediIncomingFiles as $ediFile)
+	@forelse ($ediFiles as $ediFile)
 
 		<div class="row">
 			<div class="col col-1">
@@ -62,6 +62,7 @@
    		<p class="edi-sub-header"><strong> No Incoming EDI Files yet</strong></p>
 	@endforelse   		
    
+   {{ $ediFiles->links() }}
    
 </div>
 

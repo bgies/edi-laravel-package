@@ -112,13 +112,11 @@ class RunEdiType
          }
       }
       LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'transactionSetClass: ' . $transactionSetClass );
-      \Log::info('EdiTypesController createNewFiles transactionSetClass: ' . $transactionSetClass);
       
       // now unserialize the Options Object for this EDI Type
       $this->edi_options = unserialize($this->ediType->edt_edi_object);
       $this->edi_options->transaction_set_name = $this->ediType->edt_transaction_set_name;
-      $this->after_process_object = unserialize($this->ediType->edt_after_process_object);
-      
+    
       
 //      $path = base_path();
 //      include ($path . 'packages\\')
@@ -131,13 +129,27 @@ class RunEdiType
 //      $transactionSet = new \ReflectionClass($transactionSetClass($this->ediType, $this->edi_options, $this->data, $retValues));
       $ret = $transactionSet->execute($retValues);
       
+
+      $this->after_process_object = unserialize($this->ediType->edt_after_process_object);
+      $afterProcessClass = get_class($this->after_process_object);
+      switch ($afterProcessClass) {
+         case 'Bgies\EdiLaravel\FileHandling\FileDrop' : 
+            $this->after_process_object->execute('edi', $shortNameString, $this->ediOptions);
+            break;
+         default : {
+            LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'Unknown afterProcessClass: ' . (string) $afterProcessClass);
+            $retValues->errorList[] = 'Unknown afterProcessClass: ' . (string) $afterProcessClass;
+         }            
+      }
       
-      $this->after_process_object->execute($retValues);
+//      $this->after_process_object->execute($retValues);
       
    
       $this->ediFileDrop = unserialize($this->ediType->edt_file_drop);
-      if (strlen($this->ediFileDrop->filePath) > 3) {
-         this->ediFileDrop->execute();
+      $fileDropClass = get_class($this->ediFileDrop);
+      LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'fileDropClass: ' . (string) $fileDropClass);
+      if (strlen($this->ediFileDrop->moveFilesToDisk) > 1) {
+         this->ediFileDrop->execute('edi', $shortFileName, $this->edi_options);
       }
       
       

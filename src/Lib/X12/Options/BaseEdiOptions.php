@@ -16,7 +16,7 @@ abstract class BaseEdiOptions
    public int $ediId = 0;
 
    public $delimiters = null; // Delimiters object;
-   public $TestFileOptions = null;
+   public $testFileOptions = null;
    public $interchangeControlVersionNumber = '00401';
    public $interchangeReceiverID = '';
    public $interchangeSenderID = '';

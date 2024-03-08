@@ -12,9 +12,9 @@
 	@php( $parentObjectName = '' )
 	@php( $objName = '' )
 	
-<!-- 	
+ 	
 	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
- -->
+
 
    <div class="container edi-grid edi-grid-bg column-gap: 10px">
    		<div class="row">
@@ -35,11 +35,15 @@
    		
    			<input type="hidden" id="ediTypeFieldName" name="ediTypeFieldName" value="{{ $fieldName }}">
    			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">
-   			
+
+@php( \Log::info('field.blade.php objectProperties: ' . print_r($objectProperties, true))  )   			
    			@foreach($objectProperties as $curField => $curFieldValue) 
+   			
 				@if ( $propertyTypes && isset($propertyTypes[$curField]) )
 					@php( $fieldType = $propertyTypes[$curField]->propertyType )
 					@php( $propertyAttributes = $propertyTypes[$curField] )
+@php( \Log::info('field.blade.php object $curField: ' . print_r($curField, true))  )
+@php( \Log::info('field.blade.php object $propertyAttributes: ' . print_r($propertyAttributes, true))  )					
 				@else
 					@php( $fieldType = gettype($fieldObject) )
 					@php( $propertyAttributes = new \Bgies\EdiLaravel\Lib\PropertyType(

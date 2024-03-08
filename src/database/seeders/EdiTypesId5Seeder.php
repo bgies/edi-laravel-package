@@ -41,7 +41,7 @@ class EdiTypesId5Seeder extends Seeder
 
         // Setup the FileDrop object
         $fileDrop = new FileDrop();
-        $fileDrop->filePath = '';
+        $fileDrop->moveFilesToDisk = 'edi';
 
 
         $ediType = EdiTypes::find(5); //   findOrFail($edi_type_id);

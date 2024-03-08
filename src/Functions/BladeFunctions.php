@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Functions;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\View;
-
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 
 
@@ -43,16 +43,7 @@ class BladeFunctions
        
        $html = View::make('edilaravel::ediTypes.object', $data);
        
-       //\Log::info('BladeFunction showObject html: ' . $html);
-       
        return $html;
-/*       
-      return view('edilaravel::ediTypes.object', [
-         'objName' => $objName,
-         'inObj' => $inObj, 
-         'indentLevel' => $indentLevel 
-      ]);
-*/     
     }
     
     

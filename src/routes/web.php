@@ -43,6 +43,7 @@ Route::prefix('edilaravel')->group(function () {
       Route::get('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createfiles');
       Route::post('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewFiles');
       
+      Route::get('/chooseobject', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@chooseObject');
    });
    
    Route::prefix('reports')->group(function () {

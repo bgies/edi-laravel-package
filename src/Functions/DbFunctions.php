@@ -24,6 +24,7 @@ class DbFunctions //extends BaseController
       $ediFile->edf_cancelled = 1;
       $ediFile->edf_test_file = $EDIObj->isTestFile;
       $ediFile->edf_state = 1;
+      //$ediFile->records_parsed = $model->
       $ediFile->edf_filedate = now();
       
       $ediFile->save();
