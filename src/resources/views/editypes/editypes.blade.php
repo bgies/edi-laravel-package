@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('edilaravel::layouts.layout')
 
 @section('title', 'EDI Types')
 
@@ -7,11 +7,12 @@
 
 
 
-<h2>EDI Types</h2>
+
 
 <div class="container edi-grid">
 	<div class="row header">
-		<div class="bs-bars float-left">
+		<div class="bs-bars ">
+			<h2>EDI Types</h2>
 		</div>
 	</div>
 	<div class="row header">
@@ -29,10 +30,10 @@
 		<div class="col">
 			Name
 		</div>
-		<div class="col col-2 d-none d-sm-block">
+		<div class="col col-1 d-none d-sm-block">
 			Enabled
 		</div>
-		<div class="col col-2 d-none d-sm-block">
+		<div class="col col-1 d-none d-sm-block">
 			Control Number
 		</div>
 		<div class="col col-4 d-none d-sm-block fs-6">
@@ -53,19 +54,15 @@
   					Dup.
 				</button>
 			</div>
-<!-- 			
-			<div class="col col-1">
-				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }}">
-			</div>
- -->			
 			<div class="col col-1">
 				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
 			</div>
 			<div class="col">   
    				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->edt_name }}</a>
    			</div>
-			<div class="col col-2 d-none d-sm-block text-center">   
-   				{{ $ediType->edt_enabled }}
+			<div class="col col-1 d-none d-sm-block text-center">
+				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }} {{ $ediType->edt_enabled == 1 ? 'checked' : ''}}  ">   
+   				
    			</div>
 			<div class="col col-2 d-none d-sm-block text-end">   
    				{{ $ediType->edt_control_number }}

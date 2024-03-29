@@ -304,17 +304,122 @@ class SegmentFunctions
       return $Result;
    }
    
-   
+   /*
+    * 
+    * The primary function of Reading the ISA Segment is to set all the variables and 
+    * delimiters, therefore it needs the EDI Options object 
+   */ 
+   public static function ReadISASegment(string $inStr, $lineCount, &$EDIObj, SharedTypes $sharedTypes) : bool
+   {
+      if (strlen($inStr) < 108) {
+         throw new EdiException('Invalid ISA string passed to ReadISASegment, too short');  
+      }
+      if (strpos('ISA', $inStr) != 0) {
+         throw new EdiException('Invalid EDI File, file does not begin with ISA');
+      }
+      if (strpos('ISA', $inStr) == 0) {
+         $EDIObj->delimiters->ElementDelimiter = $inStr[3];
+         
+         $tempStr = substr($inStr, 0, 108);
+         $isaArray = explode($EDIObj->delimiters->ElementDelimiter, $tempStr);
+         
+         $EDIObj->delimiters->SegmentTerminator = substr($isaArray[15], 0, 1);
+
+         // set these here because they will be useful later if there are errors.
+         $EDIObj->ediReplySettings->ISASegment = $inStr;
+         $EDIObj->ediReplySettings->ISASegmentFilePos = $lineCount;
+         
+         $EDIObj->interchangeSenderQualifier = $isaArray[5];
+         $EDIObj->interchangeSenderID = $isaArray[6];
+         $EDIObj->interchangeReceiverQualifier = trim($isaArray[7]);
+         $EDIObj->interchangeReceiverID = trim($isaArray[8]);
+         
+         $TempDate = SegmentFunctions::ReadDateStr($isaArray[9], 'ISA');
+         $TempTime = SegmentFunctions::ReadTimeStr($isaArray[10], 'ISA');
+         
+         $TempDate->setTime($TempTime->hour, $TempTime->minute);
+         $EDIObj->fileDateTime = $TempDate;
+         
+         $TempStr = $isaArray[12];
+         $TempInt = (int) $isaArray[12];
+         $ValidVersion = false;
+         
+         if (array_key_exists($TempStr, $sharedTypes->Versions)) {
+            $ValidVersion = true;
+         }
+         
+         if (($TempInt == 400) || ($TempInt == 401)) {
+            $TempInt = 4010;
+            $TempStr = '004010';
+            $ValidVersion = true;
+         }
+         
+         $EDIObj->interchangeControlVersionNumber = $TempStr;
+         
+         if (!$ValidVersion) {
+            throw new EdiException('The Control Version Number is ' . $TempStr . '. This component set does not recognize that version yet');
+         }
+
+         if (strlen($isaArray[13]) <> 9) {
+            throw new EdiException('Interchange Control Number is not 9 characters long');
+         } else {
+            $EDIObj->dataInterchangeControlNumber = (int) $isaArray[13];
+         }
+         
+         //$TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // ISA 15
+         if (strlen($isaArray[15]) <> 1) {
+            throw new EdiException('The test indicator in the ISA line appears to be wrong. It is not a 1 character string');
+         }
+         if ($isaArray[15] != 'T' && $isaArray[15] != 'P') {
+            throw new EdiException('The test indicator in the ISA line is not "T" or a "P". Aborting read');
+         } else {
+            if ($TempStr == 'P') {
+               $EDIObj->isTestFile = false;
+            } else {
+               $EDIObj->isTestFile = true;
+            }
+         }
+         
+         switch ( (int) $EDIObj->interchangeControlVersionNumber) {
+            case 200 : {
+               $EDIObj->delimiters->ComponentElementSeparator = substr($isaArray[16], 0, 1);
+               break;
+            }
+            default : {
+               if (strlen($isaArray[16]) == 1) {
+                  $EDIObj->delimiters->ComponentElementSeparator = $isaArray[16]; // ISA 16
+               } else {
+                  if ( (int) $EDIObj->interchangeControlVersionNumber == 204) {
+                     $EDIObj->delimiters->ComponentElementSeparator = substr($isaArray[16], 0, 1);
+                     $EDIObj->delimiters->SegmentTerminator = $isaArray[16][1];
+                  } else {
+                     $EDIObj->delimiters->ComponentElementSeparator = $isaArray[16][0];
+                     $EDIObj->delimiters->SegmentTerminator = $isaArray[16][1];
+                  }
+               }
+            }
+            
+            
+         } // case
+         
+         return true;
+         
+         
+      }
+            
+   }
    
    
    //======================================================================
-   public static function ReadISASegment(string $Str, EDIReadOptions &$EDIObj,
+   //public static function ReadISASegment(string $Str, EDIReadOptions &$EDIObj,
+   /*
+   public static function ReadISASegment(string $Str, &$EDIObj,
       bool $InProgram, int $LineCount, SharedTypes $sharedTypes) : bool
    {
       $retVal = true;
       $FullStr = $Str;
       if (strpos('ISA', $Str) != 0) {
-         throw new EdiException('Invalid EDI File, file does not being with ISA');         
+         throw new EdiException('Invalid EDI File, file does not begin with ISA');         
       }
       if (strpos('ISA', $Str) == 0) {
          $EDIObj->delimiters->ElementDelimiter = $Str[3];
@@ -417,19 +522,23 @@ class SegmentFunctions
          return true;
       }
    }
-      
-
-   public static function ReadGSSegment(string $Str, EDIReadOptions &$EDIObj,
-      bool $InProgram, int $LineCount, SharedTypes $sharedTypes) : bool
+*/      
+   //public static function ReadGSSegment(string $Str, EDIReadOptions &$EDIObj,
+   public static function ReadGSSegment(string $Str, &$EDIObj,
+      int $LineCount, SharedTypes $sharedTypes) : bool
    {
       $retVal = true;
       $FullStr = $Str;
-
+      $SegmentArray = explode($EDIObj->delimiters->ElementDelimiter, $Str);
+      if ($SegmentArray[0] !== 'GS') {
+         throw new EdiException('The Segment passed to ReadGSSegment appears to be wrong. It does not start with GS');
+      }
+         
       // set these here because they will be useful later if there are errors.
-      $EDIObj->EDIReplySettings->GSSegment = $Str;
-      $EDIObj->EDIReplySettings->GSSegmentFilePos = $LineCount;
+      $EDIObj->ediReplySettings->GSSegment = $Str;
+      $EDIObj->ediReplySettings->GSSegmentFilePos = $LineCount;
 
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // Break GS from Line
+      
       $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 01
       $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 02
 
@@ -481,8 +590,8 @@ class SegmentFunctions
       return true;
    }
 
-
-   public static function ReadSTSegment(string $Str, EDIReadOptions &$EDIObj, &$SegmentType,
+//   public static function ReadSTSegment(string $Str, EDIReadOptions &$EDIObj, &$SegmentType,
+   public static function ReadSTSegment(string $Str, &$EDIObj, &$SegmentType,
             int $LineCount, SharedTypes $sharedTypes)
    {
       $FullStr = $Str;

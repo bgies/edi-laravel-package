@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib;
 
-use Bgies\EdiLaravel\Models\EdiTypes;
+use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 use Bgies\EdiLaravel\Lib\ReturnValues;
 use function Opis\Closure\serialize;
@@ -55,7 +55,7 @@ class RunEdiType
       $retValues = new ReturnValues();
       
       // First get the EdiType from the Database
-      $this->ediType = EdiTypes::find($ediTypeId); //   findOrFail($edi_type_id);
+      $this->ediType = EdiType::find($ediTypeId); //   findOrFail($edi_type_id);
       
       if (!$this->ediType) {
          LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'edi_type ' . $ediTypeId . ' NOT FOUND');
@@ -116,6 +116,7 @@ class RunEdiType
       // now unserialize the Options Object for this EDI Type
       $this->edi_options = unserialize($this->ediType->edt_edi_object);
       $this->edi_options->transaction_set_name = $this->ediType->edt_transaction_set_name;
+      $this->edi_options->transactionSetIdentifier = $this->ediType->edt_transaction_set_name;
     
       
 //      $path = base_path();
@@ -128,13 +129,13 @@ class RunEdiType
       
 //      $transactionSet = new \ReflectionClass($transactionSetClass($this->ediType, $this->edi_options, $this->data, $retValues));
       $ret = $transactionSet->execute($retValues);
-      
 
       $this->after_process_object = unserialize($this->ediType->edt_after_process_object);
       $afterProcessClass = get_class($this->after_process_object);
       switch ($afterProcessClass) {
          case 'Bgies\EdiLaravel\FileHandling\FileDrop' : 
-            $this->after_process_object->execute('edi', $shortNameString, $this->ediOptions);
+            
+            $this->after_process_object->execute('edi', $transactionSet->ShortFileName, $this->edi_options);
             break;
          default : {
             LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'Unknown afterProcessClass: ' . (string) $afterProcessClass);
@@ -149,7 +150,7 @@ class RunEdiType
       $fileDropClass = get_class($this->ediFileDrop);
       LoggingFunctions::logThis('info', 6, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'fileDropClass: ' . (string) $fileDropClass);
       if (strlen($this->ediFileDrop->moveFilesToDisk) > 1) {
-         this->ediFileDrop->execute('edi', $shortFileName, $this->edi_options);
+         $this->ediFileDrop->execute('edi', $transactionSet->ShortFileName, $this->edi_options);
       }
       
       

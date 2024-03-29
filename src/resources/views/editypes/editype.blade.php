@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('edilaravel::layouts.layout')
 
 @section('title', 'EDI Type')
 
@@ -458,11 +458,19 @@
 		<div class="row">
 		<div class="col-6">File Drop Options</div>
 		<div class="col-6">
-		   @if (empty($ediType->edt_file_drop) )
-		   		<p>edt_file_drop is Null</p>
-		   	@else  
-				<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >File Drop Options</a>
-			@endif
+				@if (empty($ediType->edt_file_drop) )
+			   	@php( $fileDropObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling')   )
+    				<select id="new-file-drop-select" class="form-select" aria-label="Create File Drop Object">
+    				@foreach($fileDropObject as $curFile)
+	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
+    				@endforeach
+    				</select>
+			   	<button id="file_drop_button" type="button" class="btn btn-primary create-object-button">Create File Drop Object</button>
+				@else
+					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >
+						File Drop Options
+					</a>
+				@endif
 		</div>
 		</div>
 	</div>  
@@ -551,17 +559,28 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+      
+      <form id="modal-run-form" name="modal-run-form" action="" method="post">
+	       <input type="text" id="modal-ediTypeId" name="modal-ediTypeId" class="form-control" hidden value="">
+			 <input type="text" id="modal-fieldName" name="modal-fieldName" class="form-control" hidden value="">            
+          
           <p class="edi-new-object-body">
            	<label id="new-object-select-label" for="new-object-select" class="form-label">Choose Object</label>
-    				<select id="new-object-select" class="form-select" aria-label="Choose Object to Create">
+    				<select id="new-object-select" name="new-object-select" class="form-select" aria-label="Choose Object to Create">
     					
     				</select>
           </p>
           <p class="edi-new-object-body">Note - clicking the "Create New Object" button will submit all your current changes.</p>
+
+        <button type="button" class="btn btn-secondary" onclick="cancelNewObject()" data-bs-dismiss="modal">Cancel</button>
+<!--         
+        <button type="button" class="btn btn-primary" onclick="createNewObject()">Create New Object</button>
+ -->          
+      <button class="btn btn-primary" type="submit">Create Object</button>    
+          
+          
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cancelNewObject()" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="createNewObject()">Create New Object</button>
       </div>
     </div>
   </div>
@@ -578,18 +597,49 @@
    	 .forEach(function (button) {
 			button.addEventListener('click', function (event) {
 
-				let modalSelect1 = document.getElementById("new-object-select"); 
+				let modalTitle = document.getElementById("edi-new-object-title");
+				let modalSelect1 = document.getElementById("new-object-select");
+				let modalLabel = document.getElementById("new-object-select-label");
+				let modalFieldName = document.getElementById("modal-fieldName");
+				 
+				let modalSelect2 = null; 
+				let modalObjectName = null;
 				switch (button.id) {
 					case 'before_process_button': 
-					   let modalLabel = document.getElementById("new-object-select-label");
+						modalTitle.innerHTML = "Create Object for Before Process";
 					   modalLabel.innerHTML = "Choose Object for Before Process Options";
-						let modalSelect2 = document.getElementById("new-before-process-select");
+						modalSelect2 = document.getElementById("new-before-process-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+						modalFieldName.value = "edt_before_process_object";
 						break;
-				   case 'alert-button' : 
-				      
-				
-				
+					case 'after_process_button': 
+						modalTitle.innerHTML = "Create Object for After Process";
+					   modalLabel.innerHTML = "Choose Object for After Process Options";
+						modalSelect2 = document.getElementById("new-after-process-select");
+						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+						modalFieldName.value = "edt_before_process_object";
+						break;
+				   case 'alert_button' : 
+				   	modalTitle.innerHTML = "Create Object for Alerts";
+						modalLabel.innerHTML = "Choose Object for Alerts";	
+						modalSelect2 = document.getElementById("new-alerts-select");
+						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+						modalFieldName.value = "edt_before_process_object";
+				      break;
+				   case 'file_drop_button' : 
+				   	modalTitle.innerHTML = "Create Object for File Drop";
+						modalLabel.innerHTML = "Choose Object for File Drop";	
+						modalSelect2 = document.getElementById("new-alerts-select");
+						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
+						modalFieldName.value = "edt_before_process_object";
+				      break;
+					case 'transmission_button':
+						modalTitle.innerHTML = "Create Object for Transmission";					
+						modalLabel.innerHTML = "Choose Transmission Object";					
+						modalSelect2 = document.getElementById("new-transmission-select");
+						modalSelect1.innerHTML = modalSelect2.innerHTML;
+						modalFieldName.value = "edt_transmission_object";
+						break;
 				}
 				let myModal = new bootstrap.Modal(document.getElementById('edi-new-object-modal'));					
 				myModal.show();
@@ -598,14 +648,18 @@
 		});
 			
 	 function cancelNewType() {
-		myModal.dismiss();
+		//myModal.dismiss();
+	 }
+	 
+	 function cancelNewObject() {
+		//myModal.dismiss();
 	 }
 	 
 	 function createNewObject() {
 
 	 	let dropdownList = document.getElementById("new-object-select");
 	 	let dropdownValue = dropdownList.options[dropdownList.selectedIndex].text;
-	 	let idElement = document.getElementById("staticId");
+	 	let idElement = document.getElementById("modal-ediTypeId");
 	 	let ediTypeId = idElement.value;
 	 	
 	 	

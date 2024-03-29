@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('edilaravel::layouts.layout')
 
 @section('title', 'EDI Users')
 

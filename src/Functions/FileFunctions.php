@@ -9,7 +9,13 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @author bgies
  *
+ *  NOTE - many of the functions were just copy and pasted from Delphi, and then 
+ *  changed just enough to avoid errors when loading the page. Each of them needs
+ *  full testing
+ *  
+ *  
  */
+
 class FileFunctions
 {
    
@@ -18,6 +24,7 @@ class FileFunctions
    }
    
 
+   
    public static function getFileNames($fromDirectory) {
       $files = Storage::disk('diskName')->allFiles($fromDirectory);
       Storage::get('file.jpg');

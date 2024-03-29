@@ -3,7 +3,7 @@
 namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Bgies\EdiLaravel\Models\EdiTypes;
+use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
@@ -21,7 +21,7 @@ class EdiTypesController extends Controller
    
    public function index()
    {
-      $ediTypes = EdiTypes::all();
+      $ediTypes = EdiType::all();
       
       return view('edilaravel::ediTypes.editypes')
                ->with('ediTypes', $ediTypes)
@@ -40,7 +40,8 @@ class EdiTypesController extends Controller
    public function edit(Request $request, $ediTypeId)
    {
       \Log::info('EdiTypesController edit ediTypeId: ' . $ediTypeId);
-      $ediType = EdiTypes::find($ediTypeId);
+      
+      $ediType = EdiType::find($ediTypeId);
       if (!$ediType) {
          throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
       }
@@ -62,6 +63,35 @@ class EdiTypesController extends Controller
    }
    
    
+   public function createObject(Request $request, $ediTypeId)
+   {
+      \Log::info('EdiTypesController createObject: ' . $ediTypeId);
+      $ediType = EdiType::find($ediTypeId);
+      if (!$ediType) {
+         throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
+      }
+      
+      $input = $request->all();
+      \Log::info('EdiTypesController createObject REQUEST: ' . print_r($input, true));
+      request()->validate([
+         'modal-fieldName' => 'required',
+         'new-object-select'  => 'required',
+      ]);
+      
+      
+      
+      $fields = $ediType->getAttributes();
+      
+      return view('edilaravel::ediTypes.editype')
+      ->with('ediType', $ediType)
+      ->with('fields', $fields)
+      ->with('navPage', $this->navPage);
+      //               ->with('FileFunctions', FileFunctions)
+      //->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
+   }
+   
+   
+   
    public function show()
    {
       
@@ -71,7 +101,7 @@ class EdiTypesController extends Controller
    
    public function fieldEdit(Request $request, $ediTypeId, $fieldName)
    {
-      $ediType = EdiTypes::find($ediTypeId);
+      $ediType = EdiType::find($ediTypeId);
       
       $fieldObject = unserialize($ediType->$fieldName);
       $ObjectProperties = ObjectFunctions::getVars($fieldObject);
@@ -149,7 +179,7 @@ class EdiTypesController extends Controller
       $fieldName = $input['ediTypeFieldName'];
       $errorList = [];
       
-      $ediType = EdiTypes::find($ediTypeId);
+      $ediType = EdiType::find($ediTypeId);
       
       if (! $ediType) {
          \Log::info('EdiTypesController fieldUpdate EDI Type does not exist');
@@ -203,7 +233,7 @@ class EdiTypesController extends Controller
    public function createfiles()
    {
       \Log::info('EdiTypesController createfiles ');
-      $ediTypes = EdiTypes::all();
+      $ediTypes = EdiType::all();
       
       return view('edilaravel::ediTypes.chooseeditype')
       ->with('ediTypes', $ediTypes)
@@ -245,12 +275,12 @@ class EdiTypesController extends Controller
             
       $ediFiles = EdiFiles::orderBy('id', 'DESC')->paginate();
 
-      $ediTypes = EdiTypes::simplePaginate(25);
+      $ediTypes = EdiType::simplePaginate(25);
       
       return view('edilaravel::manage.dashboard')
       ->with('ediFiles', $ediFiles)
       ->with('ediTypes', $ediTypes)
-      ->with('navPage', 'manage');
+      ->with('navPage', $this->navPage);
       
    }
    
@@ -265,8 +295,20 @@ class EdiTypesController extends Controller
       return view('edilaravel::ediTypes.chooseobject')
       ->with('ediFiles', $ediFiles)
       ->with('ediTypes', $ediTypes)
-      ->with('navPage', 'manage');
+      ->with('navPage', $this->navPage);
       
+   }
+   
+   public function readFile(Request $request) {
+      \Log::info(' ');
+      
+      $input = $request->all();
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController readFile', 'input: ' . print_r($input, true));
+      
+      return view('edilaravel::ediTypes.readfile')
+      ->with('navPage', $this->navPage);
+      
+   
    }
 
 }

@@ -10,7 +10,7 @@ use Bgies\EdiLaravel\Lib\x12\options\read\EDIReadOptions;
 use Bgies\EdiLaravel\Lib\x12\options\read\Read997Options;
 use Bgies\EdiLaravel\Lib\x12\BaseEDIReceive;
 use function Opis\Closure\serialize;
-use Bgies\EdiLaravel\Models\Editypes as ediType;
+use Bgies\EdiLaravel\Models\Editype as ediType;
 use Bgies\EdiLaravel\StoredProcedure;
 use Bgies\EdiLaravel\FileDrop;
 use Bgies\EdiLaravel\FileFromDirectory;

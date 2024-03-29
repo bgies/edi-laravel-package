@@ -194,7 +194,22 @@ class EdiFileFunctions //extends BaseController
    ADOProcEDIRecord.Close;
    
    end;
-*/   
+*/  
+   
+   public static function getFileContentsFromShortName($diskName, $shortName) {
+      //$TopDirectory = FileFunctions::getTopDirectory();
+      
+      //$fileName = $TopDirectory . '/' . $shortName;
+      $midPath = ENV('EDI_TOP_DIRECTORY', '');
+      
+      $fileContents = \Storage::disk($diskName)->get($midPath . '/' . $shortName);
+      
+      
+
+$filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
+      return $fileContents;
+   }
+   
    
    public static function ReadX12FileIntoStrings(string $FileName, $EDIObj, $InProgram, SharedTypes $sharedTypes) : array
   {
@@ -215,18 +230,39 @@ class EdiFileFunctions //extends BaseController
         throw new \App\Exceptions\EdiException('ReadEDIFileIntoStrings File is invalid (must start with ISA): ' . $FileName);
      }     
      
-     // Get the ISA segment
-     $isaSegment = substr($f, 0, 106);
+     /*
+      * $isaSegment = substr($f, 0, 106);
+      * the ISA Segment has to compensate for companies that broke the spec
+      * and made the date 8 characters instead of the specified 6 characters 
+      */
+     $isaSegment = substr($f, 0, 108);
      $LineCount = 0;
-     SegmentFunctions::ReadISASegment($isaSegment, $EDIObj, $InProgram, $LineCount, $sharedTypes);
+     SegmentFunctions::ReadISASegment($isaSegment, $LineCount, $EDIObj, $sharedTypes);
      $LineCount++;
 //     $f = substr($f, 107);
          
      
      try {
+        $fileArray = explode($EDIObj->delimiters->SegmentTerminator, $f);
+        $fileCount = count($fileArray);
+        // Remove last segment if it's empty
+        if ($fileArray[count($fileArray) - 1] == '') {
+           array_pop($fileArray);
+        }
+
+/*        
+        SegmentFunctions::ReadGSSegment($fileArray[1], $EDIObj, $LineCount, $sharedTypes);
+        $LineCount++;
+        
+        SegmentFunctions::ReadSTSegment($fileArray[2], $EDIObj, $LineCount, $sharedTypes);
+        $LineCount++;
+*/        
+        
         $ReadCount = 0;
         $EightyCharFile = false;
         
+        
+/*        
         While ( strlen($f) > 0) {
            $posSegmentTerminator = strpos($f, $EDIObj->delimiters->SegmentTerminator);
            if ($posSegmentTerminator > 0) {
@@ -247,6 +283,7 @@ class EdiFileFunctions //extends BaseController
            }
            $ReadCount++;
         }
+*/        
 /*           
 //            Readln(f, s);
            $SLength = strlenLength($s);
@@ -274,6 +311,7 @@ class EdiFileFunctions //extends BaseController
      
      return $fileArray;
 
+   }
 /*           
      // break into lines
      $StartPos = 1;
@@ -433,7 +471,7 @@ class EdiFileFunctions //extends BaseController
      
 */     
      
-  }
+
    
 
 /*

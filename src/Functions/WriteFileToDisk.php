@@ -46,10 +46,12 @@ class WriteFileToDisk
          throw new EdiFatalException('WriteFileToDisk WriteEDIFile File already exists on disk. Aborting.....');
       }
       
-      //$path = Storage::disk('edi')->path($fileNameOnDisk);
+      // Make sure the directory exists
+      // NOTE - the below is using strRpos, not strpos
+      $dirString = substr($fileNameOnDisk, 0, strrpos($fileNameOnDisk, '/') );
+      $retVal = Storage::disk('edi')->makeDirectory($dirString);
       
-      $retVal = Storage::disk('edi')->makeDirectory($fileNameOnDisk);
-     
+      Storage::disk('edi')->put($fileNameOnDisk, '');
       
       $FullStr = '';
       for ($i = 0; $i < count($ediOptions->ediMemo); $i++) {

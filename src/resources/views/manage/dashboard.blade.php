@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('edilaravel::layouts.layout')
 
 @section('title', 'EDI Dashboard')
 
@@ -38,7 +38,7 @@
 
 		<div class="row">
 			<div class="col col-1 overflow-hidden">
-				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->id }}</a>
+				<a href="/edilaravel/manage/file/view/{{ $ediFile->id }}" >{{ $ediFile->id }}</a>
 			</div>
 			<div class="col col-1 overflow-hidden">
 				<input class="form-check-input" type="checkbox" value="{{ $ediFile->edf_cancelled }}" id="edf_cancelled" {{ $ediFile->edf_cancelled == '1' ? 'checked' : '' }}>		

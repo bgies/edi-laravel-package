@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgies\Phpedi\lib\x12;
+namespace Bgies\EdiLaravel\Lib\X12;
 
 
 class SharedTypes

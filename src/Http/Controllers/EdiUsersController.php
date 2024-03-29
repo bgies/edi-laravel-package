@@ -4,7 +4,7 @@ namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiUsers;
-use Bgies\EdiLaravel\Models\EdiTypes;
+use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 
 

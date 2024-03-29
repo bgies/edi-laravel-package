@@ -10,7 +10,7 @@ use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use Illuminate\Support\Facades\Storage;
 use function Opis\Closure\serialize;
 use function Opis\Closure\unserialize;
-use Bgies\EdiLaravel\Models\Editypes as ediType;
+use Bgies\EdiLaravel\Models\Editype as ediType;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options as Send210Options;
 use Bgies\EdiLaravel\DataHandling\StoredProcedure;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
@@ -37,8 +37,6 @@ use Bgies;
 
 class X12Send210 extends BaseEdiSend
 {
-
-   
    
    private $ediBeforeProcessObject = null;
    private $ediAfterProcessObject = null;
@@ -118,8 +116,10 @@ class X12Send210 extends BaseEdiSend
             return false;
          }
       } catch (EdiException $e) {
-         \Log::error('Bgies\EdiLaravel\X12 X12Send210 execute EXCEPTION in composeFile: ' . $e->message);
-         return print_r($this->ediOptions->ediMemo, true);
+         LoggingFunctions::logThis('exception', 4, 'Bgies\EdiLaravel\X12\X12Send210 execute', 'EXCEPTION in composeFile: ' . $e->message);
+         $retValues->addToErrorList('Bgies\EdiLaravel\X12 X12Send210 execute EXCEPTION in composeFile: ' . $e->message);
+         throw $e;
+//         return $retValues;
       }           
       
       
@@ -132,6 +132,7 @@ class X12Send210 extends BaseEdiSend
            
       
       \Log::info('Bgies\EdiLaravel\Lib\X12 X12Send210 execute END');
+      
       return $retValues;
    }
    

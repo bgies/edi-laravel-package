@@ -3,7 +3,7 @@
 namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Bgies\EdiLaravel\Models\EdiTypes;
+use Bgies\EdiLaravel\Models\EdiType;
 
 
 class EdiReportsController extends Controller

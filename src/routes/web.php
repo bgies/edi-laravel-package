@@ -28,20 +28,25 @@ Route::prefix('edilaravel')->group(function () {
    Route::prefix('manage')->group(function () {
       Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@index');
       Route::get('/index', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@index');
-      Route::get('/incoming', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@incoming');
-      Route::get('/outgoing', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@outgoing');
+      Route::get('/files', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@files');
       
-      // Matches The "/admin/users" URL
+      Route::get('/file/view/{ediTypeId}', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@viewFile');
+      Route::get('/outgoing', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@outgoing');
    });
    
    Route::prefix('editype')->group(function () {
       Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@index');
       Route::get('/index', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@index');
+      
       Route::get('/{ediTypeId}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@edit');
+      Route::post('/{ediTypeId}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createObject');
+      
       Route::get('/field/{ediTypeId}/{fieldName}/edit', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldEdit');
       Route::post('/updatefield', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@fieldUpdate');
       Route::get('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createfiles');
       Route::post('/createfiles', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewFiles');
+      
+      Route::get('/readfile', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@readfile');
       
       Route::get('/chooseobject', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@chooseObject');
    });

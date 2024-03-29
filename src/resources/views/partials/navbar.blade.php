@@ -16,7 +16,7 @@
            					<li>
            						<a class="dropdown-item" href="/edilaravel/dashboard/dashboard">Dashboard</a>
            					</li>
-				            <li><a class="dropdown-item" href="#">EDI Files</a></li>
+				            <li><a class="dropdown-item" href="/edilaravel/manage/files">EDI Files</a></li>
           				</ul>
         				</li>      			
       			
@@ -28,8 +28,10 @@
            					<li>
            						<a class="dropdown-item" href="/edilaravel/manage/index">Dashboard</a>
            					</li>
-				            <li><a class="dropdown-item" href="/edilaravel/manage/incoming">Incoming Files</a></li>
-            				<li><a class="dropdown-item" href="/edilaravel/manage/outgoing">Outgoing Files</a></li>
+				            <li>
+				            	<a class="dropdown-item" href="/edilaravel/manage/files">EDI Files</a>
+				            </li>
+
           				</ul>
         				</li>        			
       			
@@ -48,7 +50,8 @@
            						<a class="dropdown-item" href="/edilaravel/editype/index">EDI Types</a>
            					</li>
 				            <li><a class="dropdown-item" href="/edilaravel/editype/createfiles">Create Files</a></li>
-            				<li><a class="dropdown-item" href="/edilaravel/editype/index">Menu Item</a></li>
+				            <li><a class="dropdown-item" href="/edilaravel/editype/readfile">Read File</a></li>
+
           				</ul>
         				</li>      			
 
