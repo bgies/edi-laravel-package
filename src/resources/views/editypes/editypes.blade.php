@@ -110,10 +110,18 @@
       <div class="modal-body">
           <p class="edi-duplicate-body">Choose an EDI Type to Create and click the "New EDI Type" button to create a new EDI Type. Only do this if you know what you are doing.</p>
 
-      	<form class="edi-grid-bg">
+      	<form class="edi-grid-bg needs-validation" method="post" action="/edilaravel/editype/createnewtype">
+      		<div class="mb-3">
+					<label for="edt_name" class="form-label edi-field-name">EDI Type Name</label>      		
+     				<input class="form-control" type="input" name="edt_name" value="" required>
+     				<div class="valid-feedback">
+      				Looks good!
+    				</div>
+     				
+      		</div>
       
       		<div class="mb-3">
-      			<select class="mb-3 form-select form-control-sm" aria-label=".edt_edi_standard">
+      			<select class="mb-3 form-select form-control-sm" name="edt_edi_standard" aria-label=".edt_edi_standard" required>
       				<option value="X12">ANSII X12</option>
 	      			<option value="EDIFACT">EDIFACT</option>
    	   		</select>      	
@@ -121,9 +129,10 @@
       	
 				<div class="mb-3">
 <!-- 				
-					<label for="edt_edi_standard" class="form-label">Transaction Set</label>
- -->					   
-					<select class="mb-3 form-select form-control-sm" aria-label=".edt_transaction_set_name">
+					<label for="edt_transaction_set_name" class="form-label">Transaction Set</label>
+ -->
+ 					<label for="edt_transaction_set_name" class="form-label">Choose Transaction Set</label>					   
+					<select class="mb-3 form-select form-control-sm" name="edt_transaction_set_name" aria-label=".edt_transaction_set_name" required>
 					   <option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
 		   			<option value="101" {{ $ediType->edt_transaction_set_name == '101' ? 'selected' : '' }}>101 - Name and Address Lists</option>
          		   <option value="102" {{ $ediType->edt_transaction_set_name == '102' ? 'selected' : '' }}>102 - Associated Data</option>
@@ -427,8 +436,56 @@
          		   <option value="997" {{ $ediType->edt_transaction_set_name == '997' ? 'selected' : '' }}>997 - Functional Acknowledgement</option>
          		   <option value="998" {{ $ediType->edt_transaction_set_name == '998' ? 'selected' : '' }}>998 - Set Cancellation</option>
          		   <option value="999" {{ $ediType->edt_transaction_set_name == '999' ? 'selected' : '' }}>999 - Implementation Acknowledgement</option>
-		</select>
+					</select>
+				</div>
+				
+				<div class="mb-3">
+					<label for="edi_version" class="form-label">Choose EDI Version</label>
+      			<select class="mb-3 form-select form-control-sm" name="edi_version" aria-label=".edi_version" required>
+      				@foreach ($ediVersions as $version)
+		      			<option value="{{ $version}}" {{ $version == '4010' ? 'selected' : '' }} >{{ $version }}</option>
+		      		@endforeach
+		   	   </select>      	
+      		</div>
+		
+				<div class="mb-3">
+					<label for="edt_is_incoming" class="form-label">Incoming or Outgoing?</label>
+      			<select class="mb-3 form-select form-control-sm" name="edt_is_incoming" aria-label=".edt_is_incoming" required>
+		      		<option value="1">Incoming</option>
+	   		   	<option value="2">Outgoing</option>
+		   	   </select>      	
+      		</div>
+
+      		<div class="mb-3">
+					<label for="interchange_sender_id" class="form-label edi-field-name">interchange_sender_id</label>      		
+     				<input class="form-control" type="input" name="interchange_sender_id" value="" required>
+      		</div>
+      
+      		<div class="mb-3">
+					<label for="interchange_receiver_id" class="form-label edi-field-name">interchange_receiver_id</label>      		
+     				<input class="form-control" type="input" name="interchange_receiver_id" value="" required>
+      		</div>
+
+      		<div class="mb-3">
+					<label for="application_sender_code" class="form-label edi-field-name">application_sender_code</label>      		
+     				<input class="form-control" type="input" name="application_sender_code" value="" required>
+      		</div>
+
+      		<div class="mb-3">
+					<label for="application_receiver_code" class="form-label edi-field-name">application_receiver_code</label>      		
+     				<input class="form-control" type="input" name="application_receiver_code" value="" required>
+      		</div>
+      		
+      		<div class="mb-3">	
+					<p class="edi-duplicate-body">*** NOTE - All fields are required ***</p>      			
+      		</div>
+      
+	<div class="mb-3" text-right>
+        <button type="button" class="btn btn-secondary" onclick="cancelNewType()" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" >Create New EDI Type</button>
 	</div>
+
+	
       	
       	</form>
       	</div>
@@ -436,8 +493,6 @@
       	
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cancelNewType()" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="newType()">Create New EDI Type</button>
       </div>
     </div>
   </div>
@@ -510,7 +565,22 @@
 
 			let myModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));					
 			myModal.show();
-            
+			
+			const forms = document.querySelectorAll('.needs-validation')
+
+  			// Loop over them and prevent submission
+  			Array.from(forms).forEach(form => {
+    			form.addEventListener('submit', event => {
+      			if (!form.checkValidity()) {
+			        event.preventDefault();
+        			  event.stopPropagation();
+      			}
+
+      			form.classList.add('was-validated')
+    			}, false);
+  			});
+			
+				
        })    
                  	 
 

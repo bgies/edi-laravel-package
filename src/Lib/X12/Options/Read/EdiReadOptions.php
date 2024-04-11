@@ -6,7 +6,7 @@ use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
 use Bgies\EdiLaravel\Lib\PropertyType;
 
 
-class EDIReadOptions extends BaseEdiOptions
+class EdiReadOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;

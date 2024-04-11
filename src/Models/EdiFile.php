@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Bgies\EdiLaravel\Models\EdiType;
 
-class EdiFiles extends Model
+class EdiFile extends Model
 {
    use HasFactory;
    protected $table = 'edi_files';

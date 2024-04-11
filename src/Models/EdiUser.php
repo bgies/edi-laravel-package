@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EdiUsers extends Model
+class EdiUser extends Model
 {
   use HasFactory;
   

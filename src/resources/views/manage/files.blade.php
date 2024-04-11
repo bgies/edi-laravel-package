@@ -1,17 +1,16 @@
 @extends('edilaravel::layouts.layout')
 
-@section('title', 'View File')
+@section('title', 'Edi Files')
 
 
 @section('content')
 
-<h2>View EDI File</h2>
-
-
 
 
 <div class="container edi-grid">
-	<div class="row header">EDI File</div>
+	<div class="row header">
+		<div class="text-center"><h2>EDI Files</h2></div>
+	 </div>
 	<div class="row header">
 		<div class="col col-1">
 			Id
@@ -26,7 +25,7 @@
 			Test File
 		</div>
 		
-		<div class="col">
+		<div class="col col-2">
 			File Name
 		</div>
 		<div class="col col-2 d-none d-sm-block">
@@ -48,7 +47,7 @@
 
 		<div class="row">
 			<div class="col col-1">
-				<a href="/edilaravel/manage/file/{{ $ediFile->id }}/view" >{{ $ediFile->id }}</a>
+				<a href="/edilaravel/manage/file/view/{{ $ediFile->id }}" >{{ $ediFile->id }}</a>
 			</div>
 			<div class="col col-1">
 				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->edt_name }}</a>
@@ -60,7 +59,7 @@
 				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->edf_test_file }}</a>
 			</div>
 			
-			<div class="col ">   
+			<div class="col col-2">   
    				<a href="/edilaravel/ediFile/{{ $ediFile->id }}/edit" >{{ $ediFile->edf_filename }}</a>
    			</div>
 			<div class="col col-2 d-none d-sm-block text-center">   

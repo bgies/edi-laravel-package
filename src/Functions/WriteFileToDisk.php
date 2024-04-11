@@ -39,7 +39,7 @@ class WriteFileToDisk
    //public static function WriteEDIFile(array $fileArray, string $shortFileName, EDISendOptions $ediOptions)
    public static function WriteEDIFile(array $fileArray, string $shortFileName, $ediOptions)
    {
-      $topDirectory = FileFunctions::getTopDirectory();
+      $topDirectory = FileFunctions::getTopDirectory('edi');
       $fileNameOnDisk = ENV('EDI_TOP_DIRECTORY') . "/" . $shortFileName;
       if (Storage::disk('edi')->exists($fileNameOnDisk) ) {
          \Log::error('WriteFileToDisk WriteEDIFile File already exists on disk. Aborting.....');

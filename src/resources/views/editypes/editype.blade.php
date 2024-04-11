@@ -348,7 +348,7 @@
     <label for="edt_is_incoming" class="form-label">Read or Send</label>
     <select id="edt_is_incoming" class="form-select" aria-label="Read or Send">
     	<option value="1" {{ $ediType->edt_is_incoming == 1 ? 'selected' : '' }}>Read</option>
-    	<option value="0" {{ $ediType->edt_is_incoming == 0 ? 'selected' : '' }}>Send</option>
+    	<option value="2" {{ $ediType->edt_is_incoming == 2 ? 'selected' : '' }}>Send</option>
     </select>
    </div>
 

@@ -31,7 +31,7 @@ Route::prefix('edilaravel')->group(function () {
       Route::get('/files', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@files');
       
       Route::get('/file/view/{ediTypeId}', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@viewFile');
-      Route::get('/outgoing', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@outgoing');
+      Route::get('/readfile/{ediFileId}', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@readfile');
    });
    
    Route::prefix('editype')->group(function () {
@@ -49,6 +49,8 @@ Route::prefix('edilaravel')->group(function () {
       Route::get('/readfile', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@readfile');
       
       Route::get('/chooseobject', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@chooseObject');
+      Route::post('/createnewtype', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewType');
+      
    });
    
    Route::prefix('reports')->group(function () {

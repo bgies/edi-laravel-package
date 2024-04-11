@@ -5,10 +5,21 @@
 
 @section('content')
 
+<br />
 <div class="container edi-grid">
 	<div class="row header text-center" center>
 		<div class="text-center"><h2>EDI File</h2></div>
 	</div>
+	<div class="row header text-center" center>
+		<div class="text-center">
+		
+		<form id="readfileform" name="readfileform" action="/edilaravel/manage/readfile/{{ $ediFile->id }}" method="GET" novalidate>
+			<button type="submit" class="btn btn-primary">Manually Read File</button>
+		</form>
+		
+		</div>
+	</div>
+	
 	<div class="row header">
 		<div class="col col-1">Id</div>
 		<div class="col col-5">File Name</div>
@@ -39,9 +50,25 @@
 	@endforelse   		
 </div>
 <br />
+<br />
 <div class="container edi-grid">
 	<div class="row header text-center">Raw File</div>
 	<div class="row">{{ $fileContents }}</div>
 </div>
 
+<script>
+
+
+function readFile() {
+
+	 	
+	 	
+	 	alert('Read File Clicked');	 	
+	 	
+	 	
+}
+
+
+
+</script>
 @endsection

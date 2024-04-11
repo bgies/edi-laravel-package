@@ -34,6 +34,18 @@ class ReturnValues
    public function addToRetPairs(string $name, $value) {
       $this->retPairs[$name] = $value;
    }
+
+   public function getErrorCount() {
+      return count($this->errorList);
+   }
+
+   public function getMessageCount() {
+      return count($this->messages);
+   }
+   
+   public function getRetPairsCount() {
+      return count($this->retPairs());
+   }
    
    public function getErrorList(): array {
       return $this->errorList;

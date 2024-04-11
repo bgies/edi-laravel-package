@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
+use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
 use Bgies\EdiLaravel\Models\EdiFiles;
 use Bgies\EdiLaravel\Lib\RunEdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
-
+use Bgies\EdiLaravel\Lib\X12\SharedTypes;
+use Bgies\EdiLaravel\Functions\CreateFromStub;
+use function Opis\Closure\serialize;
 
 class EdiTypesController extends Controller
 {
@@ -22,9 +25,11 @@ class EdiTypesController extends Controller
    public function index()
    {
       $ediTypes = EdiType::all();
+      $sharedTypes = new SharedTypes();
       
       return view('edilaravel::ediTypes.editypes')
                ->with('ediTypes', $ediTypes)
+               ->with('ediVersions', $sharedTypes->Versions)
                ->with('navPage', $this->navPage);
    }
    
@@ -90,13 +95,6 @@ class EdiTypesController extends Controller
       //->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
    }
    
-   
-   
-   public function show()
-   {
-      
-      
-   }
    
    
    public function fieldEdit(Request $request, $ediTypeId, $fieldName)
@@ -290,8 +288,7 @@ class EdiTypesController extends Controller
       $input = $request->all();
       LoggingFunctions::logThis('info', 5, 'EdiTypesController chooseObjec input: ', print_r($input, true));
       
-      
-      
+            
       return view('edilaravel::ediTypes.chooseobject')
       ->with('ediFiles', $ediFiles)
       ->with('ediTypes', $ediTypes)
@@ -311,4 +308,66 @@ class EdiTypesController extends Controller
    
    }
 
+   public function createNewType(Request $request) {
+      \Log::info(' ');
+      
+      $input = $request->all();
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController createNewType', 'input: ' . print_r($input, true));
+      $messagesArray = [];
+      
+      // enter a few default values
+      $input['edt_file_directory'] = '';
+      // remove the file that isn't in the database
+      $ediVersion = $input['edi_version'];
+      unset($input['edi_version']); 
+      $transactionSetName = $input['edt_transaction_set_name'];
+      
+      $errorMessage = '';
+      try {
+         $ediType = EdiType::create($input);
+      } catch (Exception $e) {
+         LoggingFunctions::logThis('error', 3, 'EdiTypesController createNewType', 'Exception: ' . $e->getMessage());
+         $errorMessage = 'Exception: ' . $e->getMessage();
+      }
+      
+      /*
+       * Now we need to figure out if we have both a Transaction Set Object 
+       * available plus an Options Object. If either is not available, they 
+       * must be created, inheriting from their ancestors (this is mainly 
+       * for developers to be able to create new objects to work with)
+       */
+      $topDirectory =  __DIR__ ;
+      // top directory gives us this directory Http/Controllers
+      // so go up 2 directories to get the package src directory, and add the /Stubs.
+      $srcDir = dirname($topDirectory, 2);
+      
+      $stubsDir = $srcDir . '/Stubs';
+      
+      $createFromStub = new CreateFromStub($input['edt_edi_standard'], 
+         $input['edt_transaction_set_name'], $input['edt_is_incoming']);
+      
+      $optionsObject = $createFromStub->CreateOptionObject($input, $ediType);
+      if ($optionsObject) {
+         $ediType->edt_edi_object = serialize($optionsObject);
+         $ediType->save();
+      }
+            
+      $transmissionObject = $createFromStub->CreateTransactionSetObject($input['edt_edi_standard'], $input['edt_transaction_set_name']);
+         
+      
+      $fields = $ediType->getAttributes();
+      
+      return view('edilaravel::ediTypes.editype')
+      ->with('ediType', $ediType)
+      ->with('error', $errorMessage)
+      ->with('fields', $fields)
+      ->with('navPage', $this->navPage);
+      //               ->with('FileFunctions', FileFunctions)
+//      ->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
+            
+   }
+   
+   
+   
+   
 }

@@ -8,6 +8,8 @@ use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
 use phpDocumentor\Reflection\Types\Boolean;
 use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 use Carbon\Carbon;
+use Bgies\EdiLaravel\Exceptions\EdiException;
+use Bgies\EdiLaravel\Exceptions\EdiFatalException;
 
 //use lib\x12\SharedTypes;
 
@@ -63,14 +65,10 @@ class EdiFileFunctions //extends BaseController
       }
       return $fileName;
       
-      
-      
-      
-      
    }
    
-   public static function getTopDirectory() {
-      $topPath = \Storage::disk('edi')->path('');
+   public static function getTopDirectory($fromDisk) {
+      $topPath = \Storage::disk($fromDisk)->path('');
       $midPath = ENV('EDI_TOP_DIRECTORY', '');
       
       return $topPath . $midPath;
@@ -91,7 +89,7 @@ class EdiFileFunctions //extends BaseController
    
    public static function getFileName(int $EDIID, string $ediTypeName)
    {
-      $TopDirectory = FileFunctions::getTopDirectory();
+      $TopDirectory = FileFunctions::getTopDirectory('edi');
       
       $FTPFileName = $TopDirectory . '/' . FileFunctions::getShortFileName($ediTypeName, $EDIID) ;
 
@@ -216,24 +214,28 @@ $filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
      $fileArray = array();
      
      if (!\Storage::disk('edi')->exists( $FileName)) {
-        throw new \App\Exceptions\EdiFatalException('ReadEDIFileIntoStrings File: ' . $FileName . ' does not exist');
+        throw new EdiFatalException('ReadEDIFileIntoStrings File: ' . $FileName . ' does not exist');
      }
      
      $f = \Storage::disk('edi')->get($FileName);
      
      //$f = file_get_contents ($FileName, false, null);
      if (!$f) {
-        throw new \App\Exceptions\EdiException('ReadEDIFileIntoStrings Unable to read file with file_get_contents File: ' . $FileName);
+        throw new EdiException('ReadEDIFileIntoStrings Unable to read file with file_get_contents File: ' . $FileName);
      }
      // This is supposed to be an ANSII X12 file, so the first 3 characters HAVE TO BE ISA
      if (substr($f, 0, 3) != 'ISA') {
-        throw new \App\Exceptions\EdiException('ReadEDIFileIntoStrings File is invalid (must start with ISA): ' . $FileName);
+        throw new EdiException('ReadEDIFileIntoStrings File is invalid (must start with ISA): ' . $FileName);
      }     
      
      /*
       * $isaSegment = substr($f, 0, 106);
       * the ISA Segment has to compensate for companies that broke the spec
       * and made the date 8 characters instead of the specified 6 characters 
+      * 
+      * Need to read the ISA, GS, and ST segments to set all the 
+      * Sender/Reciever ID's, ApplicationSender/Receiver Codes and 
+      * transaction set name 
       */
      $isaSegment = substr($f, 0, 108);
      $LineCount = 0;
@@ -249,41 +251,21 @@ $filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
         if ($fileArray[count($fileArray) - 1] == '') {
            array_pop($fileArray);
         }
-
-/*        
-        SegmentFunctions::ReadGSSegment($fileArray[1], $EDIObj, $LineCount, $sharedTypes);
+                 
+        $retVal = SegmentFunctions::ReadGSSegment($fileArray[1], $EDIObj, $LineCount, $sharedTypes);
+        if (!$retVal) {
+           throw new EdiException('ReadEDIFileIntoStrings ReadGSSegment did not return true Segment: ' . $fileArray[1]);
+        }
         $LineCount++;
         
-        SegmentFunctions::ReadSTSegment($fileArray[2], $EDIObj, $LineCount, $sharedTypes);
+        $SegmentType = 0;   
+        $retVal = SegmentFunctions::ReadSTSegment($fileArray[2], $EDIObj, $SegmentType, $LineCount, $sharedTypes);
         $LineCount++;
-*/        
+       
         
         $ReadCount = 0;
         $EightyCharFile = false;
         
-        
-/*        
-        While ( strlen($f) > 0) {
-           $posSegmentTerminator = strpos($f, $EDIObj->delimiters->SegmentTerminator);
-           if ($posSegmentTerminator > 0) {
-              $fileArray[] = substr($f, 0, $posSegmentTerminator);
-              $f = substr($f, $posSegmentTerminator + 1);
-              // also read the GS Segment so we can check the Application Sender and Reciever later. 
-              if (count($fileArray) == 2) {
-                 SegmentFunctions::ReadGSSegment($fileArray[1], $EDIObj, $InProgram, $LineCount, $sharedTypes);
-                 $LineCount++;
-              }
-              if (count($fileArray) == 3) {
-                 SegmentFunctions::ReadSTSegment($fileArray[2], $EDIObj, $InProgram, $LineCount, $sharedTypes);
-                 $LineCount++;
-              }
-              
-           } else {
-              $f = '';
-           }
-           $ReadCount++;
-        }
-*/        
 /*           
 //            Readln(f, s);
            $SLength = strlenLength($s);

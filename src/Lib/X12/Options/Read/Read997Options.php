@@ -2,9 +2,9 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\Options\Read;
 
-use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
+use Bgies\EdiLaravel\Lib\X12\Options\Read\EdiReadOptions;
 
-class Read997Options extends EDIReadOptions
+class Read997Options extends EdiReadOptions
 {
    
    public $pickUpFileDirectory = '';

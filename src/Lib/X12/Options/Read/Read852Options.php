@@ -4,10 +4,10 @@ namespace Bgies\EdiLaravel\Lib\X12\Options\Read;
 
 use Bgies\EdiLaravel\Lib\Delimiters;
 use Bgies\EdiLaravel\Functions\DateTimeFunctions;
-use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
+use Bgies\EdiLaravel\Lib\X12\Options\Read\EdiReadOptions;
 
 
-class Read852Options extends EDIReadOptions
+class Read852Options extends EdiReadOptions
 {
    /**
     * 

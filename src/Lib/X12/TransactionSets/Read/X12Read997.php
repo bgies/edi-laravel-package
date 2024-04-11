@@ -6,7 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 //use Bgies\EdiLavavel\lib\X12\BaseEDIReceive;
 use App\Exceptions\EdiException;
 use App\Exceptions\EdiFatalException;
-use Bgies\EdiLavavel\lib\x12\options\read\EDIReadOptions;
+use Bgies\EdiLavavel\lib\x12\options\read\EdiReadOptions;
 use Bgies\EdiLavavel\lib\x12\options\read\Read997Options;
 use Bgies\EdiLavavel\lib\x12\BaseEDIReceive;
 use function Opis\Closure\serialize;
@@ -31,22 +31,6 @@ use Bgies\EdiLavavel\Models\Ediincoming;
 
 class Read997 extends BaseEDIReceive
 {
-   private $dataset = array();
-   
-   protected $Model = null;
-   
-   private $ediTypeId = null;
-   private $ediType = null;
-   public $ediOptions = null;
-   private $edtBeforeProcessObject = null;
-   private $fileString = '';
-   private $fileArray = array();
-   private $edtAfterProcessObject = null;
-   
-   private $ediFile = array();
-   
-   
-   private $errorCount = 0;
    
    
    /**
@@ -56,7 +40,7 @@ class Read997 extends BaseEDIReceive
     */
    public function __construct(int $edi_type_id)
    {
-      \Log::info('Bgies\EdiLavavel\X12 X12Read997 construct');
+      \Log::info('Bgies\EdiLavavel\X12 X12Read{{997 construct');
       
       //$this->ediTypeId = $edi_type_id;
       //\Log::info('class X12Read997 construct $edi_type_id: ' . $edi_type_id);

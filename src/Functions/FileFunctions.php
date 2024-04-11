@@ -72,20 +72,13 @@ class FileFunctions
    
    public static function getFileName(int $EDIID, string $ediTypeName)
    {
-      $TopDirectory = FileFunctions::getTopDirectory();
+      $TopDirectory = EdiFileFunctions::getTopDirectory('edi');
       
       $FTPFileName = $TopDirectory . '/' . FileFunctions::getShortFileName($ediTypeName, $EDIID) ;
       
       return $FTPFileName;
    }
    
-   
-   public static function getTopDirectory() {
-      $topPath = \Storage::disk('edi')->path('');
-      $midPath = ENV('EDI_TOP_DIRECTORY', '');
-      
-      return $topPath . $midPath;
-   }
    
    
    

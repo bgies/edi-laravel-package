@@ -6,7 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 //use Bgies\EdiLaravel\Lib\X12\BaseEDIReceive;
 use App\Exceptions\EdiException;
 use App\Exceptions\EdiFatalException;
-use Bgies\EdiLaravel\Lib\x12\options\read\EDIReadOptions;
+use Bgies\EdiLaravel\Lib\x12\options\read\EdiReadOptions;
 use Bgies\EdiLaravel\Lib\x12\options\read\Read997Options;
 use Bgies\EdiLaravel\Lib\x12\BaseEDIReceive;
 use function Opis\Closure\serialize;

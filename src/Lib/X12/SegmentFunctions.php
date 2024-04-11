@@ -538,28 +538,13 @@ class SegmentFunctions
       $EDIObj->ediReplySettings->GSSegment = $Str;
       $EDIObj->ediReplySettings->GSSegmentFilePos = $LineCount;
 
+      $functionalIdentifierCode = $SegmentArray[1];
       
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 01
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 02
-
-      $EDIObj->applicationSenderID = trim($TempStr);
-
-//  GSSender := EDIObj.FApplicationSenderCode;
-
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 03
-
-      $EDIObj->applicationReceiverID = trim($TempStr);
-//  EDIObj.InterchangeReceiverID := TempStr;
-
-//  GSReceiver := EDIObj.FApplicationReceiverCode;
-
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 04
+      $EDIObj->applicationSenderID = trim($SegmentArray[2]); // GS 02
+      $EDIObj->applicationReceiverID = trim($SegmentArray[3]); // GS 03
       
-      $TempDate = SegmentFunctions::ReadDateStr($TempStr, 'GS');
-
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 05
-      
-      $TempTime = SegmentFunctions::ReadTimeStr($TempStr, 'GS');
+      $TempDate = SegmentFunctions::ReadDateStr($SegmentArray[4], 'GS'); // GS 04
+      $TempTime = SegmentFunctions::ReadTimeStr($SegmentArray[5], 'GS');  // GS 05
       $TempDate->setTime($TempTime->hour, $TempTime->minute);
 
       $diff_in_minutes = $EDIObj->fileDateTime->diffInMinutes($TempDate);
@@ -567,62 +552,60 @@ class SegmentFunctions
          throw new EdiException('The dates and times in the ISA line and the GS line do not match. Aborting...');
       }
 
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 06
-      $TempInt = (int) $TempStr;
-      $EDIObj->GSControlNumber = $TempInt;
+      $EDIObj->GSControlNumber = (int) $SegmentArray[6];  // GS 06
 
       $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);  // GS 07
 
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // GS 08
-      $EDIObj->ediVersionReleaseCode = (int) $TempStr;
-/*      
+      $EDIObj->ediVersionReleaseCode = (int) $SegmentArray[8]; // GS 08
+     
       $ValidVersion = false;
       
       for ($i = 0; $i < count($sharedTypes->Versions); $i++) {
-         if ($TempInt == $sharedTypes->Versions[$i]) {
+         if ($EDIObj->ediVersionReleaseCode == $sharedTypes->Versions[$i]) {
             $ValidVersion = true;
          }
       }
       if (! $ValidVersion) {
          throw new EdiException('The Control Version Number in the GS line is ' . $TempStr . '. This component set does not recognize that version yet');
       }
- */     
+     
       return true;
    }
 
 //   public static function ReadSTSegment(string $Str, EDIReadOptions &$EDIObj, &$SegmentType,
    public static function ReadSTSegment(string $Str, &$EDIObj, &$SegmentType,
-            int $LineCount, SharedTypes $sharedTypes)
+      int $LineCount, SharedTypes $sharedTypes) : bool
    {
+      $retVal = true;
       $FullStr = $Str;
-   
+      $SegmentArray = explode($EDIObj->delimiters->ElementDelimiter, $Str);
+      
       // set these here because they will be useful later if there are errors.
       $EDIObj->ediReplySettings->STSegmentFilePos = $LineCount;
-   
-      $TempStr = trim(SegmentFunctions::BreakLine($Str, $EDIObj->delimiters));
-   
-      If (strpos('ST', strtoupper($TempStr)) <> 0) {
+         
+      If (strpos('ST', strtoupper($SegmentArray[0])) <> 0) {
          throw new EdiFatalException('The ST line is malformed or missing');
       }
    
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // ST01
-      
-      if (!in_array($TempStr, $sharedTypes->EDIFileTypes)) {
+      if (!in_array($SegmentArray[1], $sharedTypes->X12TransactionSets)) {   // ST01
          throw new EdiFatalException('The ST segmentline is malformed, or the Transaction Set is not supported yet');
       }
-
       
-      if (strpos($Str, '^') == strlen($Str)) {
-         $Str = substr($Str, 0, strlen($Str) - 1);
-      }
-      if ((strlen($Str) > 9) || (strlen($Str) < 4)) {
+      if ((strlen($SegmentArray[2]) > 9) || (strlen($SegmentArray[2]) < 4)) {
          throw new EdiFatalException('The ST segment is malformed, The TransactionSetControlNumber is not valid');
       }
+      $EDIObj->transactionSetControlNumber = $SegmentArray[2];
       
-      $NewTransactionSetControlNumber = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters);;
-      $EDIObj->transactionSetControlNumber = $NewTransactionSetControlNumber;
+      /*
+       * The Implemtation Convention Reference is optional, so we don't rely
+       * on it, but we do use it and enforce it, if it's there. 
+       * It tells which transaction set is contained in this group
+       */
+      if (count($SegmentArray) > 3) {
+         $EDIObj->implementationConventionReference = $SegmentArray[3];
+      }
       
-      
+      return $retVal;
    }
       
    

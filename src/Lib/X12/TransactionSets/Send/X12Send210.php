@@ -201,7 +201,7 @@ class X12Send210 extends BaseEdiSend
           $this->ediFile = $ediFile;
                     
           $DirectoryDateString = \Bgies\EdiLaravel\Functions\DateTimeFunctions::GetDateStr(now(),true);
-          $TopDirectory = FileFunctions::getTopDirectory();
+          $TopDirectory = FileFunctions::getTopDirectory('edi');
           
           // Note shortFileName is the dir/file name string entered into the database. 
           $this->ShortFileName = FileFunctions::getShortFileName($this->ediType->edt_name, $this->EDIID);

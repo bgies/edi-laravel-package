@@ -7,8 +7,6 @@
 
 <div class="container">
     @yield('content')
-    
-    <div>layout in edilaravel</div>
 </div>
 
 <!--    

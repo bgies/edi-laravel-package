@@ -10,7 +10,7 @@ class EdiSendOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;
-   
+   public bool $useImplementationConventionReferenceInST = false;
       
    
    /**
@@ -31,6 +31,9 @@ class EdiSendOptions extends BaseEdiOptions
       
       $propTypes['clientFileFormat'] = new PropertyType(
          'string', 0, 30, false, true, null, true, true
+         );
+      $propTypes['needs990'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
          );
       $propTypes['needs990'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true

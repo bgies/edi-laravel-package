@@ -11,6 +11,7 @@ use Bgies\EdiLaravel\Functions\ObjectFunctions;
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
+use Bgies\EdiLaravel\Lib\ReadEdiFile;
 
 
 class EdiManageController extends Controller 
@@ -95,7 +96,7 @@ class EdiManageController extends Controller
          $fileArray = EdiFileFunctions::ReadX12FileIntoStrings($filePath,
                   $ediOptions, false, $sharedTypes);
          
-         //$fileContents = EdiFileFunctions::ReadX12FileIntoStrings($ediFile->edf_filename, $EDIObj, $InProgram, SharedTypes $sharedTypes) : array
+         //$fileContents = EdiFileFunctions::ReadX12FileIntoStrings($ediFile->edf_filename, $EDIObj, $InProgram) : array
          
       } else {
          
@@ -110,6 +111,43 @@ class EdiManageController extends Controller
       
    }
    
+   
+   /*
+    * when reading a file, it should already have an entry in the edi_files 
+    * table, but until it's read, we won't know which trading partner 
+    * it belongs to, so we need to read the  
+    * 
+    */
+   public function readfile(Request $request, int $ediFileId)
+   {
+      LoggingFunctions::logThis('info', 3, 'EdiManageController readfile', 'ediFileId: ' . $ediFileId);
+      
+      try {
+         $readEdiFile = new ReadEdiFile($ediFileId);
+      } catch (Exception $e) {
+         
+      }
+      
+      
+      $retValues = $readEdiFile->readFile();
+      $messages = '';
+      if ($retValues->getErrorCount() > 0) {
+         $messages .= 'Errors: ' . print_r($retValues->getErrorList(), true) . '  ';
+      }
+      if ($retValues->getMessageCount() > 0) {
+         $messages .= 'Messages: ' . print_r($retValues->getMessages(), true) . '  ';
+      }
+      
+      
+      
+      return view('edilaravel::manage.viewfile')
+      ->with('fileArray', $fileArray)
+      ->with('ediFile', $ediFile)
+      ->with('fileContents', $fileContents)
+      ->with('message', $messages)
+      ->with('navPage', $this->navPage);
+   }
+      
    
    public function outgoing()
    {

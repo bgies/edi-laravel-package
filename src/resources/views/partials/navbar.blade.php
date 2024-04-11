@@ -31,6 +31,9 @@
 				            <li>
 				            	<a class="dropdown-item" href="/edilaravel/manage/files">EDI Files</a>
 				            </li>
+				            <li>
+				            	<a class="dropdown-item" href="/edilaravel/manage/readfile">Read File</a>
+				            </li>
 
           				</ul>
         				</li>        			

@@ -26,6 +26,7 @@ abstract class BaseEdiOptions
    public $applicationSenderCode = '';
    public $applicationReceiverCode = '';
    public $transactionSetIdentifier = ''; // 210,850, INVOIC etc
+   public $implementationConventionReference = ''; // if it's used, it should match the transactionSetIdentifier
    public $ediVersionReleaseCode = '4010';
    public $ediVersionReleaseCodeExtended = '00401';
    public $fileDirection = 'incoming'; // Must be null, incoming or outgoing.. NOTHING ELSE
