@@ -15,7 +15,7 @@
 		<div class="col col-1">
 			Id
 		</div>
-		<div class="col col-1">
+		<div class="col col-2">
 			Type
 		</div>
 		<div class="col col-1">
@@ -49,7 +49,7 @@
 			<div class="col col-1">
 				<a href="/edilaravel/manage/file/view/{{ $ediFile->id }}" >{{ $ediFile->id }}</a>
 			</div>
-			<div class="col col-1">
+			<div class="col col-2">
 				<a href="/edilaravel/manage/{{ $ediFile->id }}/view" >{{ $ediFile->edt_name }}</a>
 			</div>
 			<div class="col col-1">
@@ -73,8 +73,8 @@
    				<div></div>
    				
    			</div>
-			<div class="col col-2 d-none d-sm-block fs-6">   
-   				<div></div>
+			<div class="col col-1 d-none d-sm-block fs-6">   
+   				<div>{{ $ediFile->edf_records_parsed }}</div>
    			</div>
    			
    		</div>	

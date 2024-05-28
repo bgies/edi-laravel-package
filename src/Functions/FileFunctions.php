@@ -79,7 +79,11 @@ class FileFunctions
       return $FTPFileName;
    }
    
-   
+   public static function getPackageDirectory() {
+      $topDirectory =  __DIR__ ;
+      $srcDir = dirname($topDirectory, 2) . '/src';
+      return $srcDir;
+   }
    
    
 }

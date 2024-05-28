@@ -19,7 +19,7 @@ use Bgies\EdiLaravel\Functions\DateTimeFunctions;
 use Bgies\EdiLaravel\Functions\FileFunctions;
 use Bgies\EdiLaravel\Functions\ReadFileFunctions;
 use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
-use Bgies\EdiLaravel\Models\Edifiles;
+use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Lib\x12\objects\Delimiters;
 use Carbon\Exceptions\Exception;
 use Illuminate\Support\Facades\Storage;
@@ -72,7 +72,7 @@ class X12Send997 extends BaseEDISend
          return 0;
       }
       
-      $this->Model = new Edifiles();
+      $this->Model = new Edifile();
       
       $ediTesting = ENV('EDI_TESTING', false);
       if ($ediTesting) {
@@ -317,9 +317,7 @@ class X12Send997 extends BaseEDISend
          'ApplicationSenderID' => null,
          'ApplicationReceiverID' => null,
          'DetailDataSet' => array()
-      );
-
-      
+      );      
       
       return $record;
    }

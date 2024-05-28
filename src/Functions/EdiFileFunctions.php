@@ -76,7 +76,7 @@ class EdiFileFunctions //extends BaseController
    
    
    public static function getDirectoryDateString() {
-      return  substr(\Bgies\EdiLavavel\Functions\DateTimeFunctions::GetDateStr(now(),true), 0, 6);
+      return  substr(\Bgies\EdiLaravel\Functions\DateTimeFunctions::GetDateStr(now(),true), 0, 6);
    }
    
    // NOTE - The short file name is what's stored in the edi_files Table
@@ -201,8 +201,7 @@ class EdiFileFunctions //extends BaseController
       $midPath = ENV('EDI_TOP_DIRECTORY', '');
       
       $fileContents = \Storage::disk($diskName)->get($midPath . '/' . $shortName);
-      
-      
+            
 
 $filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
       return $fileContents;
@@ -210,8 +209,8 @@ $filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
    
    
    public static function ReadX12FileIntoStrings(string $FileName, $EDIObj, $InProgram, SharedTypes $sharedTypes) : array
-  {
-     $fileArray = array();
+   { 
+    $fileArray = array();
      
      if (!\Storage::disk('edi')->exists( $FileName)) {
         throw new EdiFatalException('ReadEDIFileIntoStrings File: ' . $FileName . ' does not exist');

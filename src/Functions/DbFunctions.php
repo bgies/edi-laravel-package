@@ -5,7 +5,7 @@ namespace Bgies\EdiLaravel\Functions;
 
 use Illuminate\Database\Eloquent\Model;
 use Bgies\EdiLaravel\lib\x12\options\EDISendOptions;
-use Bgies\EdiLaravel\Models\EdiFiles;
+use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Models\Edifiledetails;
 
 //use lib\x12\SharedTypes;
@@ -14,10 +14,10 @@ use Bgies\EdiLaravel\Models\Edifiledetails;
 class DbFunctions //extends BaseController
 {
    
-   //public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : edifiles
-   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : EdiFiles
+   //public static function insertEDIFilesRecord(Model $model, EDISendOptions &$EDIObj ) : EdiFile
+   public static function insertEDIFilesRecord(Model $model, &$EDIObj ) : EdiFile
    {
-      $ediFile = new EdiFiles();
+      $ediFile = new EdiFile();
 //      $ediFile->id = $model->id;
       $ediFile->edf_edi_type_id = $EDIObj->ediId;
       $ediFile->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
@@ -57,9 +57,9 @@ class DbFunctions //extends BaseController
    }
    
 //   public static function updateEDIFilesRecord(string $ShortFileName, int $EDIID, Model $filesModel,
-//      Model $typesModel, EDISendOptions &$EDIObj ) : edifiles
+//      Model $typesModel, EDISendOptions &$EDIObj ) : EdiFile
    public static function updateEDIFilesRecord(string $ShortFileName, int $EDIID, Model $filesModel, 
-          Model $typesModel, &$EDIObj ) : edifiles
+          Model $typesModel, &$EDIObj ) : EdiFile
    {
 
       $filesModel->edf_edi_type_id = $typesModel->id;

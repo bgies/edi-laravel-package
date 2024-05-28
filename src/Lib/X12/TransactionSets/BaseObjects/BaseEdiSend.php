@@ -36,6 +36,7 @@ abstract class BaseEdiSend extends BaseEdiObject
       $this->retValues = $retValues;
    }
    
+   
 /*   
    protected function getData() {
       \Log::info('BaseEdiSend getData $edi_type_id: ' . $this->edi_type_id);
@@ -67,7 +68,7 @@ abstract class BaseEdiSend extends BaseEdiObject
       // the ediOption object will be passed to the EDI Objectd so set a couple
       // of properties on it from the EDI type so we don't have to pass the
       // model also.
-      $this->ediOptions->ediId = $edi_type_id;
+      $this->ediOptions->ediTypeId = $edi_type_id;
       $this->ediOptions->transactionSetIdentifier = '210';
       //$this->ediOptions->transaction_control_number = $this->ediType->edf_transaction_control_number;
       

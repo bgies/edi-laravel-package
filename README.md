@@ -8,6 +8,10 @@ The full package for the EDI Laravel project
 
 EDI-Laravel is a Laravel based EDI framework. This package can be installed in a new project or existing Laravel project. 
 
+EDI-Laravel works by managing the EDI files, and making the necessary database entries. 
+
+EDI Types can be fully automated, or run manually
+
 
 ### Features of EDI-Laravel
 - Can be used with ANSII X12, EDIFACT, TRADACOMS orebXML

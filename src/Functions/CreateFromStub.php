@@ -5,6 +5,8 @@ namespace Bgies\EdiLaravel\Functions;
 //use lib\x12\SharedTypes;
 use Bgies\EdiLaravel\Stubs\X12SendOptionsStub;
 use Bgies\EdiLaravel\Models\EdiType;
+use Bgies\EdiLaravel\Lib\ReturnValues;
+use Doctrine\DBAL\ColumnCase;
 
 
 
@@ -45,6 +47,10 @@ class CreateFromStub
       $options->applicationReceiverCode = $input['application_receiver_code'];
       $options->applicationSenderCode = $input['application_sender_code'];
       
+      // Remove this when I put javascript in to force the version to be 
+      if (!array_key_exists('edi_version', $input)) {
+         $input['edi_version'] = '4010';
+      }
       switch ($input['edi_version']) {
          case '3020' : $options->interchangeControlVersionNumber = '00302'; break;
          case '3040' : $options->interchangeControlVersionNumber = '00304'; break;
@@ -70,6 +76,11 @@ class CreateFromStub
       return $options;
    }
    
+   /*
+    * We need to instantiate the Options Object and return it so it can be 
+    * serialized and saved with the EDI Type. If it doesn't
+    * already exist, we need to create a default Options Object and return it. 
+    */
    public function CreateOptionObject(array $input, EdiType $ediType) : object {
       // first check to see if the file exists
 
@@ -121,36 +132,59 @@ class CreateFromStub
       
    }
    
-   public function CreateTransactionSetObject(array $input, EdiType $ediType) : bool {
-      $srcDir = getSrcDirectory();
-   
+   /*
+    * if we already have a transaction set object for this EDI Type, we 
+    * don't need to do anything except return a positive 
+    */
+   public function CreateTransactionSetObject(array $input, EdiType $ediType) : ReturnValues {
+      $srcDir = $this->getSrcDirectory();
+      $retValues = new ReturnValues();
+         
       $stubsDir = $srcDir . '/Stubs/';
       
-      if ($this->ediStandard == 'X12') {
-         if ($this->isIncoming == 1) {
-            $transactionSetDir = $srcDir . '/Lib/X12/TransactionSets/Read/';
-            $fullTransactionSetPath = $transactionSetDir . 'X12Read' . $transactionSetName . '.php';
-            if (!file_exists($fullTransactionSetPath)) {
-               // if we don't have an available Transaction Set object, create one from a stub
-               $messagesArray[] = 'Transaction Set Object was not found. A new Transaction Set Object descended from BaseEdiRecieve was created at ' . $fullTransactionSetPath . ', but it needs programming to make it useful ';
+      switch ($this->ediStandard) {
+         case 'X12' : 
+            if ($this->isIncoming == 1) {
+               $transactionSetDir = $srcDir . '/Lib/X12/TransactionSets/Read/';
+               $fullTransactionSetPath = $transactionSetDir . 'X12Read' . $this->transactionSetName . '.php';
+               if (!file_exists($fullTransactionSetPath)) {
+                  // if we don't have an available Transaction Set object, create one from a stub
+                  $retValues->addToMessages('Transaction Set Object was not found. A new Transaction Set Object descended from BaseEdiRecieve was created at ' . $fullTransactionSetPath . ', but it needs programming to make it useful ');
          
-               $stubFullName = $stubsDir . 'X12ReadTransactionSetStub.php';
-               $stubFileContent = file_get_contents($stubFullName, true);
-               $stubFileContent = str_replace('{{TransactionSetName}}', $this->transactionSetName, $stubFileContent);
+                  $stubFullName = $stubsDir . 'X12ReadTransactionSetStub.php';
+                  $stubFileContent = file_get_contents($stubFullName, true);
+                  $stubFileContent = str_replace('{{TransactionSetName}}', $this->transactionSetName, $stubFileContent);
+               
+                  $result = file_put_contents($fullTransactionSetPath, $stubFileContent);
+               }
+               $retValues->setResult(true);
+            } else {
+               $transactionSetDir = $srcDir . '/Lib/X12/TransactionSets/Send/';
+               $fullTransactionSetPath = $transactionSetDir . 'X12Send' . $transactionSetName . '.php';
+               if (!file_exists($fullTransactionSetPath)) {
+                  $retValues->addToMessages('Transaction Set Object was not found. A new Transaction Set Object descended from BaseEdiRecieve was created at ' . $fullTransactionSetPath . ', but it needs programming to make it useful ');
                
                
-            }
-         } else {
-            $transactionSetDir = $srcDir . '/Lib/X12/TransactionSets/Send/';
-            $fullTransactionSetPath = $transactionSetDir . 'X12Send' . $transactionSetName . '.php';
-            if (!file_exists($fullTransactionSetPath)) {
-               $messagesArray[] = 'Transaction Set Object was not found. A new Transaction Set Object descended from BaseEdiRecieve was created at ' . $fullTransactionSetPath . ', but it needs programming to make it useful ';
+               }
             
-         }
+            }
+            break;
+         case 'EDIFACT' : 
+            // do the EDIFACT stuff here. 
+            
+            
+            break;
+         default :
+            $retValues->setResult(false);
+            $retValues->addToErrorList('Unknown EDI Standard (' . $this->ediStandard . ')');
+            
+            break;
+      }
+         
+         
       
       
-      
-      return true;
+      return $retValues;
    }
       
 }

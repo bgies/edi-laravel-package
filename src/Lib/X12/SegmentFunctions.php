@@ -540,8 +540,8 @@ class SegmentFunctions
 
       $functionalIdentifierCode = $SegmentArray[1];
       
-      $EDIObj->applicationSenderID = trim($SegmentArray[2]); // GS 02
-      $EDIObj->applicationReceiverID = trim($SegmentArray[3]); // GS 03
+      $EDIObj->applicationSenderCode = trim($SegmentArray[2]); // GS 02
+      $EDIObj->applicationReceiverCode = trim($SegmentArray[3]); // GS 03
       
       $TempDate = SegmentFunctions::ReadDateStr($SegmentArray[4], 'GS'); // GS 04
       $TempTime = SegmentFunctions::ReadTimeStr($SegmentArray[5], 'GS');  // GS 05
@@ -590,6 +590,7 @@ class SegmentFunctions
       if (!in_array($SegmentArray[1], $sharedTypes->X12TransactionSets)) {   // ST01
          throw new EdiFatalException('The ST segmentline is malformed, or the Transaction Set is not supported yet');
       }
+      $EDIObj->transactionSetIdentifier = $SegmentArray[1];
       
       if ((strlen($SegmentArray[2]) > 9) || (strlen($SegmentArray[2]) < 4)) {
          throw new EdiFatalException('The ST segment is malformed, The TransactionSetControlNumber is not valid');

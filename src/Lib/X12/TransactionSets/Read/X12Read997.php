@@ -1,31 +1,31 @@
 <?php
 
-namespace Bgies\EdiLavavel\Lib\X12\TransactionSets\Read;
+namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\Read;
 
 use Illuminate\Routing\Controller as BaseController;
-//use Bgies\EdiLavavel\lib\X12\BaseEDIReceive;
+//use Bgies\EdiLaravel\lib\X12\BaseEDIReceive;
 use App\Exceptions\EdiException;
 use App\Exceptions\EdiFatalException;
-use Bgies\EdiLavavel\lib\x12\options\read\EdiReadOptions;
-use Bgies\EdiLavavel\lib\x12\options\read\Read997Options;
-use Bgies\EdiLavavel\lib\x12\BaseEDIReceive;
+use Bgies\EdiLaravel\lib\x12\options\read\EdiReadOptions;
+use Bgies\EdiLaravel\lib\x12\options\read\Read997Options;
+use Bgies\EdiLaravel\lib\x12\BaseEDIReceive;
 use function Opis\Closure\serialize;
-use Bgies\EdiLavavel\Models\Editype as ediType;
-use Bgies\EdiLavavel\DataHandling\StoredProcedure;
-use Bgies\EdiLavavel\FileDrop;
-use Bgies\EdiLavavel\FileFromDirectory;
+use Bgies\EdiLaravel\Models\Editype as ediType;
+use Bgies\EdiLaravel\DataHandling\StoredProcedure;
+use Bgies\EdiLaravel\FileDrop;
+use Bgies\EdiLaravel\FileFromDirectory;
 use function Opis\Closure\unserialize;
-use Bgies\EdiLavavel\Functions\DateTimeFunctions;
-use Bgies\EdiLavavel\Functions\FileFunctions;
-use Bgies\EdiLavavel\Functions\ReadFileFunctions;
-use Bgies\EdiLavavel\Lib\X12\SegmentFunctions;
-use Bgies\EdiLavavel\Models\Edifiles;
-use Bgies\EdiLavavel\lib\x12\objects\Delimiters;
+use Bgies\EdiLaravel\Functions\DateTimeFunctions;
+use Bgies\EdiLaravel\Functions\FileFunctions;
+use Bgies\EdiLaravel\Functions\ReadFileFunctions;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
+use Bgies\EdiLaravel\Models\Edifile;
+use Bgies\EdiLaravel\lib\x12\objects\Delimiters;
 use Carbon\Exceptions\Exception;
 use Illuminate\Support\Facades\Storage;
-use Bgies\EdiLavavel\lib\x12\SharedTypes;
-use Bgies\EdiLavavel\lib\x12\options\ReplySettings;
-use Bgies\EdiLavavel\Models\Ediincoming;
+use Bgies\EdiLaravel\lib\x12\SharedTypes;
+use Bgies\EdiLaravel\lib\x12\options\ReplySettings;
+
 
 
 
@@ -40,12 +40,12 @@ class Read997 extends BaseEDIReceive
     */
    public function __construct(int $edi_type_id)
    {
-      \Log::info('Bgies\EdiLavavel\X12 X12Read{{997 construct');
+      \Log::info('Bgies\EdiLaravel\X12 X12Read{{997 construct');
       
       //$this->ediTypeId = $edi_type_id;
       //\Log::info('class X12Read997 construct $edi_type_id: ' . $edi_type_id);
       
-      $this->ediType = Editype::find(2); //   findOrFail($edi_type_id);
+      $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
       \Log::info('class X12Read997 edi_type: ' . print_r($this->ediType->getAttributes(), true));
       
       //$rowCount =
@@ -56,7 +56,7 @@ class Read997 extends BaseEDIReceive
          return 0;
       }
       
-      $this->Model = new Edifiles();
+      $this->Model = new EdiFile();
       
       $ediTesting = ENV('EDI_TESTING', false);
       if ($ediTesting) {
@@ -144,8 +144,6 @@ class Read997 extends BaseEDIReceive
       \Log::info('class X12Read997 edi_type serialize: ' . serialize($this->ediType));
       
       return 1;     
-      
-   
    }
 
    
@@ -181,7 +179,7 @@ class Read997 extends BaseEDIReceive
 
    public function execute(): string
    {
-      \Log::info('Bgies\EdiLavavel\X12 X12Read997 execute START');
+      \Log::info('Bgies\EdiLaravel\X12 X12Read997 execute START');
       
 
       if ($this->edtBeforeProcessObject) {
@@ -211,14 +209,14 @@ class Read997 extends BaseEDIReceive
             try {
                $this->checkSenderReceiver($this->ediType, $this->fileArray, $this->ediOptions);
             } catch (EdiFatalException $e) {
-               \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute checkSenderReceiver aborting... File: ' . $filePath);
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute checkSenderReceiver aborting... File: ' . $filePath);
                throw($e);
             }
          
          } catch (EdiException $e) {
-               \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message);
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message);
          } catch (Exception $e) {
-               \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message());
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message());
          }
       
       
@@ -229,37 +227,37 @@ class Read997 extends BaseEDIReceive
             
             $retVal = $this->readFile($this->curFile, $this->fileArray, $this->ediOptions, $FileLineCount, $sharedTypes); 
             if (!$retVal) {
-               \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute readFile Failed aborting...');
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute readFile Failed aborting...');
                return false;
             }
          } catch (EdiException $e) {
-            \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute EXCEPTION in composeFile: ' . $e->message);
+            \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in composeFile: ' . $e->message);
             return print_r($this->ediOptions->ediMemo, true);
          }
       
          try {
             $retVal = $this->dealWithFile();
             if (!$retVal) {
-               \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute EXCEPTION in dealWithFile');
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithFile');
                return print_r($this->ediOptions->ediMemo, true);
             }
             
          } catch (EdiException $e) {
-            \Log::error('Bgies\EdiLavavel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message);
+            \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message);
             return print_r($this->ediOptions->ediMemo);
             //return print_r($this->ediOptions->ediMemo, true)
          }
       
       };
       
-      \Log::info('Bgies\EdiLavavel\X12 X12Read997 execute END');
+      \Log::info('Bgies\EdiLaravel\X12 X12Read997 execute END');
       return print_r($this->dataset, $retVal);
    }
    
 
    protected function getFile(Read997Options $EDIObj)
    {
-      \Log::info('Bgies\EdiLavavel\X12 X12Read997 getFile() START');
+      \Log::info('Bgies\EdiLaravel\X12 X12Read997 getFile() START');
       
       $dataResults = '';
       try {
@@ -275,12 +273,12 @@ class Read997 extends BaseEDIReceive
          
          
       } catch (Exception $e) {
-         \Log::error('Bgies\EdiLavavel\X12 X12Read997 getFile EXCEPTION: ' . $e->getMessage());
+         \Log::error('Bgies\EdiLaravel\X12 X12Read997 getFile EXCEPTION: ' . $e->getMessage());
       }
       
       return $dataResults;
       
-      \Log::info('Bgies\EdiLavavel\X12 X12Read997 getFile() dataResults: ' . print_r($dataResults, true));
+      \Log::info('Bgies\EdiLaravel\X12 X12Read997 getFile() dataResults: ' . print_r($dataResults, true));
    }
    
    
@@ -364,7 +362,7 @@ class Read997 extends BaseEDIReceive
                   break;
                }
                case 'AK1' : {
-                  \Bgies\EdiLavavel\Functions\ReadFileFunctions::ReadAK1Line($Memo[$FileLineCount - 1], $EDIObj->delimiters, $masterDataset );
+                  \Bgies\EdiLaravel\Functions\ReadFileFunctions::ReadAK1Line($Memo[$FileLineCount - 1], $EDIObj->delimiters, $masterDataset );
                   break;
                }
                case 'AK2' : {

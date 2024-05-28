@@ -5,16 +5,21 @@ namespace Bgies\EdiLaravel\Http\Controllers;
 use Illuminate\Http\Request;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
+use Bgies\EdiLaravel\Functions\ClassFunctions;
 use Bgies\EdiLaravel\Functions\FileFunctions as FileFunctions;
 use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Bgies\EdiLaravel\Functions\ObjectFunctions; 
 use Bgies\EdiLaravel\Functions\UpdateFunctions;
-use Bgies\EdiLaravel\Models\EdiFiles;
+use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Lib\RunEdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use Bgies\EdiLaravel\Functions\CreateFromStub;
 use function Opis\Closure\serialize;
+use Illuminate\Support\Facades\Storage;
+use Bgies\EdiLaravel\Lib\X12\Options\Read\EdiReadOptions;
+use Bgies\EdiLaravel\Functions\ReadEdiFileFunctions;
+use Bgies\EdiLaravel\Lib\ReturnValues;
 
 class EdiTypesController extends Controller
 {
@@ -241,7 +246,7 @@ class EdiTypesController extends Controller
    
    // POST only creates a new file and return the files view
    public function createNewFiles(Request $request) {
-      \Log::info(' ');
+      LoggingFunctions::logThis('info', 5, '', '');
       
       $input = $request->all();
       LoggingFunctions::logThis('info', 3, 'EdiTypesController createNewFiles', 'input: ' . print_r($input, true));
@@ -264,14 +269,14 @@ class EdiTypesController extends Controller
       }
            
       try {
-         $retVal = $runEdiType->runTransactionSet($ediTypeId);
+         $retVals = $runEdiType->runTransactionSet($ediTypeId);
       } catch (Exception $e) {
          LoggingFunctions::logThis('error', 10, 'EdiTypesController createNewFiles Exception in runTransactionSet: ', $e->message);
       }
       
-      LoggingFunctions::logThis('info', 5, 'EdiTypesController createNewFiles retVal: ', print_r($retVal, true));
+      LoggingFunctions::logThis('info', 5, 'EdiTypesController createNewFiles retVals: ', print_r($retVals, true));
             
-      $ediFiles = EdiFiles::orderBy('id', 'DESC')->paginate();
+      $ediFiles = EdiFile::orderBy('id', 'DESC')->paginate();
 
       $ediTypes = EdiType::simplePaginate(25);
       
@@ -302,10 +307,91 @@ class EdiTypesController extends Controller
       $input = $request->all();
       LoggingFunctions::logThis('info', 3, 'EdiTypesController readFile', 'input: ' . print_r($input, true));
       
-      return view('edilaravel::ediTypes.readfile')
-      ->with('navPage', $this->navPage);
+      // get a list of all files in the Storage/edifiles/To_Read directory
+      // if the directory doesn't exist, create it
+      $retVal = Storage::disk('edi')->makeDirectory('To_Read');
+      $fileList = Storage::disk('edi')->files('To_Read');
+      $fileArray = [];
+      foreach ($fileList as $singleFile) {
+         $fileName = substr($singleFile,  strrpos($singleFile, '/') + 1);
+         $fileArray [] = $fileName;
+      }
       
+      return view('edilaravel::ediTypes.readfile')
+      ->with('fileList', $fileArray)
+      ->with('navPage', $this->navPage);
    
+   }
+   
+   public function readfileManually(Request $request, string $file) {
+      \Log::info(' ');
+      
+      $input = $request->all();
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController readFile', 'input: ' . print_r($input, true));
+      
+      $EDIObj = new EdiReadOptions();
+      $filePath = "/To_Read/" . $file;
+      $sharedTypes = new SharedTypes();
+      $retVals = new ReturnValues();
+      /*
+       * this procedure reads the ISA, GS, and ST segments to set delimiters, dates
+       * and sender/receiver id's
+       *
+       * NOTE we are using a default EDIObj here because we can't find the
+       * correct one until we know what's in the file, and we will
+       * use the Sender/Receiver ids plus the transaction set.
+       */
+      $fileArray = EdiFileFunctions::ReadX12FileIntoStrings($filePath, $EDIObj, false, $sharedTypes);
+      
+      /*
+       * We can't read a file without an Edi Type
+       * If we find an EDI type, we can use an EDI Options object with the 
+       * correct settings for this EDI Type. If not, we can only use the default 
+       * EDI Options Object we created above.
+       * NOTE - in an automated file read, we would already have aborted
+       */
+      $retValues = ReadEdiFileFunctions::getEdiTypeFromEdiObject($EDIObj);
+      $ediType = $retValues->ediType;
+      
+      if (!$ediType) {
+         $retValues->addToErrorList('An EDI Type was not found. ABORTING. If you are trying to test this file, create an EDI Type for it first, and set enabled to false ');
+         
+      } else {
+         $EDIObj = unserialize($ediType['edt_edi_object']);
+
+         /*
+          * Find the correct Transaction Set. If we don't have one, 
+          * we can't read this file. 
+          * Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
+          */
+         $transactionSetClass = ClassFunctions::getTransactionSetClassName($EDIObj->ediStandard, $EDIObj->fileDirection, $EDIObj->transactionSetIdentifier);
+         $classExists = ClassFunctions::doesClassExist($transactionSetClass);
+         
+         if ($classExists) {
+            $transactionSet = new $transactionSetClass($ediType);
+            $transactionSet->setFileArray($fileArray);
+            
+            
+            
+            $retVals = $transactionSet->execute();
+            //Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
+            
+         } else {
+            $retValues->addToErrorList('Transaction Set ' . $transactionSetClass . ' does not exist');
+         
+            $transactionSet = new $transactionSetClass($ediType->id);
+         }
+      
+               
+         
+      }
+            
+      return view('edilaravel::ediTypes.readfilemessages')
+      ->with('fileArray', $fileArray)
+      ->with('ediType', $ediType)
+      ->with('retValues', $retVals)
+      ->with('ediObj', $EDIObj)
+      ->with('navPage', $this->navPage);
    }
 
    public function createNewType(Request $request) {
@@ -352,7 +438,7 @@ class EdiTypesController extends Controller
          $ediType->save();
       }
             
-      $transmissionObject = $createFromStub->CreateTransactionSetObject($input['edt_edi_standard'], $input['edt_transaction_set_name']);
+      $retValues = $createFromStub->CreateTransactionSetObject($input, $ediType);
          
       
       $fields = $ediType->getAttributes();
@@ -360,6 +446,7 @@ class EdiTypesController extends Controller
       return view('edilaravel::ediTypes.editype')
       ->with('ediType', $ediType)
       ->with('error', $errorMessage)
+      ->with('messages', $retValues->getMessages())
       ->with('fields', $fields)
       ->with('navPage', $this->navPage);
       //               ->with('FileFunctions', FileFunctions)

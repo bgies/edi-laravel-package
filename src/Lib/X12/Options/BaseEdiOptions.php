@@ -13,7 +13,7 @@ abstract class BaseEdiOptions
     *
     * @var unknown
     */
-   public int $ediId = 0;
+   public int $ediTypeId = 0;
 
    public $delimiters = null; // Delimiters object;
    public $testFileOptions = null;
@@ -31,7 +31,8 @@ abstract class BaseEdiOptions
    public $ediVersionReleaseCodeExtended = '00401';
    public $fileDirection = 'incoming'; // Must be null, incoming or outgoing.. NOTHING ELSE
    public $ediStandard = 'X12'; // from public $EDIStandard = array('Unknown', 'X12', 'EDIFACT', 'Custom');
-
+   public $connection = 'edi'; // edi is the default connection, but can be changed per EDI type if needed. 
+   
    public $ediMemo = array(); // array of string
    public int $errorCount = 0;
    public $errorList = array(); // array of string
@@ -138,6 +139,9 @@ abstract class BaseEdiOptions
       $propTypes['ediStandard'] = new PropertyType(
          'string', 2, 2, false, true, null, true, true
          );
+      $propTypes['connection'] = new PropertyType(
+         'string', 2, 15, false, true, null, true, true
+         );
       $propTypes['ediMemo'] = new PropertyType(
          'array', 0, 20000, false, false, null, false, false
          );
@@ -162,7 +166,7 @@ abstract class BaseEdiOptions
       $propTypes['isTestFile'] = new PropertyType(
          'bool', 0, 1, false, false, null, false, false
          );
-      $propTypes['ediId'] = new PropertyType(
+      $propTypes['ediTypeId'] = new PropertyType(
          'int', 0, 20000000, false, false, null, false, false
          );
       $propTypes['dataInterchangeControlNumber'] = new PropertyType(

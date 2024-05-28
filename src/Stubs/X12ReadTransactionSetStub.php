@@ -1,31 +1,117 @@
 <?php
 
-namespace Bgies\EdiLavavel\Lib\X12\TransactionSets\Read;
+namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\Read;
 
 use Bgies\EdiLaravel\Lib\PropertyType;
 use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiReceive;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
-
-
+use Bgies\EdiLaravel\Models\EdiType;
+use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 class X12Read{{TransactionSetName}} extends BaseEdiReceive
 {
    public $transactionSetName = '{{TransactionSetName}}';
    
-   /*** Full definition of procedure*/
    
-   protected $proc = '';
-   /*** Input parameters in procedure which can be null*/
-   protected $canBeNull = [];
-   /***  Result Set Mapping*/
-   protected $resultSetMapping = [];
-   
-   public function defineFunctionName(array $inputParameter = [], array $resultSetMapping = [])
-      {
-         $rsm = $this->setResultSetMapping($resultSetMapping);
-         $nativeQuery = $this->entityManager->createNativeQuery(
-            $this->genProQuery($this->proc), $rsm);
-         // set input parameter and execute query
+   /**
+    * Create a new instance.
+    *
+    * @return void
+    */
+   public function __construct(int $edi_type_id)
+   {
+      LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'Start edi_type_id: ' . $edi_type_id);
+      
+      $this->ediType = EdiType::find($edi_type_id); //   findOrFail($edi_type_id);
+      
+      if (!$this->ediType) {
+         LoggingFunctions::logThis('error',7, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type (' . $edi_type_id . ') NOT FOUND');
+         return 0;
+      }
+
+      LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type: ' . print_r($this->ediType->getAttributes(), true));
+      
+      $this->ediFile = new EdiFile();
+      
+      $ediTesting = ENV('EDI_TESTING', false);
+      if ($ediTesting) {
+         // create a default edt_before_process_object_properties if there isn't one
+         // for now at least. Shouldn't need this in production
+         // UNCOMMENT THE LINE BELOW TO CLEAR THE BEFORE PROCESS OBJECT AND RECREATE IT WITH UPDATED PROPERTIES
+         //$this->ediType->edt_before_process_object_properties = '';
+         if ($this->ediType->edt_before_process_object_properties == '') {
+            LoggingFunctions::logThis('info',6, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edt_before_process_object_properties IS BLANK');
+            
+            switch($this->ediType->edt_before_process_object) {
+               case 1: {    break; }
+               
+               
+               case 8: {
+                  $this->edtBeforeProcessObject = new FileDrop();
+                  $this->edtBeforeProcessObject->fileDirectory = 'incoming';
+                  break;
+               }
+               case 9: {
+                  
+                  break;
+               }
+               case 10: {
+                  $this->edtBeforeProcessObject = new FileFromDirectory();
+                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'W210Replies';
+                  
+                  break;
+               }
+               case 11: {
+                  $this->edtBeforeProcessObject = new StoredProcedure();
+                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'W210Replies';
+                  $this->edtBeforeProcessObject->storedProcedureName = 'proc_get_{{TransactionSetName}}_replies';
+                  
+               }
+               default: {
+                  
+               }
+            }
+            $this->ediType->edt_before_process_object = serialize($this->edtBeforeProcessObject);
+            $this->ediType->save();
+            
+         } else {
+            $this->edt_before_process_object = serialize($this->ediType->edt_before_process_object);
+         }
          
+         if ($this->ediType->edt_edi_object == '') {
+            \Log::info('class X12Read997 edt_edi_object IS BLANK');
+            
+            $this->ediOptions = new Read{{TransactionSetName}}Options();
+            
+            $this->ediType->edt_edi_object = serialize($this->ediOptions);
+            $this->ediType->save();
+         } else {
+            $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+         }
+         
+         if ($this->ediType->edt_after_process_object == '') {
+            \Log::info('class X12Read{{TransactionSetName}} edt_after_process_object IS BLANK');
+            
+            $tempProperties = new FileDrop();
+            $this->ediType->edt_after_process_object = serialize($tempProperties);
+            $this->ediType->save();
+         }
+         
+         
+      }  // END if ($ediTesting) 
+      
+      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      $this->edtBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
+      $this->edtAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
+      
+      \Log::info('');
+      \Log::info('class X12Read{{TransactionSetName}} edi_type serialize: ' . serialize($this->ediType));
+      
+      return 1;
    }
+   
+   
+   
+   
+   
 }

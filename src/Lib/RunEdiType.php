@@ -59,11 +59,17 @@ class RunEdiType
       
       if (!$this->ediType) {
          LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'edi_type ' . $ediTypeId . ' NOT FOUND');
-         return 0;
-         throw new Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException('Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet edi_type ' . $ediTypeId . ' NOT FOUND');
-         exit;
+         $retValues->setResult(false);
+         $retValues->addToErrorList('edi_type ' . $ediTypeId . ' NOT FOUND');
+         return $retValues;
       }
-                   
+      if ($this->ediType->edt_is_incoming == 1) {
+         LoggingFunctions::logThis('error', 10, 'Bgies\EdiLaravel\Lib\RunEdiType::runTransactionSet', 'edi_type ' . $ediTypeId . ' is an incoming file, and needs to be read, not created');
+         $retValues->setResult(false);
+         $retValues->addToErrorList('edi_type ' . $ediTypeId . ' is an incoming file, and needs to be read, not created');
+         return $retValues;
+      }
+      
       $ediTypeName = $this->ediType->edt_name;
       $transactionSetClass = "Bgies\EdiLaravel\Lib\\";
       

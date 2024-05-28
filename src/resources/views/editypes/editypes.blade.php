@@ -6,7 +6,42 @@
 @section('content')
 
 
+<table id="editypestable" class="table table-striped" style="width:100%">
+	<thead>
+   	<tr>
+      	<th>Dup.</th>
+         <th>Id</th>
+         <th>Name</th>
+         <th>Enabled</th>
+         <th>Control Number</th>
+         <th>
+Interchange Sender 
+Interchange Receiver
+</th>
+      </tr>
+   </thead>
+	<tbody>
+		@forelse ($ediTypes as $ediType)
+		<tr>
+			<td>
+				<button type="button" class="btn bg-light text-success edi-btn-new" id="row_new" name="row_new" 
+					data-bs-toggle="tooltip" title="New">
+					<span>New +</span> 
+				</button>			
+			</td>
+			<td>
+				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
+			</td>
+		<tr>
+	@empty
+	   <tr>
+   		<p> 'No EDI Types yet' </p>
+      </tr>
+	@endforelse   		
+		
+	</tbody>
 
+</table>
 
 
 <div class="container edi-grid">
@@ -64,7 +99,7 @@
 				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }} {{ $ediType->edt_enabled == 1 ? 'checked' : ''}}  ">   
    				
    			</div>
-			<div class="col col-2 d-none d-sm-block text-end">   
+			<div class="col col-1 d-none d-sm-block text-end">   
    				{{ $ediType->edt_control_number }}
    			</div>
 			<div class="col col-4 d-none d-sm-block fs-6">   
@@ -110,17 +145,17 @@
       <div class="modal-body">
           <p class="edi-duplicate-body">Choose an EDI Type to Create and click the "New EDI Type" button to create a new EDI Type. Only do this if you know what you are doing.</p>
 
-      	<form class="edi-grid-bg needs-validation" method="post" action="/edilaravel/editype/createnewtype">
+      	<form class="edi-grid-bg needs-validation" method="post" action="/edilaravel/editype/createnewtype" novalidate>
       		<div class="mb-3">
 					<label for="edt_name" class="form-label edi-field-name">EDI Type Name</label>      		
      				<input class="form-control" type="input" name="edt_name" value="" required>
      				<div class="valid-feedback">
       				Looks good!
-    				</div>
-     				
+    				</div>     				
       		</div>
       
       		<div class="mb-3">
+      			<label for="edt_edi_standard" class="form-label">EDI Standard</label>
       			<select class="mb-3 form-select form-control-sm" name="edt_edi_standard" aria-label=".edt_edi_standard" required>
       				<option value="X12">ANSII X12</option>
 	      			<option value="EDIFACT">EDIFACT</option>

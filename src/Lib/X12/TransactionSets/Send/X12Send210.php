@@ -55,7 +55,7 @@ class X12Send210 extends BaseEdiSend
       parent::__construct($ediType->id);
       LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\X12\X12Send210 construct', 'edi_type_id: ' . $ediType->id);
       
-      
+      $this->ediType = $ediType;
 /*      
       $this->ediType = Editype::find($edi_type_id); //   findOrFail($edi_type_id);
 

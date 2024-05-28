@@ -11,16 +11,25 @@ use Bgies\EdiLaravel\Functions\LoggingFunctions;
 
 class ReturnValues
 {
-   
+   private bool $retResult;
    private array $errorList;
    private array $messages;
    private array $retPairs;
 
    public function __construct()
    {
+      $this->retResult = false;
       $this->errorList = [];
       $this->messages = [];
       $this->retPairs = [];
+   }
+   
+   public function setResult(bool $retResult) {
+      $this->retResult = $retResult;
+   }
+   
+   public function getResult() {
+      return $this->retResult;   
    }
    
    public function addToErrorList(string $incomingError) {

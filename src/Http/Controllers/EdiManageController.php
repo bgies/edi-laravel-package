@@ -3,7 +3,7 @@
 namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Bgies\EdiLaravel\Models\EdiFiles;
+use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 use Bgies\EdiLaravel\Functions\EdiFileFunctions;
@@ -21,7 +21,7 @@ class EdiManageController extends Controller
    public function index()
    {
       LoggingFunctions::logThis('info', 3, 'EdiManageController index', '');
-      $ediFiles = EdiFiles::orderBy('id', 'DESC')->paginate();
+      $ediFiles = EdiFile::orderBy('id', 'DESC')->paginate();
       $ediFiles = \DB::table('edi_files')
       ->select('edi_files.id', 'edi_files.edf_cancelled', 'edi_files.edf_datetime', 
          'edi_files.edf_acknowledged', 'edi_files.edf_transaction_control_number', 
@@ -29,11 +29,11 @@ class EdiManageController extends Controller
       ->join('edi_types', 'edi_types.id', '=', 'edi_files.edf_edi_type_id')
 //      ->join('users', 'articles.user_id', '=', 'user.id')
       
-      ->paginate();
+      ->paginate(40);
       
       
-      
-      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
+      LoggingFunctions::logThis('info', 3, 'EdiManageController index', 'ediFiles: ' . print_r($ediFiles, true));
+//      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
       $ediTypes = EdiType::orderBy('id', 'ASC')->paginate();;
 
       return view('edilaravel::manage.dashboard')
@@ -57,7 +57,7 @@ class EdiManageController extends Controller
          ->join('edi_types', 'edi_types.id', '=', 'edi_files.edf_edi_type_id')
          //      ->join('users', 'articles.user_id', '=', 'user.id')
          ->orderBy('id', 'DESC')
-         ->paginate();
+         ->paginate(40);
       
       $ediTypes = EdiType::all();
       

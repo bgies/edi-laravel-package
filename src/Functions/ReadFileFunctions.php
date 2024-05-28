@@ -9,9 +9,10 @@ use Bgies\EdiLaravel\Exceptions\EdiException;
 use Bgies\EdiLaravel\Exceptions\EdiFatalException;
 use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 
-class ReadFileFunctions //extends BaseController
+
+class ReadFileFunctions 
 {
-   
+ 
    public static function ReadAK1Line(string $Str, Delimiters $delimiters, &$dataSet )
    {
       $Result = true;
