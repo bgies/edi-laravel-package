@@ -16,12 +16,12 @@ it will show up in a list here, or you can choose it with the File Picker</p>
 			</div>
 		@endforeach
 </p>
-
+<br/>
 
 <div class="mb-3">
 	<form method="POST" action="/edilaravel/editype/read/manually/" enctype="multipart/form-data">
 		<label for="formFile" class="form-label">Upload EDI file to read</label>
-		<input class="form-control" type="file" id="fileChosen" name="fileChosen" onchange="getAfilename(this.value)">
+		<input class="form-control" type="file" id="fileChosen" name="fileChosen[]" onchange="getAfilename(this.value)">
 		<div class="mb-3 mt-1">
          <button type="submit" value="submit" class="btn btn-primary">Upload</button>
       </div>

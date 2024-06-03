@@ -15,9 +15,9 @@
          <th>Enabled</th>
          <th>Control Number</th>
          <th>
-Interchange Sender 
-Interchange Receiver
-</th>
+         	<div>Interchange Sender</div> 
+				<div>Interchange Receiver</div>
+			</th>
       </tr>
    </thead>
 	<tbody>
@@ -32,6 +32,20 @@ Interchange Receiver
 			<td>
 				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
 			</td>
+			<td>
+				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->edt_name }}</a>
+			</td>			
+			<td>
+				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }} {{ $ediType->edt_enabled == 1 ? 'checked' : ''}}  ">
+			</td>	
+			<td>
+				{{ $ediType->edt_control_number }}
+			</td>
+			<td>
+  				<div>{{ $ediType->interchange_sender_id }}</div>
+  				<div>{{ $ediType->interchange_receiver_id }}</div>
+			</td>		
+			
 		<tr>
 	@empty
 	   <tr>
@@ -43,6 +57,27 @@ Interchange Receiver
 
 </table>
 
+<div class="mb-3">
+	Form::open(array('url' => '/uploadfile','files'=>'true'));
+         echo 'Select the file to upload.';
+         echo Form::file('image');
+         echo Form::submit('Upload File');
+         echo Form::close();
+</div>
+
+<div class="mb-3">
+	<form method="POST" action="/edilaravel/editype/createfromfile" enctype="multipart/form-data">
+		@csrf
+		<label for="formFile" class="form-label">If you have a file without an EDI type, you can create the EDI type for it</label>
+		<input class="form-control" type="file" id="fileChosen" name="fileChosen[]" >
+		<div class="mb-3 mt-1">
+         <button type="submit" value="submit" class="btn btn-primary">Create New EDI Type for this file</button>
+      </div>
+	</form>	
+</div>
+
+<br />
+<br />
 
 <div class="container edi-grid">
 	<div class="row header">

@@ -51,6 +51,9 @@ Route::prefix('edilaravel')->group(function () {
       
       Route::get('/chooseobject', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@chooseObject');
       Route::post('/createnewtype', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewType');
+
+      Route::post('/createfromfile', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createFromFile');
+      
       
    });
    

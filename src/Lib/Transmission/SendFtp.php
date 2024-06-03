@@ -1,13 +1,13 @@
 <?php
 
-namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\Send;
+namespace Bgies\EdiLaravel\Lib\Transmission;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Bgies\EdiLaravel\Models\Ediincoming;
 use Bgies\EdiLaravel\Functions\FileFunctions;
 use Carbon\Carbon;
-use Bgies\EdiLaravel\Models\Edifiles;
+use Bgies\EdiLaravel\Models\Edifile;
 
 
 
@@ -30,7 +30,7 @@ class SendFtp
       
       // Send the files that need to be sent
 //      $williamsDirectories = Storage::disk('ediWilliamsFTP')->directories();
-//      $ediFiles = new Edifiles();
+//      $ediFiles = new EdiFile();
 //      $ediFiles->select('CALL proc_williams_FTP');
       
       // collect puts the result into 
@@ -45,7 +45,7 @@ class SendFtp
             
             Storage::disk('ediWilliamsFTP')->put($ftpDir . "/" .  $fileName, $fileContents);
             
-            $ediFile = EdiFiles::find($fileToSend->id);
+            $ediFile = EdiFile::find($fileToSend->id);
             $ediFile->edf_client_filename = $fileName;
             $ediFile->edf_state = 2;
             $ediFile->edf_transmission_date = Carbon::now();

@@ -3,7 +3,7 @@
 namespace Bgies\EdiLaravel\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Bgies\EdiLaravel\Models\EdiUsers;
+use Bgies\EdiLaravel\Models\EdiUser;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Exceptions\NoSuchEdiTypeException;
 
@@ -15,7 +15,7 @@ class EdiUsersController extends Controller
    public function dashboard()
    {
 
-      $ediUsers = EdiUsers::paginate();
+      $ediUsers = EdiUser::paginate(25);
 
       return view('edilaravel::users.dashboard')
          ->with('ediUsers', $ediUsers)

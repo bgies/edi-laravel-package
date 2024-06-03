@@ -403,7 +403,7 @@ class EdiTypesController extends Controller
       
       // enter a few default values
       $input['edt_file_directory'] = '';
-      // remove the file that isn't in the database
+      // remove the property that isn't in the database
       $ediVersion = $input['edi_version'];
       unset($input['edi_version']); 
       $transactionSetName = $input['edt_transaction_set_name'];
@@ -454,7 +454,67 @@ class EdiTypesController extends Controller
             
    }
    
-   
-   
-   
+   public function createFromFile(Request $request) {
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController createFromFile', '', true);
+      
+      // make a copy of the file, and put it where our normal file functions
+      // can find it. 
+      $input = $request->all();
+      $inputFile = $request->file('fileChosen')[0];
+      $filePath = $inputFile->getRealPath();
+      $fileContents = file_get_contents($filePath);
+      $originalFileName = $inputFile->getClientOriginalName();
+      $newFilePath = 'tmp/' . $originalFileName;      
+      \Storage::disk('edi')->put($newFilePath, $fileContents);
+            
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController createFromFile', 'input: ' . print_r($input, true));
+      $messagesArray = [];
+      
+      $EDIObj = new EdiReadOptions();
+      $sharedTypes = new SharedTypes();
+      $retVals = new ReturnValues();
+      /*
+       * this procedure reads the ISA, GS, and ST segments to set delimiters, dates
+       * and sender/receiver id's
+       *
+       * NOTE we are using a default EDIObj here because we can't find the
+       * correct one until we know what's in the file, and we will
+       * use the Sender/Receiver ids plus the transaction set.
+       */
+      $fileArray = EdiFileFunctions::ReadX12FileIntoStrings($newFilePath, $EDIObj, false, $sharedTypes);
+      
+      $ret = ReadEdiFileFunctions::getEdiTypeFromEdiObject($EDIObj);
+      $ediType = $ret->ediType;
+      if (!$ret->getResult()) {
+        
+        $ediType = new EdiType();
+        $ediType->edt_name = 'Read_' . $EDIObj->ediStandard . '_' . $EDIObj->transactionSetIdentifier . '_' . $EDIObj->interchangeSenderID;
+        $ediType->edt_transaction_set_name = $EDIObj->transactionSetIdentifier;
+        $ediType->edt_is_incoming = 1;
+        $ediType->edt_control_number = 0;
+        $ediType->edt_manual_create = 1;
+        $ediType->edt_file_directory = '';
+        $ediType->edt_edi_standard = $EDIObj->ediStandard;
+        $ediType->interchange_sender_id = $EDIObj->interchangeSenderID;
+        $ediType->interchange_receiver_id = $EDIObj->interchangeReceiverID;
+        $ediType->application_sender_code = $EDIObj->applicationSenderCode;
+        $ediType->application_receiver_code = $EDIObj->applicationReceiverCode;
+        
+         
+        $ediType->save();
+        LoggingFunctions::logThis('info', 6, 'EdiTypesController createFromFile', 'created EDI Type: ' . $ediType->id . '-' . $ediType->edt_name);
+      }
+      
+      // Delete the file we created before we leave
+      \Storage::disk('edi')->delete($newFilePath);
+      
+      return view('edilaravel::ediTypes.editype')
+      ->with('ediType', $ediType)
+      ->with('error', $retValues->getErrorList())
+      ->with('messages', $retValues->getMessages())
+      ->with('fields', $fields)
+      ->with('navPage', $this->navPage);
+      
+   }
+      
 }
