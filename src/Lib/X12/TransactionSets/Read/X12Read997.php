@@ -236,9 +236,9 @@ class Read997 extends BaseEDIReceive
          }
       
          try {
-            $retVal = $this->dealWithFile();
+            $retVal = $this->dealWithData();
             if (!$retVal) {
-               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithFile');
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithData');
                return print_r($this->ediOptions->ediMemo, true);
             }
             
@@ -417,7 +417,7 @@ class Read997 extends BaseEDIReceive
    }   
    
    // if Files can be updated, then update them, also need to put in 
-   protected function dealWithFile()
+   protected function dealWithData()
    {
       $fullDataSet = $this->dataset;
       foreach ($fullDataSet['DetailDataSet'] as $curDetail ) {

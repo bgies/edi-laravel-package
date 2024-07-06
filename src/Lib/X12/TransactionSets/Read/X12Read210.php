@@ -5,16 +5,19 @@ namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\Read;
 use Bgies\EdiLaravel\FileHandling\FileDrop;
 use Bgies\EdiLaravel\Lib\PropertyType;
 use Bgies\EdiLaravel\Lib\ReturnValues;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
 use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiReceive;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
 use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
+use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 
 class X12Read210 extends BaseEdiReceive
 {
    public $transactionSetName = '210';
+   protected ?EdiFile $ediFile = null;
    
    /*
     * From BaseEdiReceive
@@ -35,21 +38,66 @@ class X12Read210 extends BaseEdiReceive
     *
     * @return void
     */
-   public function __construct($ediType)
+   public function __construct(EdiType $ediType, EdiFile $ediFile)
    {
-      parent::__construct($ediType->id);
-      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\ReadX12Send210 construct', 'edi_type_id: ' . $ediType->id);
+      parent::__construct($ediType, $ediFile);
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read210 construct', 'edi_type_id: ' . $ediType->id);
      
-      $this->ediType = $ediType;
-      
       if (!$this->ediType) {
          LoggingFunctions::logThis('error',7, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read210 construct', 'edi_type (' . $edi_type_id . ') NOT FOUND');
          return 0;
       }
 
       LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read210 construct', 'edi_type: ' . print_r($this->ediType->getAttributes(), true));
+
+      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      $this->edtBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
+      $this->edtAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
       
-      $this->ediFile = new EdiFile();
+      $this->setupDataSets();
+      
+      
+      \Log::info('');
+      \Log::info('class X12Read210 edi_type serialize: ' . serialize($this->ediType));
+      
+      return 1;
+   }
+   
+   protected function getDetailDataset() : array
+   {
+      $record = array(
+         '08-CorrectionIndicator' => '',
+         '01-ShipmentQualifier' => '',
+         'TransactionSetIdentifierCode' => '',
+         'TransactionSetControlNumber' => null,
+         'SetAcknowledgmentCodeSegment' => null,
+         'TransactionSetNoteCode1' => null,
+         'TransactionSetNoteCode2' => null,
+         'TransactionSetNoteCode3' => null,
+         'TransactionSetNoteCode4' => null,
+         'TransactionSetNoteCode5' => null,
+         'ErrorDescription' => null,
+         'SegmentIDCode' => null,
+         'SegmentPosition' => null,
+         'LoopIdentifierCode' => null,
+         'SegmentSyntaxErrorCode' => null
+      );
+      return $record;
+   }
+   
+   
+   protected function setupDataSets()
+   {
+      $this->dataset = $this->getMasterDataset();
+      // if you need to add fields to the master dataset, do it here
+      //$this->dataset['mynewfield'] = '';
+      
+      
+      //$this->dataset['DetailDataSet'] = $this->getDetailDataset();
+      
+   }
+   
+//      $this->ediFile = new EdiFile();
       
       /*
        * We shouldn't need this anymore, as we can now edit the edi_types table
@@ -123,15 +171,8 @@ class X12Read210 extends BaseEdiReceive
       }  // END if ($ediTesting) 
       */
       
-      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
-      $this->edtBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
-      $this->edtAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
-      
-      \Log::info('');
-      \Log::info('class X12Read210 edi_type serialize: ' . serialize($this->ediType));
-      
-      return 1;
-   }
+   
+   
    
    public function getFile()
    {
@@ -168,8 +209,9 @@ class X12Read210 extends BaseEdiReceive
       $sharedTypes = new SharedTypes();
       foreach ($retFiles as $curFile) {
          try {
-            $filePath = env('EDI_TOP_DIRECTORY') . "/" . $curFile->einFileName;
-            $fileArray = FileFunctions::ReadX12FileIntoStrings($filePath,
+            $filePath = env('EDI_TOP_DIRECTORY') . "/" . $this->ediFile['edf_filename'];
+
+            $fileArray = EdiFileFunctions::ReadX12FileIntoStrings($filePath,
                $this->ediOptions, false, $sharedTypes);
             $this->fileArray = $fileArray;
             $this->curFile = $curFile;
@@ -177,7 +219,7 @@ class X12Read210 extends BaseEdiReceive
             $LineCount = 0;
             
             try {
-               $this->checkSenderReceiver($this->ediType, $this->fileArray, $this->ediOptions);
+               $this->checkSenderReceiver($this->fileArray, $this->ediOptions);
             } catch (EdiFatalException $e) {
                \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute checkSenderReceiver aborting... File: ' . $filePath);
                throw($e);
@@ -189,11 +231,18 @@ class X12Read210 extends BaseEdiReceive
             \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message());
          }
          
+         try {
+            $retVal = EdiFileFunctions::checkFileIntegrity($this->fileArray, $this->ediOptions);
+         } catch (EdiFatalException $e) {
+            \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute checkSenderReceiver aborting... File: ' . $filePath);
+            throw($e);
+         }
+         
          
          try {
             // we've already read the ISA, GS and ST segments in the
             // ReadX12FileIntoStrings
-            $FileLineCount = 3;
+            $FileLineCount = 2;
             
             $retVal = $this->readFile($this->curFile, $this->fileArray, $this->ediOptions, $FileLineCount, $sharedTypes);
             if (!$retVal) {
@@ -202,42 +251,215 @@ class X12Read210 extends BaseEdiReceive
             }
          } catch (EdiException $e) {
             \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in composeFile: ' . $e->message);
-            return print_r($this->ediOptions->ediMemo, true);
+            $this->retValues->addToErrorList('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in composeFile: ' . $e->message);
+            return $this->retValues;
          }
          
          try {
-            $retVal = $this->dealWithFile();
+            $retVal = $this->dealWithData();
             if (!$retVal) {
-               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithFile');
-               return print_r($this->ediOptions->ediMemo, true);
+               \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute problem in dealWithData');
+               $this->retValues->addToErrorList('Bgies\EdiLaravel\X12 X12Read997 execute problem in dealWithData: ' . $e->message);
+               return $this->retValues;
             }
             
          } catch (EdiException $e) {
-            \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in getData: ' . $e->message);
-            return print_r($this->ediOptions->ediMemo);
-            //return print_r($this->ediOptions->ediMemo, true)
+            \Log::error('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithData: ' . $e->message);
+            $this->retValues->addToErrorList('Bgies\EdiLaravel\X12 X12Read997 execute EXCEPTION in dealWithData: ' . $e->message);
+            return $this->retValues;
          }
          
       };
       
       \Log::info('Bgies\EdiLaravel\X12 X12Read997 execute END');
-      return print_r($this->dataset, $retVal);
-      
-      
-      
-      
-      
+//      return print_r($this->dataset, $retVal);    
       
       return $this->retValues;
    }
    
    
-   public function dealWithFile()
+   
+   protected function readFile($curFile, array $fileArray, EDIReadOptions $EDIObj, int $FileLineCount, SharedTypes $sharedTypes )
+   {
+      $this->setupDataSets();
+      
+      $LineCountFile = 1;
+      $ediVersion = $EDIObj->ediVersionReleaseCode;
+      try {
+         do {
+            $FileLineCount++;
+            $LineCountFile++;
+            $segmentType = SegmentFunctions::GetSegmentType($fileArray[$FileLineCount - 1], $EDIObj->delimiters, $sharedTypes);
+            $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$FileLineCount - 1]);
+            
+            switch ($segmentType) {
+               case 'Invalid' : {
+                  throw new EdiException('An invalid segment type was encountered in an ST loop. Aborting....');
+                  break;
+               }
+               case 'ISA' : {
+                  throw new EdiException('An ISA segment was encountered inside an ST loop. Aborting....');
+                  break;
+               }
+               case 'GS' : {
+                  throw new EdiException('A GS segment was encountered inside an ST loop. Aborting....');
+                  break;
+               }
+               case 'ST'  : {
+                  $stSegmentCount = 0;
+                  $this->dataset['DetailDataSet'][] = $this->getDetailDataset();
+                  
+                  do {
+                     
+                     
+                     
+                     
+                     
+                  } while ($segmentType != 'SE' && ($FileLineCount <= count($fileArray)));
+                  
+                  SegmentFunctions::ReadSESegment($fileArray[$FileLineCount - 1], $EDIObj, $LineCountFile);
+                  
+                  
+                  throw new EdiException('An ST segment was not terminated with an SE segment');
+                  break;
+               }
+               case 'IEA' : {
+                  throw new EdiException('An IEA segment was encountered inside an EDI 997 segment. Aborting....');
+                  break;
+               }
+               case 'SE'  : {
+                  SegmentFunctions::ReadSESegment($fileArray[$FileLineCount - 1], $EDIObj, $LineCountFile);
+                  break;
+               }
+               case 'LX' : {
+                  
+                  break;
+               }
+               case 'B3' : {
+                  try {
+                     \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentB3::B3SegmentRead($segmentArray, $EDIObj, $this->dataset['DetailDataSet'], $ediVersion);
+                  } catch (Exception $e) {
+                     LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in B3 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                     throw new EdiException('A 997 ST segment was not terminated with an SE segment');
+                  }
+                  break;
+               }
+               case 'L1' : {
+                  
+                  break;
+               }
+               
+               case 'L3' : {
+                  
+                  break;
+               }
+               
+               case 'N1' : {
+                  
+                  break;
+               }
+               case 'N3' : {
+                  
+                  break;
+               }
+               case 'N4' : {
+                  
+                  break;
+               }
+               case 'N7' : {
+                  
+                  break;
+               }
+               
+               case 'N9' : {
+                  
+                  break;
+               }
+               case 'CN' : {
+                  
+                  break;
+               }
+               case 'G62' : {
+                  
+                  break;
+               }
+               
+               case 'AK1' : {
+                  \Bgies\EdiLaravel\Functions\ReadFileFunctions::ReadAK1Line($segmentArray[$FileLineCount - 1], $EDIObj->delimiters, $masterDataset );
+                  break;
+               }
+               case 'AK2' : {
+                  $masterDataset['InterchangeSenderID'] = $EDIObj->interchangeSenderID;
+                  $masterDataset['InterchangeReceiverID'] = $EDIObj->interchangeReceiverID;
+                  $detailDataset = $this->getDetailDataset();
+                  
+                  $masterDataset['DetailDataSet'][count($masterDataset['DetailDataSet'])] = $detailDataset;
+                  
+                  ReadFileFunctions::ReadAK2Line($segmentArray[$FileLineCount - 1],
+                     $EDIObj->delimiters, $detailDataset);
+                  break;
+               }
+               case 'AK3' : {
+                  ReadFileFunctions::ReadAK3Line($segmentArray[$FileLineCount - 1],
+                     $EDIObj->delimiters, $detailDataset);
+                  break;
+               }
+               case 'AK4' : {
+                  ReadFileFunctions::ReadAK4Line($segmentArray[$FileLineCount - 1],
+                     $EDIObj->delimiters, $detailDataset);
+                  break;
+               }
+               case 'AK5' : {
+                  ReadFileFunctions::ReadAK5Line($segmentArray[$FileLineCount - 1],
+                     $EDIObj->delimiters, $detailDataset);
+                  break;
+               }
+               case 'AK9'  : {
+                  ReadFileFunctions::ReadAK9Line($segmentArray[$FileLineCount - 1],
+                     $EDIObj->delimiters, $masterDataset);
+                  break;
+               }
+               
+               default : {
+                  
+                  break;
+               }
+            }
+            
+            
+         } while ($segmentType != 'SE' && ($FileLineCount <= count($segmentArray)));
+         //         until (lineType = ltSE) or (FileLineCount >= segmentArray.Count);
+         
+         
+         
+      } catch (Exception $e) {
+         throw($e);
+      }
+      
+      return true;
+   }
+   
+   // if Files can be updated, then update them, also need to put in
+   protected function dealWithData()
    {
       
+      $fullDataSet = $this->dataset;
+
+      foreach ($fullDataSet['DetailDataSet'] as $curDetail ) {
+         
+         
+         
+      }
       
       
+      
+      
+      
+      
+      return true;
    }
+   
+   
    
    
 }

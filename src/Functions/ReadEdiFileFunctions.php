@@ -32,7 +32,7 @@ class ReadEdiFileFunctions
       
       if (count($ediType) == 1) {
         $retValues->ediType = $ediType[0]; 
-         
+        $retValues->setResult(true); 
       }
       
       if (count($ediType) == 0) {

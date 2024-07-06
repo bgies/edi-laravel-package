@@ -11,7 +11,7 @@ use Bgies\EdiLaravel\Functions\FileFunctions;
 use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Carbon\Carbon;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
-use App\Exceptions\EdiFatalException;
+use Bgies\EdiLaravel\Exceptions\EdiFatalException;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\Read997Options;
 
 
@@ -23,7 +23,7 @@ use Bgies\EdiLaravel\Lib\X12\Options\Read\Read997Options;
 class SegmentFunctions 
 {
    
-   public static function getSegmentType(string $inStr, $Delimiters, SharedTypes $sharedTypes) : string 
+   public static function GetSegmentType(string $inStr, $Delimiters, SharedTypes $sharedTypes) : string 
    {
       $TempStr = (string) trim(SegmentFunctions::BreakLine($inStr, $Delimiters));  // pick the Segment Name
       
@@ -617,7 +617,7 @@ class SegmentFunctions
       $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // get rid of SE
    
       // set these here because they will be useful later if there are errors.
-      $EDIObj->EDIReplySettings->SESegmentFilePos = $LineCount;
+      $EDIObj->ediReplySettings->SESegmentFilePos = $LineCount;
    
    
       if (strpos('SE', strtoupper($TempStr)) != 0) {

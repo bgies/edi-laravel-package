@@ -16,6 +16,41 @@ use Bgies\EdiLaravel\Exceptions\EdiFatalException;
 
 class EdiFileFunctions //extends BaseController
 {
+   public static function checkFileIntegrity($fileArray, $EDIObj) {
+      // most of the time, there is only one ISA and GS segment per file
+      // and one type of ST segment per file so test that first.
+      $isaSegment = $fileArray[0];
+      // now count the GS/GE segments in the file.
+      $gsCount = 0;
+      $gsStart = 0;
+      $geCount = 0;
+      $gePos = 0;
+      for ($i = 1; $i < count($fileArray); $i++) {
+         $curSegment = $fileArray[$i];
+         if (substr($curSegment, 0, 2) == 'GS') {
+            $gsCount++;
+            $gsStart = $i;
+         }
+         if (substr($curSegment, 0, 2) == 'GE') {
+            if ($gsCount != $geCount + 1) {
+               throw new EdiException('checkFileIntegrity There is a problem with the GS-GE Segment Counts on line : ' . $i);
+            }
+            $geCount++;
+            $geStart = $i;
+         }
+         
+      }
+      
+      $ieaSegment =  $fileArray[count($fileArray) -1];
+      $ieaSegmentArray = explode($EDIObj->delimiters->ElementDelimiter, $ieaSegment);
+      if ($gsCount != (int) $ieaSegmentArray[1]) {
+         throw new EdiException('The number of included functional groups does not match the IEA 01 element');
+      }
+      
+   }
+   
+   
+   
    
    public static function getClientFileName(string $fileFormat, string $SCAC, Carbon $carbonDate) {
       //scac_yyyymmdd_hhnnss.filetype
@@ -82,7 +117,7 @@ class EdiFileFunctions //extends BaseController
    // NOTE - The short file name is what's stored in the edi_files Table
    public static function getShortFileName($ediTypeName, $EDIID) {
       $DirectoryDateString = FileFunctions::getDirectoryDateString();
-      $ShortFileName = $ediTypeName . '/' . $DirectoryDateString . '/' . $EDIID . '.txt';
+      $ShortFileName = trim($ediTypeName) . '/' . $DirectoryDateString . '/' . $EDIID . '.txt';
       return $ShortFileName;
    }
   
@@ -198,12 +233,10 @@ class EdiFileFunctions //extends BaseController
       //$TopDirectory = FileFunctions::getTopDirectory();
       
       //$fileName = $TopDirectory . '/' . $shortName;
-      $midPath = ENV('EDI_TOP_DIRECTORY', '');
+      $topDir = ENV('EDI_TOP_DIRECTORY', '');
       
-      $fileContents = \Storage::disk($diskName)->get($midPath . '/' . $shortName);
-            
-
-$filePath2 = \Storage::disk($diskName)->path($midPath . '/' . $shortName);
+      $fileContents = \Storage::disk($diskName)->get($topDir . '/' . $shortName);
+//      $filePath2 = \Storage::disk($diskName)->path($topDir . '/' . $shortName);
       return $fileContents;
    }
    

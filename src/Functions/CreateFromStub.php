@@ -41,11 +41,11 @@ class CreateFromStub
    public function fillOptionObject($options, array $input, EdiType $ediType) {
       // SETUP some defaults
       $options->ediId = $ediType->id;
-      $options->fileDirection = $input['edt_is_incoming'];
-      $options->interchangeReceiverID = $input['interchange_receiver_id'];
-      $options->interchangeSenderID = $input['interchange_sender_id'];
-      $options->applicationReceiverCode = $input['application_receiver_code'];
-      $options->applicationSenderCode = $input['application_sender_code'];
+      $options->fileDirection = (array_key_exists('edt_is_incoming', $input)) ? $input['edt_is_incoming'] :  $ediType->edt_is_incoming;
+      $options->interchangeReceiverID = (array_key_exists('interchange_receiver_id', $input)) ? $input['interchange_receiver_id'] : $ediType->interchange_receiver_id;
+      $options->interchangeSenderID = (array_key_exists('interchange_sender_id', $input)) ? $input['interchange_sender_id'] : $ediType->interchange_sender_id;
+      $options->applicationReceiverCode = (array_key_exists('application_receiver_code', $input)) ? $input['application_receiver_code'] : $ediType->application_receiver_code;
+      $options->applicationSenderCode = (array_key_exists('application_sender_code', $input)) ? $input['application_sender_code'] : $ediType->application_sender_code;
       
       // Remove this when I put javascript in to force the version to be 
       if (!array_key_exists('edi_version', $input)) {
@@ -65,7 +65,7 @@ class CreateFromStub
       $options->useDetailQuery = 0;
       $options->detailSQL = '';
       
-      $options->transactionSetIdentifier = $input['edt_transaction_set_name'];
+      $options->transactionSetIdentifier = (array_key_exists('edt_transaction_set_name', $input)) ? $input['edt_transaction_set_name'] : $ediType->edt_transaction_set_name;
       $options->transactionSetControlNumber = 0;
       $options->useXDigitsFromControlNumber = 6;
       $options->dataInterchangeControlNumber = 1;

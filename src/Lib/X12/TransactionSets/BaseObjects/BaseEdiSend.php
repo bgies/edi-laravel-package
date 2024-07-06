@@ -2,7 +2,7 @@
 
 namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
-use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiObject as BaseEdiObject;
+use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiTransaction;
 use Bgies\EdiLaravel\Lib\X12\Options\BaseEdiOptions;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\EdiSendOptions;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,27 +11,26 @@ use function Opis\Closure\serialize;
 use function Opis\Closure\unserialize;
 
 
-abstract class BaseEdiSend extends BaseEdiObject 
+abstract class BaseEdiSend extends BaseEdiTransaction 
 {
    protected $ediType = null;
    protected $ediOptions = null;
    protected $data = null;
    protected $retValues = null;
  
-   public function __construct($edi_type_id)
+   public function __construct($edi_type)
    {
-      parent::__construct($edi_type_id);
+      parent::__construct($edi_type);
    }
   
    public function setOptions($ediOptions) {
       $this->ediOptions = $ediOptions;      
    }
-   public function setEdiType($ediType) {
-      $this->ediType = $ediType;
-   }
+
    public function setData($data) {
       $this->data = $data;
    }
+
    public function setRetValues($retValues) {
       $this->retValues = $retValues;
    }

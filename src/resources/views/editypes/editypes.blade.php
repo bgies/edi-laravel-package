@@ -9,7 +9,13 @@
 <table id="editypestable" class="table table-striped" style="width:100%">
 	<thead>
    	<tr>
-      	<th>Dup.</th>
+      	<th>
+      		<button type="button" class="btn bg-light text-success edi-btn-new" id="row_new" name="row_new" 
+					data-bs-toggle="tooltip" title="New">
+					
+  					<span>New +</span> 
+				</button>
+			</th>
          <th>Id</th>
          <th>Name</th>
          <th>Enabled</th>
@@ -24,9 +30,11 @@
 		@forelse ($ediTypes as $ediType)
 		<tr>
 			<td>
-				<button type="button" class="btn bg-light text-success edi-btn-new" id="row_new" name="row_new" 
-					data-bs-toggle="tooltip" title="New">
-					<span>New +</span> 
+				<button type="button" class="btn btn-warning edi-btn-copy" id="row_{{ $ediType->id }}" name="row_{{ $ediType->id }}" 
+					data-bs-toggle="tooltip" title="{{ $ediType->edt_name }}">
+  					Dup.
+				</button>
+					
 				</button>			
 			</td>
 			<td>
@@ -57,14 +65,8 @@
 
 </table>
 
-<div class="mb-3">
-	Form::open(array('url' => '/uploadfile','files'=>'true'));
-         echo 'Select the file to upload.';
-         echo Form::file('image');
-         echo Form::submit('Upload File');
-         echo Form::close();
-</div>
 
+<br />
 <div class="mb-3">
 	<form method="POST" action="/edilaravel/editype/createfromfile" enctype="multipart/form-data">
 		@csrf
@@ -582,6 +584,9 @@
 	});
 */
 
+	
+
+
 	let newObject = {
 		protocol : 'X12',
 		transactionset: ''
@@ -667,7 +672,7 @@
 	
 	}
 	
-	
+	//new DataTable('#editypestable');
 
 </script>
 

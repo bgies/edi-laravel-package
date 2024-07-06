@@ -15,7 +15,7 @@ class CreateEdiFilesTable extends Migration
     {
         Schema::create('edi_files', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('edf_edi_type_id');
+            $table->bigInteger('edf_edi_type_id');
             $table->integer('edf_cancelled')->default(1);
             $table->integer('edf_test_file')->default(0);
             $table->integer('edf_state')->default(0);
@@ -34,6 +34,7 @@ class CreateEdiFilesTable extends Migration
             $table->integer('edf_records_parsed')->nullable();
             $table->integer('edf_records_transmitted')->nullable();
             $table->boolean('edf_test_file')->nullable()->default(0);
+            $table->string('edf_original_filename')->nullable();
             
             $table->timestamps();
             $table->softDeletes();

@@ -44,6 +44,7 @@ abstract class BaseEdiOptions
    public bool $writeOneLine = true;
    public bool $isTestFile = true;
 
+   public bool $skipFileChecks = false;
    
    public $dataInterchangeControlNumber = 0;
    public $ediReplySettings = null; // : TEDIReplySettings;
@@ -165,6 +166,9 @@ abstract class BaseEdiOptions
          );
       $propTypes['isTestFile'] = new PropertyType(
          'bool', 0, 1, false, false, null, false, false
+         );
+      $propTypes['skipFileChecks'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
          );
       $propTypes['ediTypeId'] = new PropertyType(
          'int', 0, 20000000, false, false, null, false, false

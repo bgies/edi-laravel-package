@@ -48,6 +48,7 @@ Route::prefix('edilaravel')->group(function () {
       
       Route::get('/readfile', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@readfile');
       Route::get('/read/manually/{fileName}', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@readfileManually');
+      Route::post('/read/manually', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@readfileManuallyUpload');
       
       Route::get('/chooseobject', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@chooseObject');
       Route::post('/createnewtype', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createNewType');

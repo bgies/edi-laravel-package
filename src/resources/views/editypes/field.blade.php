@@ -32,7 +32,7 @@
 			@endif   		
    		</div>
    		<form class="edi-grid-bg needs-validation" action="/edilaravel/editype/updatefield" method="POST" novalidate>
-   		
+   			@csrf
    			<input type="hidden" id="ediTypeFieldName" name="ediTypeFieldName" value="{{ $fieldName }}">
    			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">
 

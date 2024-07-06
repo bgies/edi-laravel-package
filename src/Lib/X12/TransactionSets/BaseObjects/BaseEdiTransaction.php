@@ -3,12 +3,15 @@
 namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects;
 
 use Bgies\EdiLaravel\Lib\ReturnValues;
+use Bgies\EdiLaravel\Models\EdiFile;
+use Bgies\EdiLaravel\Models\EdiType;
 
 
-abstract class BaseEdiObject 
+abstract class BaseEdiTransaction
 {
    protected ?ReturnValues $retValues = null;
-   public int $edi_type_id;
+   protected ?EdiType $ediType;
+   protected ?int $ediTypeId = null;
    
 
    /**
@@ -16,11 +19,12 @@ abstract class BaseEdiObject
     *
     * @return void
     */
-   public function __construct(int $edi_type_id)
+   public function __construct(EdiType $edi_type)
    {
-      $this->edi_type_id = $edi_type_id;
-      
-      
+      $this->ediType = $edi_type;
+      // we used to pass only the EDI Type ID , so I'm keeping it 
+      // until I'm sure removing it won't break anything
+      $this->ediTypeId = $edi_type->id;      
    }
       
       

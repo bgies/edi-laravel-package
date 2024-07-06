@@ -9,9 +9,11 @@
 <h4>From the File</h4>
 <div class="mb-3"><span class="fw-bold">(ISA-) Interchange Receiver ID : </span>{{ $ediObj->interchangeReceiverID }}</div>
 <div class="mb-3"><span class="fw-bold">(ISA-) Interchange Sender ID : </span>{{ $ediObj->interchangeSenderID }}</div>
-<div class="mb-3"><span class="fw-bold">(GS) Application Receiver Code : </span>{{ $ediObj->applicationReceiverCode }}</div>
-<div class="mb-3"><span class="fw-bold">(GS) Application Sender Code : </span>{{ $ediObj->applicationSenderCode }}</div>
+<div class="mb-3"><span class="fw-bold">(GS-) Application Receiver Code : </span>{{ $ediObj->applicationReceiverCode }}</div>
+<div class="mb-3"><span class="fw-bold">(GS-) Application Sender Code : </span>{{ $ediObj->applicationSenderCode }}</div>
+<div class="mb-3"><span class="fw-bold">(ST-) Transaction Set Identifier : </span>{{ $ediObj->transactionSetIdentifier }}</div>
 <div class="mb-3"><span class="fw-bold">EDI Standard : </span>{{ $ediObj->ediStandard }}</div>
+<div class="mb-3"><span class="fw-bold">EDI Version : </span>{{ $ediObj->ediVersionReleaseCode }}</div>
 <div class="mb-3"><span class="fw-bold">Is Incoming : </span>{{ $ediObj->fileDirection }}</div>
 </p>
 
@@ -40,8 +42,16 @@
 @endif
 
 <p class="bg-success bg-opacity-10">
+	<div>Data</div>
+
+
+</p>
+<br />
+
+
+<p class="bg-success bg-opacity-10">
 	@foreach($fileArray as $fileEntry)
-		<div class="mb-3 bg-success bg-opacity-10">
+		<div class="bg-success bg-opacity-10">
 			{{ $fileEntry }}
 		</div>
 	@endforeach

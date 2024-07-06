@@ -9,8 +9,8 @@ class SharedTypes
    
    public $SegmentTypes = array('Invalid', 'ISA', 'GS', 'ST', 'BGN', 'N1', 'N3', 'N4',
       'GE', 'IEA', 'OTI', 'REF', 'DTM', 'AMT', 'TED', 'SE', 'NTE', 'AK1', 'AK2',
-      'AK3', 'AK4', 'AK5', 'AK9', 'BPS', 'CUR', 'N2', 'PER', 'LS', 'LE', 'RMT', 'B10',
-      'LX', 'MS3', 'L11', 'AT7', 'AT8', 'MS1', 'MS2', 'G61', 'G62', 'K1', 'Man', 'Q7',
+      'AK3', 'AK4', 'AK5', 'AK9', 'B3', 'BPS', 'CUR', 'N2', 'PER', 'LS', 'LE', 'RMT', 'B10',
+      'LX', 'MS3', 'L3', 'L11', 'AT7', 'AT8', 'MS1', 'MS2', 'G61', 'G62', 'K1', 'L1', 'Man', 'Q7',
       'AT5', 'CD3', 'SPO', 'SDQ', 'BPR', 'TRN', 'ENT', 'RMR', 'IT1', 'BX', 'N9',
       'HL', 'L0', 'NM1', 'ADX', 'H3', 'BSS', 'LIN', 'CTT', 'UIT', 'S5', 'N7', 'M7');
    

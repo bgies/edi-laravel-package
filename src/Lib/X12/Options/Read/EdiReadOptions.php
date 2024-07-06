@@ -10,6 +10,8 @@ class EdiReadOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;
+
+   
        
    
    /**

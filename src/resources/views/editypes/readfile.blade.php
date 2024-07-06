@@ -7,7 +7,7 @@
 
 <h2>Read File</h2>
 <p>To manually read a file, place it in the storage/edifile/To_Read directory, and 
-it will show up in a list here, or you can choose it with the File Picker</p>
+it will show up in a list here, or you can choose a file on your computer with the File Picker</p>
 <p>
 		@foreach($fileList as $file)
 			<div class="mb-3">
@@ -21,7 +21,7 @@ it will show up in a list here, or you can choose it with the File Picker</p>
 <div class="mb-3">
 	<form method="POST" action="/edilaravel/editype/read/manually/" enctype="multipart/form-data">
 		<label for="formFile" class="form-label">Upload EDI file to read</label>
-		<input class="form-control" type="file" id="fileChosen" name="fileChosen[]" onchange="getAfilename(this.value)">
+		<input class="form-control" type="file" id="fileChosen" name="fileChosen[]" >
 		<div class="mb-3 mt-1">
          <button type="submit" value="submit" class="btn btn-primary">Upload</button>
       </div>
@@ -34,15 +34,6 @@ it will show up in a list here, or you can choose it with the File Picker</p>
 
 	var input = document.getElementById("fileChosen");
 	
-	if (input) {
-		var filename = input.files[0].name;
-		}	
-
-	function getAfilename(val){ 
-	   
-		alert(val);
-
-	}
 
 
 </script>
