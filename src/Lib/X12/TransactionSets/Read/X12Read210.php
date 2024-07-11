@@ -54,7 +54,7 @@ class X12Read210 extends BaseEdiReceive
       $this->edtBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
       $this->edtAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
       
-      $this->setupDataSets();
+      //$this->setupDataSets();
       
       
       \Log::info('');
@@ -66,25 +66,18 @@ class X12Read210 extends BaseEdiReceive
    protected function getDetailDataset() : array
    {
       $record = array(
-         '08-CorrectionIndicator' => '',
-         '01-ShipmentQualifier' => '',
-         'TransactionSetIdentifierCode' => '',
-         'TransactionSetControlNumber' => null,
-         'SetAcknowledgmentCodeSegment' => null,
-         'TransactionSetNoteCode1' => null,
-         'TransactionSetNoteCode2' => null,
-         'TransactionSetNoteCode3' => null,
-         'TransactionSetNoteCode4' => null,
-         'TransactionSetNoteCode5' => null,
-         'ErrorDescription' => null,
-         'SegmentIDCode' => null,
-         'SegmentPosition' => null,
-         'LoopIdentifierCode' => null,
-         'SegmentSyntaxErrorCode' => null
+         'TransactionSetIdentifier' => ''
+
       );
       return $record;
    }
    
+   protected function fillMasterDataSet() 
+   {
+     // $this->dataset
+      
+      
+   }
    
    protected function setupDataSets()
    {
@@ -92,7 +85,16 @@ class X12Read210 extends BaseEdiReceive
       // if you need to add fields to the master dataset, do it here
       //$this->dataset['mynewfield'] = '';
       
+      $this->dataset['ediTypeId'] = $this->ediTypeId;
+      $this->dataset['InterchangeSenderID'] = $this->ediOptions->interchangeSenderID;
+      $this->dataset['InterchangeReceiverID'] = $this->ediOptions->interchangeReceiverID;
+      $this->dataset['ApplicationSenderID'] = $this->ediOptions->applicationSenderCode;
+      $this->dataset['ApplicationReceiverID'] = $this->ediOptions->applicationReceiverCode;
       
+      $this->dataset['NumberOfTransactionSetsIncluded'] = 0;
+      $this->dataset['NumberOfReceivedTransactionSets'] = 0;
+      $this->dataset['NumberOfAcceptedTransactionSets'] = 0;
+
       //$this->dataset['DetailDataSet'] = $this->getDetailDataset();
       
    }
@@ -285,6 +287,9 @@ class X12Read210 extends BaseEdiReceive
       
       $LineCountFile = 1;
       $ediVersion = $EDIObj->ediVersionReleaseCode;
+      $SegmentGroupCount = 0;
+      $TransactionSetsIncluded = 0;
+      
       try {
          do {
             $FileLineCount++;
@@ -306,42 +311,104 @@ class X12Read210 extends BaseEdiReceive
                   break;
                }
                case 'ST'  : {
-                  $stSegmentCount = 0;
-                  $this->dataset['DetailDataSet'][] = $this->getDetailDataset();
+                  try {
+                     $SegmentGroupCount = 0;
+                     $TransactionSetsIncluded++;
+                     
+                     $retVals = $this->checkSTSEIntegrity($this->fileArray, $FileLineCount - 1);
+                     if (!$retVals->getResult()) {
+                        throw new EdiFatalException('ST-SE group is not correct at ' . $FileLineCount . ' ReturnValues result is false');
+                     }
+                     SegmentFunctions::ReadSTSegment($segmentArray, $EDIObj, $FileLineCount, $sharedTypes);
+                     
+                  } catch (Exception $e) {
+                     throw new EdiFatalException('ST-SE group is not correct at ' . $FileLineCount . ' Exception: ' . $e->getMessage());
+                  } 
+                  $SegmentGroupCount = 1;
+                  $detailDataSet = $this->getDetailDataset();
+                  $detailDataSet['TransactionSetIdentifier'] = $segmentArray[1];
+                  $detailDataSet['TransactionSetControlNumber'] = $EDIObj->dataInterchangeControlNumber;
+            //      $detailDataSet['TransactionSetControlNumber'] = $EDIObj->dataInterchangeControlNumber;
+                  $this->dataset['DetailDataSet'][] = $detailDataSet;
+                  
                   
                   do {
+                     $FileLineCount++;
+                     $LineCountFile++;
+                     $SegmentGroupCount++;
                      
+                     $segmentType = SegmentFunctions::GetSegmentType($fileArray[$FileLineCount - 1], $EDIObj->delimiters, $sharedTypes);
+                     $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$FileLineCount - 1]);
                      
+                     switch ($segmentType) {
+                        case 'B3' : {
+                           try {   
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentB3::B3SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in B3 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('A 997 ST segment was not terminated with an SE segment');
+                           }
+                           break;
+                        }
+                        
+                        case 'N1' : {
+                        
+                           break;
+                        }
+                        case 'N3' : {
+                        
+                           break;
+                        }
+                        case 'N4' : {
+                        
+                           break;
+                        }
+                        case 'N7' : {
+                        
+                           break;
+                        }
                      
+                        case 'N9' : {
+                           try {
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentN9::N9SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in N9 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in N9 segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                           
+                           break;
+                        }
                      
+                        default : {
+                        
+                           break;
+                        }
+                     }
                      
                   } while ($segmentType != 'SE' && ($FileLineCount <= count($fileArray)));
                   
-                  SegmentFunctions::ReadSESegment($fileArray[$FileLineCount - 1], $EDIObj, $LineCountFile);
+                  if ($segmentType != 'SE') {
+                     throw new EdiException('An ST segment was not terminated with an SE segment');
+                  }
+
+                  SegmentFunctions::ReadSESegment($segmentArray, $EDIObj, $LineCountFile, $SegmentGroupCount);
                   
-                  
-                  throw new EdiException('An ST segment was not terminated with an SE segment');
                   break;
                }
                case 'IEA' : {
-                  throw new EdiException('An IEA segment was encountered inside an EDI 997 segment. Aborting....');
+                  throw new EdiException('An IEA segment was encountered inside an ST Segment. Line: ' . $FileLineCount . ' Aborting....');
                   break;
                }
                case 'SE'  : {
-                  SegmentFunctions::ReadSESegment($fileArray[$FileLineCount - 1], $EDIObj, $LineCountFile);
+                  SegmentFunctions::ReadSESegment($segmentArray, $EDIObj, $LineCountFile, $SegmentGroupCount);
                   break;
                }
                case 'LX' : {
                   
-                  break;
-               }
-               case 'B3' : {
-                  try {
-                     \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentB3::B3SegmentRead($segmentArray, $EDIObj, $this->dataset['DetailDataSet'], $ediVersion);
-                  } catch (Exception $e) {
-                     LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in B3 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
-                     throw new EdiException('A 997 ST segment was not terminated with an SE segment');
-                  }
                   break;
                }
                case 'L1' : {
@@ -354,27 +421,6 @@ class X12Read210 extends BaseEdiReceive
                   break;
                }
                
-               case 'N1' : {
-                  
-                  break;
-               }
-               case 'N3' : {
-                  
-                  break;
-               }
-               case 'N4' : {
-                  
-                  break;
-               }
-               case 'N7' : {
-                  
-                  break;
-               }
-               
-               case 'N9' : {
-                  
-                  break;
-               }
                case 'CN' : {
                   
                   break;
@@ -427,7 +473,7 @@ class X12Read210 extends BaseEdiReceive
             }
             
             
-         } while ($segmentType != 'SE' && ($FileLineCount <= count($segmentArray)));
+         } while ($segmentType != 'SE' && ($FileLineCount <= count($fileArray)));
          //         until (lineType = ltSE) or (FileLineCount >= segmentArray.Count);
          
          

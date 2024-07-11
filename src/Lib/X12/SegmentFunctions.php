@@ -329,8 +329,8 @@ class SegmentFunctions
          $EDIObj->ediReplySettings->ISASegment = $inStr;
          $EDIObj->ediReplySettings->ISASegmentFilePos = $lineCount;
          
-         $EDIObj->interchangeSenderQualifier = $isaArray[5];
-         $EDIObj->interchangeSenderID = $isaArray[6];
+         $EDIObj->interchangeSenderQualifier = trim($isaArray[5]);
+         $EDIObj->interchangeSenderID = trim($isaArray[6]);
          $EDIObj->interchangeReceiverQualifier = trim($isaArray[7]);
          $EDIObj->interchangeReceiverID = trim($isaArray[8]);
          
@@ -573,64 +573,58 @@ class SegmentFunctions
    }
 
 //   public static function ReadSTSegment(string $Str, EDIReadOptions &$EDIObj, &$SegmentType,
-   public static function ReadSTSegment(string $Str, &$EDIObj, &$SegmentType,
-      int $LineCount, SharedTypes $sharedTypes) : bool
+   public static function ReadSTSegment($segmentArray, &$EDIObj, int $LineCount, SharedTypes $sharedTypes) : bool
    {
       $retVal = true;
-      $FullStr = $Str;
-      $SegmentArray = explode($EDIObj->delimiters->ElementDelimiter, $Str);
       
       // set these here because they will be useful later if there are errors.
       $EDIObj->ediReplySettings->STSegmentFilePos = $LineCount;
          
-      If (strpos('ST', strtoupper($SegmentArray[0])) <> 0) {
+      If (strpos('ST', strtoupper($segmentArray[0])) <> 0) {
          throw new EdiFatalException('The ST line is malformed or missing');
       }
    
-      if (!in_array($SegmentArray[1], $sharedTypes->X12TransactionSets)) {   // ST01
+      if (!in_array($segmentArray[1], $sharedTypes->X12TransactionSets)) {   // ST01
          throw new EdiFatalException('The ST segmentline is malformed, or the Transaction Set is not supported yet');
       }
-      $EDIObj->transactionSetIdentifier = $SegmentArray[1];
+      $EDIObj->transactionSetIdentifier = $segmentArray[1];
       
-      if ((strlen($SegmentArray[2]) > 9) || (strlen($SegmentArray[2]) < 4)) {
+      if ((strlen($segmentArray[2]) > 9) || (strlen($segmentArray[2]) < 4)) {
          throw new EdiFatalException('The ST segment is malformed, The TransactionSetControlNumber is not valid');
       }
-      $EDIObj->transactionSetControlNumber = $SegmentArray[2];
+      $EDIObj->transactionSetControlNumber = $segmentArray[2];
       
       /*
        * The Implemtation Convention Reference is optional, so we don't rely
        * on it, but we do use it and enforce it, if it's there. 
        * It tells which transaction set is contained in this group
        */
-      if (count($SegmentArray) > 3) {
-         $EDIObj->implementationConventionReference = $SegmentArray[3];
+      if (count($segmentArray) > 3) {
+         $EDIObj->implementationConventionReference = $segmentArray[3];
       }
       
       return $retVal;
    }
       
    
-   public static function ReadSESegment(string $Str, EDIReadOptions &$EDIObj,
-      int $LineCount)
+   public static function ReadSESegment(array $segmentArray, EDIReadOptions &$EDIObj,
+      int $LineCount, int $SegmentGroupCount)
    {
-      $FullStr = $Str;
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // get rid of SE
-   
+      $ediVersion = $EDIObj->ediVersionReleaseCode;
+      
       // set these here because they will be useful later if there are errors.
       $EDIObj->ediReplySettings->SESegmentFilePos = $LineCount;
    
-   
-      if (strpos('SE', strtoupper($TempStr)) != 0) {
-         throw new EdiFatalException('The SE line is malformed or missing');
+      if ($segmentArray[0] != 'SE') {
+         throw new EdiFatalException('The SE Segment is malformed or missing');
       }
    
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // ST01
-      $TempInt = (int) $TempStr;
-      if ($TempInt != $LineCount) {
-         throw new EdiFatalException('An SE line has the wrong line count. The EDI file may be malformed.');
+      $TempInt = (int) $segmentArray[1];
+      if ($TempInt != $SegmentGroupCount) {
+         throw new EdiFatalException('An SE Segment has the wrong line count. The EDI file may be malformed.');
       }
-   
-      $TempStr = SegmentFunctions::BreakLine($Str, $EDIObj->delimiters); // ST02
+      
+      $EDIObj->dataInterchangeControlNumber = $segmentArray[2];
    }
    
    

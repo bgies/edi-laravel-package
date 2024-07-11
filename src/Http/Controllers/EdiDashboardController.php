@@ -17,7 +17,8 @@ class EdiDashboardController extends Controller
    public function dashboard()
    {
 
-      $ediFiles = EdiFile::paginate();
+      $ediFiles = EdiFile::orderBy('id', 'DESC')
+         ->paginate(40);
 //      \Log::info('ediManageController index ediFiles: ' . print_r($ediFiles, true));
       $ediTypes = EdiType::all();
 

@@ -10,22 +10,16 @@ use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 
 
 
-class SegmentB3
+class SegmentN9
 {
-   public $versions = array (
-      '4010'
-   );
 
-   public static function isVersionTested(string $inVersion) : bool
+   public static function GetN9Segment(EDISendOptions $EDIObj, $row) : string 
    {
-      if (in_array($inVersion, $versions)) {
-         return true;
-      }
-      return false;
+      
+      
+      return $TempStr;
    }
-   
-   public static function GetB3Line(EDISendOptions $EDIObj, $row) : string 
-   {
+/*
       $TempStr = '';
       $TempBOLString = '';
       $B3_08CorrectionIndicator = '';
@@ -106,28 +100,23 @@ class SegmentB3
            $TempStr .= $EDIObj->delimiters->ElementDelimiter . $EDIObj->delimiters->ElementDelimiter . $EDIObj->delimiters->ElementDelimiter; // B3 12, 13, 14
          }
       }
-      return $TempStr;
-   }
-   
-   
+  
+*/      
+  
 
-   // this was programmed for the 4010 version
-   public static function B3SegmentRead($segmentArray, &$EDIObj, &$dataset, $ediVersion) {
-      $dataset['B3-01-ShipmentQualifier'] = $segmentArray[1];
-      $dataset['B3-02-InvoiceNumber'] = $segmentArray[2];
-      $dataset['B3-03-ShipmentIdentificationNumber'] = $segmentArray[3];
-      $dataset['B3-04-ShipmentMethodOfPayment'] = $segmentArray[4];
-      $dataset['B3-05-WeightUnitCode'] = $segmentArray[5];
-      $dataset['B3-06-Date'] = $segmentArray[6];
-      $dataset['B3-07-NetAmountDue'] = $segmentArray[7];
-      $dataset['B3-08-CorrectionIndicator'] = $segmentArray[8];
-      $dataset['B3-09-DeliverDate'] = $segmentArray[9];
-      $dataset['B3-10-DateTimeQualifier'] = $segmentArray[10];
-      $dataset['B3-11-StandardCarrierAlphaCode'] = $segmentArray[11];
-      $dataset['B3-12-Date'] = $segmentArray[12];
-      $dataset['B3-13-TariffServiceCode'] = $segmentArray[13];
-      $dataset['B3-14-TransportationTermsCode'] = $segmentArray[14];
+   // this was programmed for the 4060 version
+   public static function N9SegmentRead($segmentArray, &$EDIObj, &$dataset, $ediVersion) {
+      $ediVersion = $EDIObj->ediVersionReleaseCode;
       
-      return $dataset;
+      if (! array_key_exists('N9Array', $dataset)) {
+         $dataset['N9Array'] = [];
+      }
+      $dataset['N9Array'][] = [];
+      $N9ArrayCount = count($dataset['N9Array']);
+      
+      $dataset['N9Array'][$N9ArrayCount - 1]['N9-011-ReferenceIdentificationQualifier'] = $segmentArray[1];
+      $dataset['N9Array'][$N9ArrayCount - 1]['n9-02-ReferenceIdentification'] = $segmentArray[2];
+      
+      
    }
 }

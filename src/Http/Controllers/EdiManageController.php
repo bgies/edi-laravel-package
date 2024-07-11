@@ -18,17 +18,21 @@ class EdiManageController extends Controller
 {
    public $navPage = "manage";
    
-   public function index()
+   public function index(Request $request)
    {
       LoggingFunctions::logThis('info', 3, 'EdiManageController index', '');
-      $ediFiles = EdiFile::orderBy('id', 'DESC')->paginate();
+//      $ediFiles = EdiFile::orderBy('id', 'DESC')
+//         ->paginate(40);
+      $input = $request->all();
+      $status = '';
+      
       $ediFiles = \DB::table('edi_files')
       ->select('edi_files.id', 'edi_files.edf_cancelled', 'edi_files.edf_datetime', 
          'edi_files.edf_acknowledged', 'edi_files.edf_transaction_control_number', 
          'edi_files.edf_filename', 'edi_files.interchange_sender_id', 'edi_files.interchange_receiver_id')
       ->join('edi_types', 'edi_types.id', '=', 'edi_files.edf_edi_type_id')
 //      ->join('users', 'articles.user_id', '=', 'user.id')
-      
+      ->orderBy('id', 'DESC')      
       ->paginate(40);
       
       
@@ -39,6 +43,7 @@ class EdiManageController extends Controller
       return view('edilaravel::manage.dashboard')
          ->with('ediFiles', $ediFiles)
          ->with('ediTypes', $ediTypes)
+         ->with('status', $status)
          ->with('navPage', $this->navPage);
       
    }

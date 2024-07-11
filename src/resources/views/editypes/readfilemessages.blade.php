@@ -43,8 +43,9 @@
 
 <p class="bg-success bg-opacity-10">
 	<div>Data</div>
-
-
+	<pre>
+{{ $data }} 
+	</pre>
 </p>
 <br />
 

@@ -12,6 +12,7 @@ abstract class BaseEdiTransaction
    protected ?ReturnValues $retValues = null;
    protected ?EdiType $ediType;
    protected ?int $ediTypeId = null;
+
    
 
    /**

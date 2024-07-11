@@ -163,8 +163,7 @@ class CreateFromStub
                $fullTransactionSetPath = $transactionSetDir . 'X12Send' . $transactionSetName . '.php';
                if (!file_exists($fullTransactionSetPath)) {
                   $retValues->addToMessages('Transaction Set Object was not found. A new Transaction Set Object descended from BaseEdiRecieve was created at ' . $fullTransactionSetPath . ', but it needs programming to make it useful ');
-               
-               
+                              
                }
             
             }
@@ -186,5 +185,21 @@ class CreateFromStub
       
       return $retValues;
    }
+   
+    
+   /*
+    * if we already have a Segment Type object for this segment, we
+    * don't need to do anything except return a positive
+    */
+   public function CreateSegmentObject(array $input, EdiType $ediType) : ReturnValues {
+      $srcDir = $this->getSrcDirectory();
+      $retValues = new ReturnValues();
       
+      $stubsDir = $srcDir . '/Stubs/';
+      
+      
+      
+      return $retValues;
+   }
+   
 }

@@ -7,14 +7,14 @@ use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEDITransaction;
 use function Opis\Closure\unserialize;
 use function Opis\Closure\serialize;
 use Bgies\EdiLaravel\Exceptions\EdiFatalException;
-
+use Bgies\EdiLaravel\Lib\ReturnValues;
 use Bgies\EdiLaravel\Models\EdiType;
 use Bgies\EdiLaravel\Models\EdiFile;
 
 
 abstract class BaseEdiReceive extends BaseEDITransaction
 {
-   protected $dataset = array();
+   public $dataset = array();
    protected ?EdiFile $ediFile = null; 
    public $ediOptions = null;
    protected $beforeProcessObject = null;
@@ -57,7 +57,6 @@ abstract class BaseEdiReceive extends BaseEDITransaction
    protected function getMasterDataset() : array {
       $record = array(
 //         'InvoiceID' => null,
-         'SegmentType' => null,
          'FunctionalIdentifierCode' => null,
          'GroupAcknowledgeCode' => null,
          'NumberOfTransactionSetsIncluded' => null,
@@ -66,8 +65,8 @@ abstract class BaseEdiReceive extends BaseEDITransaction
          'DataInterchangeControlNumber' => null,
          'InterchangeSenderID' => null,
          'InterchangeReceiverID' => null,
-         'ApplicationSenderID' => null,
-         'ApplicationReceiverID' => null,
+         'ApplicationSenderCode' => null,
+         'ApplicationReceiverCode' => null,
          'DetailDataSet' => array()
       );
       
@@ -119,12 +118,27 @@ abstract class BaseEdiReceive extends BaseEDITransaction
     */
    protected function checkSTSEIntegrity(array $fileArray, int $stArrayPos) : ReturnValues
    {
-      if (substr($fileArray[$stArrayPos], 0, 2) != 'ST') {
+      $retVals = new ReturnValues();
+      $stSegment = $fileArray[$stArrayPos];
+      $stSegmentArray = explode($this->ediOptions->delimiters->ElementDelimiter, $stSegment);
+      if ($stSegmentArray[0] != 'ST') {
          throw new EdiFatalException('The parameters passed to checkSTSEIntegrity are not correct');
       }
-
       
-      
+      $stGroupCount = 1;
+      for ($i = $stArrayPos; $i < count($fileArray); $i++) {
+         $stGroupCount++;
+         $curSegment = $fileArray[$stArrayPos + $i];
+         $stCurSegmentArray = explode($this->ediOptions->delimiters->ElementDelimiter, $curSegment);
+         if ($stCurSegmentArray[0] == 'SE') {
+            if ($stCurSegmentArray[1] != $stGroupCount + 1) {
+               throw new EdiFatalException('The segment count for the ST-SE(01) starting File Position ' . $stArrayPos . ' is not correct');
+            }
+            $i = count($fileArray);
+         }
+      }      
+      $retVals->setResult(true);
+      return $retVals;
    }
    
    //protected function checkSenderReceiver(array  $fileArray, EDIReadOptions $EDIObj ) : bool

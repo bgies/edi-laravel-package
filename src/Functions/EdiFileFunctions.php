@@ -243,7 +243,8 @@ class EdiFileFunctions //extends BaseController
    
    public static function ReadX12FileIntoStrings(string $FileName, $EDIObj, $InProgram, SharedTypes $sharedTypes) : array
    { 
-    $fileArray = array();
+      $fileArray = array();
+      $sharedTypes = new SharedTypes();
      
      if (!\Storage::disk('edi')->exists( $FileName)) {
         throw new EdiFatalException('ReadEDIFileIntoStrings File: ' . $FileName . ' does not exist');
@@ -290,8 +291,10 @@ class EdiFileFunctions //extends BaseController
         }
         $LineCount++;
         
-        $SegmentType = 0;   
-        $retVal = SegmentFunctions::ReadSTSegment($fileArray[2], $EDIObj, $SegmentType, $LineCount, $sharedTypes);
+        $SegmentType = 0; 
+        
+        $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$LineCount]);
+        $retVal = SegmentFunctions::ReadSTSegment($segmentArray, $EDIObj, $LineCount, $sharedTypes);
         $LineCount++;
        
         

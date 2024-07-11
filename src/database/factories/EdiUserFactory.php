@@ -2,12 +2,12 @@
 
 namespace Bgies\EdiLaravel\database\factories;
 
-use Bgies\EdiLaravel\Models\EdiUsers;
+use Bgies\EdiLaravel\Models\EdiUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EdiUsersFactory extends Factory
+class EdiUserFactory extends Factory
 {
-    protected $model = EdiUsers::class;
+    protected $model = EdiUser::class;
 
     public function definition()
     {

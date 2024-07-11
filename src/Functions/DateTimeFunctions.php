@@ -83,6 +83,12 @@ class DateTimeFunctions
       return $retVal;
    }
 
+   // ISO 8601 format 2012-04-23T18:25:43.511Z  Wikopedia has a good description
+   public static function EdiDateAndTimeTo8601($ediDate, $ediTime) : string {
+      
+      
+      return '';
+   }
    
    public static function EdiDateToMySQLDate($inDate) {
       // $dateStr

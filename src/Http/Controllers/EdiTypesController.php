@@ -339,7 +339,8 @@ class EdiTypesController extends Controller
       
       $ret = $this->readfileManually($request, $justFileName);
       
-      unlink($filename);
+      \Storage::disk('edi')->delete("/To_Read/" . $justFileName);
+//      unlink($filename);
       
       return $ret;
    }
@@ -401,40 +402,42 @@ class EdiTypesController extends Controller
          $fileNameOnDisk = ENV('EDI_TOP_DIRECTORY') . "/" . $shortFileName;
          
          \Storage::disk('edi')->put($fileNameOnDisk, implode($EDIObj->delimiters->SegmentTerminator, $fileArray));
-         // now replace the temporary EDI Options Object with the real one. 
-         $EDIObj = unserialize($ediType['edt_edi_object']);
+         
+            //now replace the temporary EDI Options Object with the real one. 
+            $EDIObj = unserialize($ediType['edt_edi_object']);
          
 
-         /*
-          * Find the correct Transaction Set. If we don't have one, 
-          * we can't read this file. 
-          * Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
-          */
-         $transactionSetClass = ClassFunctions::getTransactionSetClassName($EDIObj->ediStandard, $EDIObj->fileDirection, $EDIObj->transactionSetIdentifier);
-         $classExists = ClassFunctions::doesClassExist($transactionSetClass);
+            /*
+             * Find the correct Transaction Set. If we don't have one, 
+             * we can't read this file. 
+             * Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
+             */
+            $transactionSetClass = ClassFunctions::getTransactionSetClassName($EDIObj->ediStandard, $EDIObj->fileDirection, $EDIObj->transactionSetIdentifier);
+            $classExists = ClassFunctions::doesClassExist($transactionSetClass);
          
-         if ($classExists) {
-            $transactionSet = new $transactionSetClass($ediType, $ediFile);
-            $transactionSet->setFileContents(print_r($fileArray, true));
-            $transactionSet->setFileArray($fileArray);
-            $transactionSet->setEdiFile($ediFile);
-            $transactionSet->setEdiType($ediType);
+            if ($classExists) {
+               $transactionSet = new $transactionSetClass($ediType, $ediFile);
+               $transactionSet->setFileContents(print_r($fileArray, true));
+               $transactionSet->setFileArray($fileArray);
+               $transactionSet->setEdiFile($ediFile);
+               $transactionSet->setEdiType($ediType);
+                        
+               $retVals = $transactionSet->execute();
+               
+               $retData = $transactionSet->dataset;
+               //Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
             
-            
-            $retVals = $transactionSet->execute();
-            $data = $retVals->data;
-            //Bgies\EdiLaravel\Lib\X12\TransactionSets\Read
-            
-         } else {
-            $retValues->addToErrorList('Transaction Set ' . $transactionSetClass . ' does not exist');
+            } else {
+               $retValues->addToErrorList('Transaction Set ' . $transactionSetClass . ' does not exist');
          
-            $transactionSet = new $transactionSetClass($ediType->id);
-         }
-      
+               $transactionSet = new $transactionSetClass($ediType->id);
+            }        
                
          
       }
-            
+      
+      $data = json_encode($retData, JSON_PRETTY_PRINT, 12);
+      
       return view('edilaravel::ediTypes.readfilemessages')
       ->with('fileArray', $fileArray)
       ->with('ediType', $ediType)
@@ -454,7 +457,7 @@ class EdiTypesController extends Controller
       
       // enter a few default values
       $input['edt_file_directory'] = '';
-      // this came with trailing spaces, make they don't go in the DB. 
+      // this came with trailing spaces, make sure they don't go in the DB. 
       $input['edt_name'] = trim($input['edt_name']);
       // remove the property that isn't in the database
       $ediVersion = $input['edi_version'];

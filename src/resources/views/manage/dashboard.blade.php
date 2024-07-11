@@ -8,7 +8,24 @@
 
 
 <div class="container edi-grid">
+
 	<div class="row header text-center"><h3>EDI Files</h3></div>
+	<div class="row header text-center">
+		@csrf
+		<div class="col col-1 overflow-hidden"></div>
+		<div class="col col-1 overflow-hidden">
+			<select class="form-control w-100" id="ch_status">
+				<option value="" {{ $status === null ? 'selected' : '' }}>
+                Select Status
+            </option>
+            <option value="1" {{ $status === '1' ? 'selected' : '' }}>
+                Active
+            </option>
+            <option value="0" {{ $status === '0' ? 'selected' : '' }}>
+                Cancelled
+            </option>
+			</select>
+		</div>	
 	<div class="row header">
 		<div class="col col-1 overflow-hidden">
 			Id
