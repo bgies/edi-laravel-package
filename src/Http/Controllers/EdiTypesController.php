@@ -15,6 +15,7 @@ use Bgies\EdiLaravel\Lib\RunEdiType;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use Bgies\EdiLaravel\Functions\CreateFromStub;
+use Bgies\EdiLaravel\Functions\CreateSegmentFromStub;
 use function Opis\Closure\serialize;
 use Illuminate\Support\Facades\Storage;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EdiReadOptions;
@@ -591,6 +592,39 @@ class EdiTypesController extends Controller
       ->with('messages', $retVals->getMessages())
       ->with('fields', $fields)
       ->with('navPage', $this->navPage);
+      
+   }
+   
+   
+   public function createSegment(Request $request) {
+      \Log::info(' ');
+      $input = $request->all();
+      
+      $retValues = new ReturnValues(); 
+   
+      try {
+         // $segmentName, $extensionStr, $ediStandard, $isIncoming
+         if (array_key_exists('segment-name', $input)) {
+            if (strlen($input['segment-name']) < 2 ) {
+               $retValues->addToErrorList('No segment name submitted... aborting');
+            } else {
+               $createFromStub = new CreateSegmentFromStub();
+               $retValues = $createFromStub->CreateSegmentObject($input['segment-name'],
+                  $input['extension-str'], $input['edi-standard'], $input['is-incoming']);
+            }
+            
+         }
+         
+      } catch (Exception $e) {
+         LoggingFunctions::logThis('error', 3, 'EdiTypesController createSegment', 'Exception: ' . $e->getMessage());
+      }
+      
+
+      return view('edilaravel::ediTypes.createsegment')
+      ->with('errors', $retValues->getErrorList())
+      ->with('messages', $retValues->getMessages())
+
+      ->with('navPage', $this->navPage);      
       
    }
       

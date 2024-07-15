@@ -193,9 +193,11 @@ class CreateFromStub
     */
    public function CreateSegmentObject(array $input, EdiType $ediType) : ReturnValues {
       $srcDir = $this->getSrcDirectory();
+      $stubsDir = $srcDir . '/Stubs/';
+      
       $retValues = new ReturnValues();
       
-      $stubsDir = $srcDir . '/Stubs/';
+      
       
       
       

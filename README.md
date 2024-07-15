@@ -23,6 +23,56 @@ EDI Types can be fully automated, or run manually
 - Extremely low resource usage
 - Manage ASCII, EDIFACT and custom files with the same interface
 - Easily create, test and automate any Transaction set with limited programming 
+- Reads an EDI file into json, can then be used to input into database or any other data input method
+
+```
+Data
+
+{
+    "FunctionalIdentifierCode": null,
+    "GroupAcknowledgeCode": null,
+    "NumberOfTransactionSetsIncluded": 0,
+    "NumberOfReceivedTransactionSets": 0,
+    "NumberOfAcceptedTransactionSets": 0,
+    "DataInterchangeControlNumber": null,
+    "InterchangeSenderID": "SENDER1",
+    "InterchangeReceiverID": "AMAZON",
+    "ApplicationSenderCode": "SENDER1-210,
+    "ApplicationReceiverCode": "AMAZON-210",
+    "DetailDataSet": [
+        {
+            "TransactionSetIdentifier": "210",
+            "TransactionSetControlNumber": 1,
+            "B3-01-ShipmentQualifier": "",
+            "B3-02-InvoiceNumber": "INV-2035",
+            "B3-03-ShipmentIdentificationNumber": "BOL-123",
+            "B3-04-ShipmentMethodOfPayment": "PP",
+            "B3-05-WeightUnitCode": "L",
+            "B3-06-Date": "240316",
+            "B3-07-NetAmountDue": "73125",
+            "B3-08-CorrectionIndicator": "",
+            "B3-09-DeliverDate": "240317",
+            "B3-10-DateTimeQualifier": "010",
+            "B3-11-StandardCarrierAlphaCode": "SCAC",
+            "B3-12-Date": "240316",
+            "B3-13-TariffServiceCode": "",
+            "B3-14-TransportationTermsCode": "",
+            "N9Array": [
+                {
+                    "N9-011-ReferenceIdentificationQualifier": "BM",
+                    "n9-02-ReferenceIdentification": "BOL123"
+                },
+                {
+                    "N9-011-ReferenceIdentificationQualifier": "CN",
+                    "n9-02-ReferenceIdentification": "INV2035"
+                }
+            ]
+        }
+    ],
+    "ediTypeId": 68,
+} 
+   
+```
 
 
 ### Please Note - EDI Shack is working hard on EDI Laravel but EDI Laravel is not ready for public use yet. There is NO public documentation.

@@ -55,6 +55,7 @@
 				            <li><a class="dropdown-item" href="/edilaravel/editype/createfiles">Create Files</a></li>
 				            <li><a class="dropdown-item" href="/edilaravel/editype/readfile">Read File</a></li>
 
+								<li><a class="dropdown-item" href="/edilaravel/editype/createsegment">Create Segment</a></li>
           				</ul>
         				</li>      			
 

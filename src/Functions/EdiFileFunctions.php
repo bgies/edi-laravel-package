@@ -293,8 +293,10 @@ class EdiFileFunctions //extends BaseController
         
         $SegmentType = 0; 
         
+        // this is the only place we don't need an actual databaset, so just create a dummy
+        $dummyDataSet = [];
         $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$LineCount]);
-        $retVal = SegmentFunctions::ReadSTSegment($segmentArray, $EDIObj, $LineCount, $sharedTypes);
+        $retVal = SegmentFunctions::ReadSTSegment($segmentArray, $dummyDataSet, $EDIObj, $LineCount, $sharedTypes);
         $LineCount++;
        
         

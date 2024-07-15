@@ -1,38 +1,28 @@
 <?php
 
-namespace Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
+namespace Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Send;
 
-//use lib\x12\SharedTypes;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions\BaseObjects\SegmentBase;
 use Bgies\EdiLaravel\Lib\X12\Options\Send\EDISendOptions;
-use Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options;
 use Bgies\EdiLaravel\Exceptions\EdiException;
 use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 
 
 
-class SegmentB3
+class Segment{{SegmentNameWithExtension}} extends SegmentBase
 {
-   public $versions = array (
-      '4010'
-   );
 
-   public static function isVersionTested(string $inVersion) : bool
+   public static function SegmentWrite($segmentArray, &$EDIObj, &$dataset, $ediVersion) : string 
    {
-      if (in_array($inVersion, $versions)) {
-         return true;
-      }
-      return false;
-   }
-   
-   public static function GetB3Line(EDISendOptions $EDIObj, $row) : string 
-   {
+      // NOTE - THIS CODE SNIPPET IS JUST BOILERPLATE TO GIVE YOU AN IDEA OF HOW TO PROGRAM IT
+
+/*
       $TempStr = '';
       $TempBOLString = '';
-      $B3_08CorrectionIndicator = '';
+      ${{SegmentName}}_08CorrectionIndicator = '';
 
-      $TempStr = 'B3' . $EDIObj->delimiters->ElementDelimiter;
-      //$TempStr .= 'U' . $EDIObj->delimiters->ElementDelimiter;   // B3 01
-      $TempStr .= $EDIObj->delimiters->ElementDelimiter;    // B3 01
+      $TempStr = '{{SegmentName}}' . $EDIObj->delimiters->ElementDelimiter;
+      $TempStr .= $EDIObj->delimiters->ElementDelimiter;    // {{SegmentName}} 01
    
       if ($row['InvoiceNumber'] == '') {
          throw new EdiException('Invoice Number of id ' . $row['id'] . ' is blank.');
@@ -106,28 +96,7 @@ class SegmentB3
            $TempStr .= $EDIObj->delimiters->ElementDelimiter . $EDIObj->delimiters->ElementDelimiter . $EDIObj->delimiters->ElementDelimiter; // B3 12, 13, 14
          }
       }
-      return $TempStr;
+*/
    }
    
-   
-
-   // this was programmed for the 4010 version
-   public static function B3SegmentRead($segmentArray, &$EDIObj, &$dataset, $ediVersion) {
-      $dataset['B3-01-ShipmentQualifier'] = $segmentArray[1];
-      $dataset['B3-02-InvoiceNumber'] = $segmentArray[2];
-      $dataset['B3-03-ShipmentIdentificationNumber'] = $segmentArray[3];
-      $dataset['B3-04-ShipmentMethodOfPayment'] = $segmentArray[4];
-      $dataset['B3-05-WeightUnitCode'] = $segmentArray[5];
-      $dataset['B3-06-Date'] = $segmentArray[6];
-      $dataset['B3-07-NetAmountDue'] = $segmentArray[7];
-      $dataset['B3-08-CorrectionIndicator'] = $segmentArray[8];
-      $dataset['B3-09-DeliverDate'] = $segmentArray[9];
-      $dataset['B3-10-DateTimeQualifier'] = $segmentArray[10];
-      $dataset['B3-11-StandardCarrierAlphaCode'] = $segmentArray[11];
-      $dataset['B3-12-Date'] = $segmentArray[12];
-      $dataset['B3-13-TariffServiceCode'] = $segmentArray[13];
-      $dataset['B3-14-TransportationTermsCode'] = $segmentArray[14];
-      
-      return $dataset;
-   }
 }

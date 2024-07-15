@@ -88,8 +88,8 @@ class X12Read210 extends BaseEdiReceive
       $this->dataset['ediTypeId'] = $this->ediTypeId;
       $this->dataset['InterchangeSenderID'] = $this->ediOptions->interchangeSenderID;
       $this->dataset['InterchangeReceiverID'] = $this->ediOptions->interchangeReceiverID;
-      $this->dataset['ApplicationSenderID'] = $this->ediOptions->applicationSenderCode;
-      $this->dataset['ApplicationReceiverID'] = $this->ediOptions->applicationReceiverCode;
+      $this->dataset['ApplicationSenderCode'] = $this->ediOptions->applicationSenderCode;
+      $this->dataset['ApplicationReceiverCode'] = $this->ediOptions->applicationReceiverCode;
       
       $this->dataset['NumberOfTransactionSetsIncluded'] = 0;
       $this->dataset['NumberOfReceivedTransactionSets'] = 0;
@@ -284,6 +284,7 @@ class X12Read210 extends BaseEdiReceive
    protected function readFile($curFile, array $fileArray, EDIReadOptions $EDIObj, int $FileLineCount, SharedTypes $sharedTypes )
    {
       $this->setupDataSets();
+      $this->dataset['DataInterchangeControlNumber'] = $EDIObj->GSControlNumber;
       
       $LineCountFile = 1;
       $ediVersion = $EDIObj->ediVersionReleaseCode;
@@ -314,20 +315,22 @@ class X12Read210 extends BaseEdiReceive
                   try {
                      $SegmentGroupCount = 0;
                      $TransactionSetsIncluded++;
+                     $this->dataset['NumberOfTransactionSetsIncluded'] = $TransactionSetsIncluded;
                      
                      $retVals = $this->checkSTSEIntegrity($this->fileArray, $FileLineCount - 1);
                      if (!$retVals->getResult()) {
                         throw new EdiFatalException('ST-SE group is not correct at ' . $FileLineCount . ' ReturnValues result is false');
                      }
-                     SegmentFunctions::ReadSTSegment($segmentArray, $EDIObj, $FileLineCount, $sharedTypes);
+                     $detailDataSet = $this->getDetailDataset();
+                     SegmentFunctions::ReadSTSegment($segmentArray, $detailDataSet, $EDIObj, $FileLineCount, $sharedTypes);
                      
                   } catch (Exception $e) {
                      throw new EdiFatalException('ST-SE group is not correct at ' . $FileLineCount . ' Exception: ' . $e->getMessage());
                   } 
                   $SegmentGroupCount = 1;
-                  $detailDataSet = $this->getDetailDataset();
+                  
                   $detailDataSet['TransactionSetIdentifier'] = $segmentArray[1];
-                  $detailDataSet['TransactionSetControlNumber'] = $EDIObj->dataInterchangeControlNumber;
+                  $detailDataSet['TransactionSetControlNumber'] = $segmentArray[2];
             //      $detailDataSet['TransactionSetControlNumber'] = $EDIObj->dataInterchangeControlNumber;
                   $this->dataset['DetailDataSet'][] = $detailDataSet;
                   
@@ -344,36 +347,66 @@ class X12Read210 extends BaseEdiReceive
                         case 'B3' : {
                            try {   
                               $detailCount = count( $this->dataset['DetailDataSet']);
-                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentB3::B3SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentB3::SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
                               $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
                            } catch (Exception $e) {
                               LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in B3 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
-                              throw new EdiException('A 997 ST segment was not terminated with an SE segment');
+                              throw new EdiException('Exception in B3 segment  count : ' . $FileLineCount . ' - ' . $e->getMessage());
                            }
                            break;
                         }
-                        
+                        // N1 is the start of a location information loop, so deal
+                        // with 1 entire inside this case statement. 
                         case 'N1' : {
-                        
-                           break;
-                        }
-                        case 'N3' : {
-                        
-                           break;
-                        }
-                        case 'N4' : {
-                        
-                           break;
-                        }
-                        case 'N7' : {
-                        
+                           try {
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              
+                              if (!array_key_exists('LocationInfo', $detailDataSet)) {
+                                 $detailDataSet['LocationInfo'] = []; 
+                              }
+                              // add a locationInfo dataset. 
+                              $detailDataSet['LocationInfo'][] = [];
+                              
+                              $locationCount = count( $detailDataSet['LocationInfo']);
+                              $locationDataSet = $detailDataSet['LocationInfo'][$locationCount - 1];
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN1::SegmentRead($segmentArray, $EDIObj, $locationDataSet, $ediVersion);
+                              
+                              // CHeck the next line to see if's N3 (it should be)
+                              if ('N3' == SegmentFunctions::GetSegmentType($fileArray[$FileLineCount], $EDIObj->delimiters, $sharedTypes)) {
+                                 $FileLineCount++;
+                                 $LineCountFile++;
+                                 $SegmentGroupCount++;
+                                 
+                                 $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$FileLineCount - 1]);
+                                 
+                                 \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN3::SegmentRead($segmentArray, $EDIObj, $locationDataSet, $ediVersion);
+                                 
+                                 if ('N4' == SegmentFunctions::GetSegmentType($fileArray[$FileLineCount], $EDIObj->delimiters, $sharedTypes)) {
+                                    $FileLineCount++;
+                                    $LineCountFile++;
+                                    $SegmentGroupCount++;
+                                    
+                                    $segmentArray = explode($EDIObj->delimiters->ElementDelimiter, $fileArray[$FileLineCount - 1]);
+                                    
+                                    \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN4::SegmentRead($segmentArray, $EDIObj, $locationDataSet, $ediVersion);
+                                 }
+                              }  
+                              
+                              $detailDataSet['LocationInfo'][$locationCount - 1] = $locationDataSet; 
+                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                              
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in N1 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('A 997 ST segment was not terminated with an SE segment');
+                           }
+                           
                            break;
                         }
                      
                         case 'N9' : {
                            try {
                               $detailCount = count( $this->dataset['DetailDataSet']);
-                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\SegmentN9::N9SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN9::SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
                               $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
                            } catch (Exception $e) {
                               LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in N9 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
@@ -382,7 +415,76 @@ class X12Read210 extends BaseEdiReceive
                            
                            break;
                         }
-                     
+                        case 'G62' : {
+                           try {
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentG62::SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in g62 segment. Count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in G62 segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                        
+                           break;
+                        }
+                        // LX segment is the start of an LX loop, so deal with the entire 
+                        // loop inside this case statement. 
+                        case 'LX' : {
+                           try {
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              
+                              if (!array_key_exists('Charges', $detailDataSet)) {
+                                 $detailDataSet['Charges'] = [];
+                              }
+                              // add a Charges dataset.
+                              $detailDataSet['Charges'][] = [];
+                              
+                              $chargesCount = count( $detailDataSet['Charges']);
+                              $chargesDataSet = $detailDataSet['Charges'][$chargesCount - 1];
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentLX::SegmentRead($segmentArray, $EDIObj, $chargesDataSet, $ediVersion);
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in LX segment. Count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in LX segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                           
+                           $detailDataSet['Charges'][$chargesCount - 1] = $chargesDataSet;
+                           $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           break;
+                        }
+                        case 'L1' : {
+                           try {
+                              $chargesCount = count( $detailDataSet['Charges']);
+                              $chargesDataSet = $detailDataSet['Charges'][$chargesCount - 1];
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentL1::SegmentRead($segmentArray, $EDIObj, $chargesDataSet, $ediVersion);
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in L1 segment. Count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in L1 segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                           $detailDataSet['Charges'][$chargesCount - 1] = $chargesDataSet;
+                           $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           break;
+                        }
+                        
+                        case 'L3' : {
+                           try {
+                              $chargesCount = count( $detailDataSet['Charges']);
+                              $chargesDataSet = $detailDataSet['Charges'][$chargesCount - 1];
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentL3::SegmentRead($segmentArray, $EDIObj, $chargesDataSet, $ediVersion);
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in L3 segment. Count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in L3 segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                           $detailDataSet['Charges'][$chargesCount - 1] = $chargesDataSet;
+                           $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           break;
+                        }
+                        case 'N7' : {
+                           
+                           break;
+                        }
+                        
+                        
+                        
                         default : {
                         
                            break;
@@ -405,19 +507,6 @@ class X12Read210 extends BaseEdiReceive
                }
                case 'SE'  : {
                   SegmentFunctions::ReadSESegment($segmentArray, $EDIObj, $LineCountFile, $SegmentGroupCount);
-                  break;
-               }
-               case 'LX' : {
-                  
-                  break;
-               }
-               case 'L1' : {
-                  
-                  break;
-               }
-               
-               case 'L3' : {
-                  
                   break;
                }
                
@@ -481,6 +570,8 @@ class X12Read210 extends BaseEdiReceive
       } catch (Exception $e) {
          throw($e);
       }
+      
+
       
       return true;
    }

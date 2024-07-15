@@ -573,7 +573,7 @@ class SegmentFunctions
    }
 
 //   public static function ReadSTSegment(string $Str, EDIReadOptions &$EDIObj, &$SegmentType,
-   public static function ReadSTSegment($segmentArray, &$EDIObj, int $LineCount, SharedTypes $sharedTypes) : bool
+   public static function ReadSTSegment($segmentArray, &$dataset, &$EDIObj, int $LineCount, SharedTypes $sharedTypes) : bool
    {
       $retVal = true;
       
@@ -589,10 +589,12 @@ class SegmentFunctions
       }
       $EDIObj->transactionSetIdentifier = $segmentArray[1];
       
+      
       if ((strlen($segmentArray[2]) > 9) || (strlen($segmentArray[2]) < 4)) {
          throw new EdiFatalException('The ST segment is malformed, The TransactionSetControlNumber is not valid');
       }
       $EDIObj->transactionSetControlNumber = $segmentArray[2];
+      $dataset['TransactionSetControlNumber'] = $segmentArray[2];
       
       /*
        * The Implemtation Convention Reference is optional, so we don't rely

@@ -55,7 +55,8 @@ Route::prefix('edilaravel')->group(function () {
 
       Route::post('/createfromfile', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createFromFile');
       
-      
+      Route::get('/createsegment', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createSegment');
+      Route::post('/createsegment', '\Bgies\EdiLaravel\Http\Controllers\EdiTypesController@createSegment');
    });
    
    Route::prefix('reports')->group(function () {
