@@ -40,29 +40,43 @@ class FileFunctions
     */  
    public static function getFileNamesFromPackageDirectory($fromDirectory) {
       //$path = __DIR__;
-      $path = dirname(__DIR__, 1) . '/' . $fromDirectory;
-      $files = scandir($path);
+      $fileDirectories = explode(':', $fromDirectory);
       $fileNamesArray = [];
-      foreach ($files as $file) {
-         $filePath = $path . '/' . $file;
-         if (is_file($filePath)) {
-            $fileNamesArray[] = $file;
+      
+      foreach ($fileDirectories as $fileDirectory) {
+         $path = dirname(__DIR__, 1) . '/' . $fileDirectory;
+         $files = scandir($path);
+         foreach ($files as $file) {
+            $filePath = $path . '/' . $file;
+            if (is_file($filePath)) {
+               $fileNamesArray[] = $file;
+            } 
          }
       }
       return $fileNamesArray;      
-/*      
-      $fqcns = array();
-
-      $allFiles = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
-      $phpFiles = new \RegexIterator($allFiles, '/\.php$/');
-      $fileNamesArray = iterator_to_array($phpFiles);
-      
-      //return $phpFiles;
-      return $fileNamesArray;
-*/      
    }
+
+   /**
+    * Get the full class name from a directory
+    */
+   public static function getFullClassNameFromPackageDirectory($fromDirectory, $shortClassName) {
+      $fileDirectories = explode(':', $fromDirectory);
+      $fileNamesArray = [];
+      
+      foreach ($fileDirectories as $fileDirectory) {
+         $path = dirname(__DIR__, 1) . '/' . $fileDirectory . '/' . $shortClassName . '.php';
+         if (file_exists($path)) {
+            $fullClassName = "Bgies\\EdiLaravel\\" . $fileDirectory . '\\' . $shortClassName;
+            return $fullClassName; 
+         }
+      }
+      
+      return false;
+   }
+      
    
-   // NOTE - The short file name is what's stored in the edi_outgoing_files and edi_incoming_files Table
+   
+   // NOTE - The short file name is whats stored in the edi_outgoing_files and edi_incoming_files Table
    public static function getShortFileName($ediTypeName, $EDIID) {
       $DirectoryDateString = FileFunctions::getDirectoryDateString();
       $ShortFileName = $ediTypeName . '/' . $DirectoryDateString . '/' . $EDIID . '.txt';

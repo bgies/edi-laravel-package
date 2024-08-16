@@ -26,7 +26,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Send\Send210Options();
-        $options->ediId = 8;
+        $options->ediTypeId = 8;
         $options->fileDirection = 'outgoing';
         $options->interchangeReceiverQualifier = 'ZZ';
         $options->interchangeReceiverID = 'AMAZON';        
@@ -61,7 +61,7 @@ class EdiTypesId8_210_Seeder extends Seeder
         $options->UseK1Segment = false;
 
         $options->ErrorOnBlankLocationCode == false;
-        //$this->ediOptions->detailSQL = 'proc_williams_210_detail :DetailFieldId';
+        //$this->ediOptions->detailSQL = 'proc_johnson_210_detail :DetailFieldId';
         $options->writeOneLine = true;
         
         

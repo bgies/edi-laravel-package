@@ -10,6 +10,8 @@ use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiReceive;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
 use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Models\EdiType;
+use function Opis\Closure\unserialize;
+use function Opis\Closure\serialize;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
 use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Bgies\EdiLaravel\Lib\X12\SharedTypes;
@@ -285,6 +287,8 @@ class X12Read210 extends BaseEdiReceive
    {
       $this->setupDataSets();
       $this->dataset['DataInterchangeControlNumber'] = $EDIObj->GSControlNumber;
+      $this->dataset['ediFilesId'] = $this->ediFile->id;
+      $this->dataset['ediTypeId'] = $this->ediTypeId;
       
       $LineCountFile = 1;
       $ediVersion = $EDIObj->ediVersionReleaseCode;
@@ -346,17 +350,16 @@ class X12Read210 extends BaseEdiReceive
                      switch ($segmentType) {
                         case 'B3' : {
                            try {   
-                              $detailCount = count( $this->dataset['DetailDataSet']);
-                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentB3::SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
-                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentB3::SegmentRead($segmentArray, $EDIObj, $this->dataset, $ediVersion);
                            } catch (Exception $e) {
                               LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in B3 segment count : ' . $FileLineCount . ' - ' . $e->getMessage());
                               throw new EdiException('Exception in B3 segment  count : ' . $FileLineCount . ' - ' . $e->getMessage());
                            }
+                           
                            break;
                         }
                         // N1 is the start of a location information loop, so deal
-                        // with 1 entire inside this case statement. 
+                        // with 1 entire loop inside this case statement. 
                         case 'N1' : {
                            try {
                               $detailCount = count( $this->dataset['DetailDataSet']);
@@ -371,7 +374,7 @@ class X12Read210 extends BaseEdiReceive
                               $locationDataSet = $detailDataSet['LocationInfo'][$locationCount - 1];
                               \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN1::SegmentRead($segmentArray, $EDIObj, $locationDataSet, $ediVersion);
                               
-                              // CHeck the next line to see if's N3 (it should be)
+                              // CHeck the next segment to see if's N3 (it should be)
                               if ('N3' == SegmentFunctions::GetSegmentType($fileArray[$FileLineCount], $EDIObj->delimiters, $sharedTypes)) {
                                  $FileLineCount++;
                                  $LineCountFile++;
@@ -427,6 +430,21 @@ class X12Read210 extends BaseEdiReceive
                         
                            break;
                         }
+                        case 'N7' : {
+                           try {
+                              $detailCount = count( $this->dataset['DetailDataSet']);
+                              \Bgies\EdiLaravel\Lib\X12\SegmentFunctions\Read\SegmentN7::SegmentRead($segmentArray, $EDIObj, $detailDataSet, $ediVersion);
+                              $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           } catch (Exception $e) {
+                              LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 readFile', 'Exception in g62 segment. Count : ' . $FileLineCount . ' - ' . $e->getMessage());
+                              throw new EdiException('Exception in G62 segment at Segment File Pos: ' . $FileLineCount);
+                           }
+                           
+                           break;
+                        }
+                        
+                        
+                        
                         // LX segment is the start of an LX loop, so deal with the entire 
                         // loop inside this case statement. 
                         case 'LX' : {
@@ -449,6 +467,9 @@ class X12Read210 extends BaseEdiReceive
                            
                            $detailDataSet['Charges'][$chargesCount - 1] = $chargesDataSet;
                            $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
+                           
+                           
+                           
                            break;
                         }
                         case 'L1' : {
@@ -476,10 +497,6 @@ class X12Read210 extends BaseEdiReceive
                            }
                            $detailDataSet['Charges'][$chargesCount - 1] = $chargesDataSet;
                            $this->dataset['DetailDataSet'][$detailCount - 1] = $detailDataSet;
-                           break;
-                        }
-                        case 'N7' : {
-                           
                            break;
                         }
                         
@@ -519,41 +536,6 @@ class X12Read210 extends BaseEdiReceive
                   break;
                }
                
-               case 'AK1' : {
-                  \Bgies\EdiLaravel\Functions\ReadFileFunctions::ReadAK1Line($segmentArray[$FileLineCount - 1], $EDIObj->delimiters, $masterDataset );
-                  break;
-               }
-               case 'AK2' : {
-                  $masterDataset['InterchangeSenderID'] = $EDIObj->interchangeSenderID;
-                  $masterDataset['InterchangeReceiverID'] = $EDIObj->interchangeReceiverID;
-                  $detailDataset = $this->getDetailDataset();
-                  
-                  $masterDataset['DetailDataSet'][count($masterDataset['DetailDataSet'])] = $detailDataset;
-                  
-                  ReadFileFunctions::ReadAK2Line($segmentArray[$FileLineCount - 1],
-                     $EDIObj->delimiters, $detailDataset);
-                  break;
-               }
-               case 'AK3' : {
-                  ReadFileFunctions::ReadAK3Line($segmentArray[$FileLineCount - 1],
-                     $EDIObj->delimiters, $detailDataset);
-                  break;
-               }
-               case 'AK4' : {
-                  ReadFileFunctions::ReadAK4Line($segmentArray[$FileLineCount - 1],
-                     $EDIObj->delimiters, $detailDataset);
-                  break;
-               }
-               case 'AK5' : {
-                  ReadFileFunctions::ReadAK5Line($segmentArray[$FileLineCount - 1],
-                     $EDIObj->delimiters, $detailDataset);
-                  break;
-               }
-               case 'AK9'  : {
-                  ReadFileFunctions::ReadAK9Line($segmentArray[$FileLineCount - 1],
-                     $EDIObj->delimiters, $masterDataset);
-                  break;
-               }
                
                default : {
                   
@@ -576,22 +558,46 @@ class X12Read210 extends BaseEdiReceive
       return true;
    }
    
-   // if Files can be updated, then update them, also need to put in
+   /*
+    * Normally you will need to create an Statement record
+    * then loop through the DetailDataSet that represents the
+    * individual invoice, and if yo need the charge details, or locations
+    * you will also do loops for them.
+    *
+    * Note if you are inserting the information into a database,
+    * I highly recommend using stored procedures.
+    *
+    */
+   
    protected function dealWithData()
    {
+      LoggingFunctions::logThis('info', 3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 dealWithData', 'Start dealWithData');
+      $ediType = $this->ediType;
       
-      $fullDataSet = $this->dataset;
-
-      foreach ($fullDataSet['DetailDataSet'] as $curDetail ) {
+      
+      $afterProcessObject = unserialize($this->ediType->edt_after_process_object);
+      
+      try {
+         $afterProcessObject->execute($this->dataset, $this->ediOptions);
          
-         
+         if ($this->ediOptions->saveJsonFile) {
+            $filePath = env('EDI_TOP_DIRECTORY') . "/" . $this->ediFile['edf_filename'];
+            $last_dot_index = strrpos($filePath, ".");
+            $without_extention = substr($filePath, 0, $last_dot_index);
+            $withJsonExtenstion = $without_extention . '.json';
+            
+            $jsonData = json_encode($this->dataset, JSON_PRETTY_PRINT, 12);
+            \Storage::disk('edi')->put( $withJsonExtenstion, $jsonData );
+         }
          
       }
-      
-      
-      
-      
-      
+      catch (EdiException $e) {
+         LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 dealWithData', 'EdiException : ' . $e->getMessage());
+      }      
+      catch (Exception $e) {
+         LoggingFunctions::logThis('info', 8, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\X12Read210 dealWithData', 'Exception : ' . $e->getMessage());
+      }
+
       
       return true;
    }

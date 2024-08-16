@@ -19,7 +19,7 @@ class DbFunctions //extends BaseController
    {
       $ediFile = new EdiFile();
 //      $ediFile->id = $model->id;
-      $ediFile->edf_edi_type_id = $EDIObj->ediId;
+      $ediFile->edf_edi_type_id = $EDIObj->ediTypeId;
       $ediFile->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
       $ediFile->edf_cancelled = 1;
       $ediFile->edf_test_file = $EDIObj->isTestFile;
@@ -64,8 +64,8 @@ class DbFunctions //extends BaseController
 
       $filesModel->edf_edi_type_id = $typesModel->id;
       $filesModel->edf_transaction_control_number = $EDIObj->interchangeControlVersionNumber;
-      $filesModel->interchange_sender_id = $EDIObj->interchangeSenderID;
-      $filesModel->interchange_receiver_id = $EDIObj->interchangeReceiverID;
+      $filesModel->interchange_sender_id = trim($EDIObj->interchangeSenderID);
+      $filesModel->interchange_receiver_id = trim($EDIObj->interchangeReceiverID);
       $filesModel->application_sender_code = $EDIObj->applicationSenderCode;
       $filesModel->application_receiver_code = $EDIObj->applicationReceiverCode;
       

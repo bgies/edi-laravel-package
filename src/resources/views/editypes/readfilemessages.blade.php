@@ -44,9 +44,11 @@
 <p class="bg-success bg-opacity-10">
 	<div>Data</div>
 	<pre>
-{{ $data }} 
+		<p id="data-wrap">{{ $data }}</p>
 	</pre>
+	<button onclick="copyJSON()">Copy JSON</button>
 </p>
+
 <br />
 
 
@@ -70,17 +72,46 @@
 
 
 <script>
-/*
-	var input = document.getElementById("fileChosen");
-	
-	if (input) {
-		var filename = input.files[0].name;
-		}	
 
-	function getAfilename(val){    
-		alert(val);
-
+	function copyJSON() {
+		let text = document.getElementById('data-wrap').innerHTML;
+		
+		alert("copyJSON");
+		alert("copyJSON");
+		
+		navigator.permissions.query({ name: "write-on-clipboard" }).then((result) => {
+		  if (result.state == "granted" || result.state == "prompt") {
+    			alert("Write access granted!");
+  		  }
+		});
+		
+  		const copyContent = async () => {
+	 	  try {
+   			   await navigator.clipboard.writeText(text);
+      			console.log('Content copied to clipboard');
+    		} catch (err) {
+	      		console.error('Failed to copy: ', err);
+    		}
+  		}
 	}
+  			
+	
+/*	
+	function testCopyJSON() {
+	  // Get the text field
+	  var copyTextElement = document.getElementById("data-wrap");
+
+	  // Select the text field
+	  var copyText = copyTextElement.innerHTML;
+//	  copyTextElement.select();
+//	  copyTextElement.setSelectionRange(0, 99999); // For mobile devices
+
+		// Copy the text inside the text field
+	  navigator.clipboard.writeText(copyTextElement.value);
+
+	  // Alert the copied text
+	  alert("Copied the text: " + copyTextElement.value);
+	} 
 */
 
 </script>

@@ -16,13 +16,13 @@ Route::prefix('edilaravel')->group(function () {
    
    Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@index');
    
-   Route::get('/phpinfo', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@phpinfo');
+  
 
    Route::prefix('dashboard')->group(function () {
       Route::get('/', '\Bgies\EdiLaravel\Http\Controllers\EdiDashboardController@dashboard');
       Route::get('/dashboard', '\Bgies\EdiLaravel\Http\Controllers\EdiDashboardController@dashboard');
       
-      
+      Route::get('/phpinfo', '\Bgies\EdiLaravel\Http\Controllers\EdiManageController@phpinfo');
    });
    
    Route::prefix('manage')->group(function () {

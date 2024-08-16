@@ -26,24 +26,24 @@ class SendFtp
       
    public function execute() : string
    {
-      \Log::info('Bgies\EdiLaravel\X12WilliamsFTP  execute START');   
+      \Log::info('Bgies\EdiLaravel\X12JohnsonFTP  execute START');   
       
       // Send the files that need to be sent
-//      $williamsDirectories = Storage::disk('ediWilliamsFTP')->directories();
+      //      $JohnsonDirectories = Storage::disk('ediJohnsonFTP')->directories();
 //      $ediFiles = new EdiFile();
-//      $ediFiles->select('CALL proc_williams_FTP');
+//      $ediFiles->select('CALL proc_Johnson_FTP');
       
       // collect puts the result into 
-      $filesToSend = collect( \DB::select('CALL proc_williams_FTP'));
+      $filesToSend = collect( \DB::select('CALL proc_Johnson_FTP'));
       if (count($filesToSend) > 0) {
-         $ftpDir = 'faks_wa';
+         $ftpDir = 'docs_out';
          foreach ($filesToSend as $fileToSend) {
             $newCarbon = Carbon::now();
             $fileName = FileFunctions::getClientFileName('faks_yyyymmdd_hhnnss.edi', 'faks', $newCarbon);
                         
             $fileContents = Storage::disk('edi')->get(env('EDI_TOP_DIRECTORY') . "/" .  $fileToSend->edf_filename);
             
-            Storage::disk('ediWilliamsFTP')->put($ftpDir . "/" .  $fileName, $fileContents);
+            Storage::disk('ediJohnsonFTP')->put($ftpDir . "/" .  $fileName, $fileContents);
             
             $ediFile = EdiFile::find($fileToSend->id);
             $ediFile->edf_client_filename = $fileName;
@@ -58,14 +58,14 @@ class SendFtp
       
       
       // get the 997 Reply files
-      $replyFiles = Storage::disk('ediWilliamsFTP')->allFiles('/wa_faks');
+      $replyFiles = Storage::disk('ediJohnsonFTP')->allFiles('/in_docs');
       if ($replyFiles) {
          $DirectoryDateString = FileFunctions::getDirectoryDateString();
-         $storageDir = env('EDI_TOP_DIRECTORY') . "/" . "Williams210Replies/" . $DirectoryDateString;
+         $storageDir = env('EDI_TOP_DIRECTORY') . "/" . "Johnson210Replies/" . $DirectoryDateString;
          $retVal = Storage::disk('edi')->makeDirectory($storageDir);
          
          foreach ($replyFiles as $replyFile) {
-            $fileContents = Storage::disk('ediWilliamsFTP')->get($replyFile);
+            $fileContents = Storage::disk('ediJohnsonFTP')->get($replyFile);
             
             if (strpos($replyFile, "wa_faks/") == 0) {
                $replyFileName = substr($replyFile, 8);
@@ -75,13 +75,13 @@ class SendFtp
             if ($storedSuccessfully) {
                $incomingModel = new Ediincoming();
                $incomingModel->einResponseNumber = 0;
-               $incomingModel->einFileName = 'Williams210Replies' . "/" . $DirectoryDateString . "/" . $replyFileName;
+               $incomingModel->einFileName = 'Johnson210Replies' . "/" . $DirectoryDateString . "/" . $replyFileName;
                $incomingModel->einDateTime = now();
                $incomingModel->einReadAttempts = 0;
             
                $incomingModel->save();
 
-               Storage::disk('ediWilliamsFTP')->delete($replyFile);
+               Storage::disk('ediJohnsonFTP')->delete($replyFile);
             }
          }
       }

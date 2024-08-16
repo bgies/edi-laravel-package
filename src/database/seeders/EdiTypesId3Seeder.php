@@ -26,6 +26,7 @@ class EdiTypesId3Seeder extends Seeder
 
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Read\Read852Options();
+        $options->ediTypeId = 3;
         $options->dataInterchangeControlNumber = 0;
         $options->fileDirection = 'outgoing';
         $options->interchangeReceiverID = 'INTERCHRECID';
@@ -64,8 +65,8 @@ class EdiTypesId3Seeder extends Seeder
         $ediType->edt_enabled = 1;
         $ediType->edt_file_directory = '';
         $ediType->edt_edi_object =  serialize($options);
-        $ediType->interchange_sender_id = $options->interchangeSenderID;
-        $ediType->interchange_receiver_id = $options->interchangeReceiverID;
+        $ediType->interchange_sender_id = trim($options->interchangeSenderID);
+        $ediType->interchange_receiver_id = trim($options->interchangeReceiverID);
         $ediType->application_sender_code = 'AMAZON';
         $ediType->application_receiver_code = 'APPRECEIVERCODE';
         // specific to this object

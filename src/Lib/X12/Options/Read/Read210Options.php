@@ -10,6 +10,8 @@ use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
 class Read210Options extends EDIReadOptions
 {
    public $transactionSetName = '210';
+      
+   public bool $useLxLoop = false;
    
    
    
@@ -28,6 +30,7 @@ class Read210Options extends EDIReadOptions
       // such as $this->B3Options = new B3Options();
       
       
+      
    }
    
    public function getPropertyTypes() {
@@ -36,7 +39,11 @@ class Read210Options extends EDIReadOptions
       $propTypes['transactionSetName'] = new PropertyType(
          'string', 0, 30, false, true, null, true, true
          );
+      $propTypes['useLxLoop'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true
+         );
       
+      return $propTypes;
    }
       
    

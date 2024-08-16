@@ -10,22 +10,23 @@ use Bgies\EdiLaravel\Functions\CurrencyFunctions;
 
 
 
-class SegmentL3 extends SegmentBase
+class SegmentN7 extends SegmentBase
 {
    // this was programmed for the 4060 version
    public static function SegmentRead($segmentArray, &$EDIObj, &$dataset, $ediVersion) {
       // NOTE - THIS CODE SNIPPET IS JUST BOILERPLATE TO GIVE YOU AN IDEA OF HOW TO PROGRAM IT
 /*      
-      if (! array_key_exists('L3Array', $dataset)) {
-         $dataset['L3Array'] = [];
+      if (! array_key_exists('N7Array', $dataset)) {
+         $dataset['N7Array'] = [];
       }
-      $dataset['L3Array'][] = [];
-      $L3ArrayCount = count($dataset['L3Array']);
+      $dataset['N7Array'][] = [];
+      $N7ArrayCount = count($dataset['N7Array']);
       
-      $dataset[$L3ArrayCount - 1]['L3-011-ReferenceIdentificationQualifier'] = $segmentArray[1];
-      $dataset[$L3ArrayCount - 1]['L3-02-ReferenceIdentification'] = $segmentArray[2];
+      $dataset['N7Array'][$N7ArrayCount - 1]['N7-011-ReferenceIdentificationQualifier'] = $segmentArray[1];
+      $dataset['N7Array'][$N7ArrayCount - 1]['N7-02-ReferenceIdentification'] = $segmentArray[2];
 */      
-      $dataset['L3-LadingLineItemNumber'] = $segmentArray[1];
+      $dataset['N7-02-EquipmentNumber'] = $segmentArray[2];
+      $dataset['N7-011-EquipmentDescriptionCode'] = $segmentArray[11];
       
       
    }

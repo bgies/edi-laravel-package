@@ -27,12 +27,12 @@ class EdiTypesId4Seeder extends Seeder
 
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Send\Send856Options();
+        $options->ediTypeId = 4;
         $options->ediVersionReleaseCode = '5010';
         $options->ediVersionReleaseCodeExtended = '00501';
         $options->fileDirection = 'outgoing'; // Must be null, incoming or outgoing.. NOTHING ELSE
         
         $options->dataInterchangeControlNumber = 1;
-        $options->fileDirection = 'outgoing';
         $options->interchangeReceiverID = 'AMAZON';
         $options->interchangeSenderID = 'FORGOT_US';
         $options->applicationReceiverCode = 'AMAZON';
@@ -74,8 +74,8 @@ class EdiTypesId4Seeder extends Seeder
         $ediType->edt_enabled = 1;
         $ediType->edt_file_directory = '';
         $ediType->edt_edi_object =  serialize($options);
-        $ediType->interchange_sender_id = $options->interchangeSenderID;
-        $ediType->interchange_receiver_id = $options->interchangeReceiverID;
+        $ediType->interchange_sender_id = trim($options->interchangeSenderID);
+        $ediType->interchange_receiver_id = trim($options->interchangeReceiverID);
         $ediType->application_sender_code = 'FORGOTTEN_856';
         $ediType->application_receiver_code = 'AMAZON';
         // specific to this object

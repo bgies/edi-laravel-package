@@ -8,10 +8,6 @@
 	<p>
 		<div class="center"><h3> {{ $ediType->edt_name }}</h3></div>
 	</p>
-<!-- 
-	<h4>Field Names</h4>
-	<p>{{ print_r(array_keys($fields), true) }}</p>  
- -->
  
 <form class="edi-grid-bg">
 	<div class="mb-3 row">
@@ -386,6 +382,7 @@
 					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_before_process_object'  }}/edit" >
 						Before Processing Options
 					</a>
+					{{ ObjectFunctions::getObjectClassName($ediType->edt_before_processing_object) }} 
 				@endif
 			
 			</div>
@@ -412,17 +409,20 @@
 			<div class="col-6">After Processing</div>
 			<div class="col-6">
 				@if (empty($ediType->edt_after_process_object) )
-			   	@php( $afterProcessObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling')   )
-    				<select id="new-after-process-select" class="form-select" aria-label="Choose After Process Object" hidden>
+				  
+			   	@php( $afterProcessObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling:DataHandling:DataInserting')   )
+    				<select id="new-after-process-select" name="new-after-process-select" class="form-select" aria-label="Choose After Process Object" hidden>
     				@foreach($afterProcessObject as $curFile)
 	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
     				@endforeach
     				</select>
-			   	<button id="after_process_button" type="button" class="btn btn-primary create-object-button">Choose Object</button>
+			   	<button id="after_process_button" type="button" class="btn btn-primary create-object-button">Create After Process Object</button>
 				@else
 					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_after_process_object'  }}/edit" >
 						After Processing Options
 					</a>
+					<br />&nbsp; {{ Bgies\EdiLaravel\Functions\ObjectFunctions::getObjectClassName($ediType->edt_after_process_object) }}
+					
 				@endif
 			</div>
 		</div>
@@ -438,8 +438,9 @@
 		<div class="col-6">Alert Options</div>
 		<div class="col-6">
 				@if (empty($ediType->edt_alert_object) )
+				
 			   	@php( $alertObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('Alerts')   )
-    				<select id="new-alerts-select" class="form-select" aria-label="Create Alert Object">
+    				<select id="new-alerts-select" name="new-alerts-select" class="form-select" aria-label="Create Alert Object" hidden>
     				@foreach($alertObject as $curFile)
 	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
     				@endforeach
@@ -449,6 +450,7 @@
 					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_alert_object'  }}/edit" >
 						Alert Options
 					</a>
+					<br />&nbsp; {{ Bgies\EdiLaravel\Functions\ObjectFunctions::getObjectClassName($ediType->edt_alert_object) }}
 				@endif
 		</div>
 		</div>
@@ -460,7 +462,7 @@
 		<div class="col-6">
 				@if (empty($ediType->edt_file_drop) )
 			   	@php( $fileDropObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('FileHandling')   )
-    				<select id="new-file-drop-select" class="form-select" aria-label="Create File Drop Object">
+    				<select id="new-file-drop-select" class="form-select" aria-label="Create File Drop Object" hidden>
     				@foreach($fileDropObject as $curFile)
 	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
     				@endforeach
@@ -470,6 +472,7 @@
 					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_file_drop'  }}/edit" >
 						File Drop Options
 					</a>
+					<br />&nbsp; {{ Bgies\EdiLaravel\Functions\ObjectFunctions::getObjectClassName($ediType->edt_file_drop) }}
 				@endif
 		</div>
 		</div>
@@ -481,7 +484,7 @@
 			<div class="col-6">
 				@if (empty($ediType->edt_transmission_object) )
 			   	@php( $transmissionObject = Bgies\EdiLaravel\Functions\FileFunctions::getFileNamesFromPackageDirectory('Lib/Transmission')   )
-    				<select id="new-transmission-select" class="form-select" aria-label="Create Transmission Object">
+    				<select id="new-transmission-select" class="form-select" aria-label="Create Transmission Object" hidden>
     				@foreach($transmissionObject as $curFile)
 	    				<option value="{{ substr($curFile, 0, strlen($curFile) - 4) }}" >{{ substr($curFile, 0, strlen($curFile) - 4) }}</option>    				
     				@endforeach
@@ -491,6 +494,7 @@
 					<a href="/edilaravel/editype/field/{{ $ediType->id . '/edt_transmission_object'  }}/edit" >
 						Transmission Options
 					</a>
+					<br />&nbsp; {{ Bgies\EdiLaravel\Functions\ObjectFunctions::getObjectClassName($ediType->edt_transmission_object) }}
 				@endif
 			</div>
 		</div>
@@ -561,8 +565,9 @@
       <div class="modal-body">
       
       <form id="modal-run-form" name="modal-run-form" action="" method="post">
-	       <input type="text" id="modal-ediTypeId" name="modal-ediTypeId" class="form-control" hidden value="">
+	       <input type="text" id="modal-ediTypeId" name="modal-ediTypeId" class="form-control" hidden value="{{ $ediType->id }}">
 			 <input type="text" id="modal-fieldName" name="modal-fieldName" class="form-control" hidden value="">            
+          <input type="text" id="modal-directory" name="modal-directory" class="form-control" hidden value="">
           
           <p class="edi-new-object-body">
            	<label id="new-object-select-label" for="new-object-select" class="form-label">Choose Object</label>
@@ -576,7 +581,7 @@
 <!--         
         <button type="button" class="btn btn-primary" onclick="createNewObject()">Create New Object</button>
  -->          
-      <button class="btn btn-primary" type="submit">Create Object</button>    
+      <button class="btn btn-primary" type="submit">Create New Object</button>    
           
           
       </div>
@@ -593,14 +598,18 @@
    
    	// Add click event to ALL create object buttons  - Inline JS
 	var buttons = document.querySelectorAll('.create-object-button');
-	Array.prototype.slice.call(buttons)
-   	 .forEach(function (button) {
-			button.addEventListener('click', function (event) {
 
 				let modalTitle = document.getElementById("edi-new-object-title");
 				let modalSelect1 = document.getElementById("new-object-select");
 				let modalLabel = document.getElementById("new-object-select-label");
+				let modalEdiTypeId = document.getElementById("modal-ediTypeId");
+				let modalDirectory = document.getElementById("modal-directory");
 				let modalFieldName = document.getElementById("modal-fieldName");
+	
+	Array.prototype.slice.call(buttons)
+   	 .forEach(function (button) {
+			button.addEventListener('click', function (event) {
+
 				 
 				let modalSelect2 = null; 
 				let modalObjectName = null;
@@ -611,27 +620,31 @@
 						modalSelect2 = document.getElementById("new-before-process-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
 						modalFieldName.value = "edt_before_process_object";
+						modalDirectory.value = "FileHandling";
 						break;
 					case 'after_process_button': 
 						modalTitle.innerHTML = "Create Object for After Process";
 					   modalLabel.innerHTML = "Choose Object for After Process Options";
 						modalSelect2 = document.getElementById("new-after-process-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
-						modalFieldName.value = "edt_before_process_object";
+						modalFieldName.value = "edt_after_process_object";
+						modalDirectory.value = "FileHandling:DataHandling:DataInserting";
 						break;
 				   case 'alert_button' : 
 				   	modalTitle.innerHTML = "Create Object for Alerts";
 						modalLabel.innerHTML = "Choose Object for Alerts";	
 						modalSelect2 = document.getElementById("new-alerts-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
-						modalFieldName.value = "edt_before_process_object";
+						modalFieldName.value = "edt_alert_object";
+						modalDirectory.value = "Alerts";
 				      break;
 				   case 'file_drop_button' : 
 				   	modalTitle.innerHTML = "Create Object for File Drop";
 						modalLabel.innerHTML = "Choose Object for File Drop";	
 						modalSelect2 = document.getElementById("new-alerts-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML + modalSelect1.innerHTML;
-						modalFieldName.value = "edt_before_process_object";
+						modalFieldName.value = "edt_file_drop";
+						modalDirectory.value = "FileHandling";
 				      break;
 					case 'transmission_button':
 						modalTitle.innerHTML = "Create Object for Transmission";					
@@ -639,6 +652,7 @@
 						modalSelect2 = document.getElementById("new-transmission-select");
 						modalSelect1.innerHTML = modalSelect2.innerHTML;
 						modalFieldName.value = "edt_transmission_object";
+						modalDirectory.value = "Lib/Transmission";
 						break;
 				}
 				let myModal = new bootstrap.Modal(document.getElementById('edi-new-object-modal'));					
@@ -647,10 +661,6 @@
 			});
 		});
 			
-	 function cancelNewType() {
-		//myModal.dismiss();
-	 }
-	 
 	 function cancelNewObject() {
 		//myModal.dismiss();
 	 }

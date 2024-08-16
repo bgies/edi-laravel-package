@@ -12,10 +12,10 @@
 	@php( $parentObjectName = '' )
 	@php( $objName = '' )
 	
- 	
+<!--  	
 	<p>{{ print_r(array_keys($objectProperties), true) }}</p>  
-
-
+ -->
+	<br />
    <div class="container edi-grid edi-grid-bg column-gap: 10px">
    		<div class="row">
    			@if (! $fieldObject)
@@ -36,15 +36,17 @@
    			<input type="hidden" id="ediTypeFieldName" name="ediTypeFieldName" value="{{ $fieldName }}">
    			<input type="hidden" id="ediTypeId" name="ediTypeId" value="{{ $ediType->id }}">
 
-@php( \Log::info('field.blade.php objectProperties: ' . print_r($objectProperties, true))  )   			
+@php( \Log::info('field.blade.php objectProperties: ' . print_r($objectProperties, true))  )
+@php( \Log::info('field.blade.php propertyTypes: ' . print_r($propertyTypes, true))  )   			
    			@foreach($objectProperties as $curField => $curFieldValue) 
    			
 				@if ( $propertyTypes && isset($propertyTypes[$curField]) )
 					@php( $fieldType = $propertyTypes[$curField]->propertyType )
 					@php( $propertyAttributes = $propertyTypes[$curField] )
-@php( \Log::info('field.blade.php object $curField: ' . print_r($curField, true))  )
+@php( \Log::info('field.blade.php object $propertyTypes $curField: ' . print_r($curField, true))  )
 @php( \Log::info('field.blade.php object $propertyAttributes: ' . print_r($propertyAttributes, true))  )					
 				@else
+@php( \Log::info('field.blade.php propertyTypes else $curField: ' . print_r($curField, true))  )				
 					@php( $fieldType = gettype($fieldObject) )
 					@php( $propertyAttributes = new \Bgies\EdiLaravel\Lib\PropertyType(
 						$fieldType, 0, 255, true, false, null, true, true					
@@ -61,7 +63,11 @@
 						<div class="mb-3">
    							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $adjustedFieldName }}</label>
    							<input type="input" class="form-control" id="{{ $curField }}" name="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
-							<div id="{{ $curField }}Help" class="form-text"></div>
+   							@if (strlen($propertyAttributes->propertyHelp) > 0)
+	  							<div class="ps-3">
+  									 {{ $propertyAttributes->propertyHelp }} 
+								</div> 
+							@endif
 						</div>
         			@break
 
@@ -70,7 +76,11 @@
     					<div class="mb-3">
    							<label for="{{ $curField }}" class="form-label edi-field-name">{{ $adjustedFieldName }}</label>
    							<input type="input" class="form-control" id="{{ $curField }}" name="{{ $curField }}" aria-describedby="{{ $curField }}Help" value="{{ $curFieldValue }}">
-							<div id="{{ $curField }}Help" class="form-text">Help</div>
+							@if (strlen($propertyAttributes->propertyHelp) > 0)
+  								<div class="ps-3">
+									 {{ $propertyAttributes->propertyHelp }} 
+								</div> 
+							@endif
 						</div>
         				
         			@break
@@ -83,8 +93,13 @@
   								<input class="form-check-input" type="checkbox" value="1" name="{{ $curField }}" id="{{ $curField }}" {{ ($propertyAttributes->canEdit ? '' : 'disabled') }}  {{ ($curFieldValue == 1 ? 'checked' : '') }}>
 							   <label class="form-check-label edi-field-name" for="{{ $curField }}">
 								    	{{ $adjustedFieldName }}
-  									</label>
-								</div>
+  								</label>
+  								@if (strlen($propertyAttributes->propertyHelp) > 0)
+	  								<div class="ps-3">
+  										 {{ $propertyAttributes->propertyHelp }} 
+									</div> 
+								@endif
+							</div>
         				</div>
         			@break
 
@@ -138,6 +153,7 @@
    			@endforeach
    			
    			<div class="form-button mt-3">
+   				<button type="button" class="btn btn-warning" data-bs-dismiss="modal" onclick="cancelEdit()">Cancel</button>
     			<button id="submit" class="btn btn-primary" type="submit">Submit form</button>
  
   			</div>
@@ -147,7 +163,15 @@
    </div>
 
 
+   <script>
+		function cancelEdit() {
+ 			window.location.replace( "/edilaravel/editype/{{ $ediType->id }} . '/edit");
+			return false; 
+	 	}
+	 		
 
 
+
+	</script>
     
 @endsection

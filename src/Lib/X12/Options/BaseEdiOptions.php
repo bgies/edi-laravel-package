@@ -224,6 +224,9 @@ abstract class BaseEdiOptions
       $propTypes['transactionSetControlNumber'] = new PropertyType(
          'int', 2, 2, false, true, null, false, false
          );
+      $propTypes['implementationConventionReference'] = new PropertyType(
+         'string', 0, 0, false, true, null, false, false
+         );
       
       
 /*

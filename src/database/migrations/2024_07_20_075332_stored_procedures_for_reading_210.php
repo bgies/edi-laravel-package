@@ -16,12 +16,17 @@ class EdiStoredProcedures5 extends Migration
         
         \DB::unprepared("
             
-        DROP PROCEDURE IF EXISTS proc_test_210;
+        DROP PROCEDURE IF EXISTS proc_test_insert_210;
             
-        CREATE PROCEDURE proc_test_210()
+        CREATE PROCEDURE proc_test_insert_210(
+            IN ediTypeId INT,
+            IN  VARCHAR (255)
+
+
+         )
         BEGIN
 
-	SELECT 
+         	SELECT 
 		10 as id, /* edi_orders.id, */
     10 AS InvoiceId,
 		date_add(now(), INTERVAL -7 DAY) as InvoiceDate, 
@@ -150,9 +155,6 @@ END
     public function down()
     {
         \DB::unprepared("
-            DROP PROCEDURE IF EXISTS proc_insert_997_replies;
-
-            DROP PROCEDURE IF EXISTS proc_get_856_to_send;
 
             DROP PROCEDURE IF EXISTS proc_test_210;
         ");

@@ -10,7 +10,8 @@ class EdiReadOptions extends BaseEdiOptions
 {
    public $clientFileFormat = '';
    public bool $needs990 = false;
-
+   public bool $saveJsonFile = false;
+   
    
        
    
@@ -35,6 +36,11 @@ class EdiReadOptions extends BaseEdiOptions
       $propTypes['needs990'] = new PropertyType(
          'bool', 0, 1, false, true, null, true, true
          );
+      $propTypes['saveJsonFile'] = new PropertyType(
+         'bool', 0, 1, false, true, null, true, true, 'Do you want to save the JSON data in a file?'
+         );
+      
+      
       
       
       return $propTypes;

@@ -28,6 +28,24 @@ class ObjectFunctions
        
        return $objectProperties;
     }
+    
+    public static function getObjectClassName($ObjectStr) : string
+    {
+       if (strlen($ObjectStr < 5)) {
+          return '';
+       }
+       if (substr($ObjectStr, 0, 1) != 'O') {
+          return '';
+       }
+       // now get the length of the object
+       $shortObjectStr = substr($ObjectStr, 2);
+       $nameLen = (int) substr($shortObjectStr, 0, strpos($shortObjectStr, ':'));
+       $objectName = substr($shortObjectStr, strpos($shortObjectStr, ':') + 2, $nameLen);
+       // string the Bgies\EdiLaravel\ from the name
+       $objectName = substr($objectName, 17);
+       
+       return $objectName;
+    }
 
     public static function getVars($inObject) : array
     {

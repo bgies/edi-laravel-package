@@ -17,6 +17,7 @@
            						<a class="dropdown-item" href="/edilaravel/dashboard/dashboard">Dashboard</a>
            					</li>
 				            <li><a class="dropdown-item" href="/edilaravel/manage/files">EDI Files</a></li>
+				            <li><a class="dropdown-item" href="/edilaravel/dashboard/phpinfo">PHP Info</a></li>
           				</ul>
         				</li>      			
       			

@@ -584,7 +584,7 @@ class SegmentFunctions
          throw new EdiFatalException('The ST line is malformed or missing');
       }
    
-      if (!in_array($segmentArray[1], $sharedTypes->X12TransactionSets)) {   // ST01
+      if (!in_array($segmentArray[1], $sharedTypes->X12FunctionalIdentifierCodes)) {   // ST01
          throw new EdiFatalException('The ST segmentline is malformed, or the Transaction Set is not supported yet');
       }
       $EDIObj->transactionSetIdentifier = $segmentArray[1];

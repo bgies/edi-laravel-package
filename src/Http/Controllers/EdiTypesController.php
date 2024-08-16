@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EdiReadOptions;
 use Bgies\EdiLaravel\Functions\ReadEdiFileFunctions;
 use Bgies\EdiLaravel\Lib\ReturnValues;
+use Bgies;
 
 class EdiTypesController extends Controller
 {
@@ -64,10 +65,12 @@ class EdiTypesController extends Controller
       }
       \Log::info('EdiTypesController edit $fieldNames: ' . print_r($fields, true));
       
+      
       return view('edilaravel::ediTypes.editype')
                ->with('ediType', $ediType) 
                ->with('fields', $fields)
                ->with('navPage', $this->navPage)
+//               ->with('ObjectFunctions', \Bgies\EdiLaravel\Functions\ObjectFunctions)
 //               ->with('FileFunctions', FileFunctions)
                ->with('beforeProcessObjectProperties', $beforeProcessObjectProperties);
 
@@ -76,19 +79,29 @@ class EdiTypesController extends Controller
    
    public function createObject(Request $request, $ediTypeId)
    {
-      \Log::info('EdiTypesController createObject: ' . $ediTypeId);
+      $input = $request->all();
+      LoggingFunctions::logThis('info', 3, 'EdiTypesController readFile', 'createObject: ' . print_r($input, true));
       $ediType = EdiType::find($ediTypeId);
       if (!$ediType) {
          throw new NoSuchEdiTypeException('EDI Type ' . $ediTypeId . ' not found');
       }
-      
-      $input = $request->all();
-      \Log::info('EdiTypesController createObject REQUEST: ' . print_r($input, true));
+
       request()->validate([
          'modal-fieldName' => 'required',
          'new-object-select'  => 'required',
+         'modal-directory'  => 'required',
       ]);
       
+      $directories = $input['modal-directory'];
+      $fullClassName = FileFunctions::getFullClassNameFromPackageDirectory($directories, $input['new-object-select']);
+      try {
+         $newObject = new $fullClassName(); 
+         $fieldName = $input['modal-fieldName'];
+         $ediType->$fieldName = serialize($newObject);
+         $ediType->save();
+      } catch (Exception $e) {
+         
+      }
       
       
       $fields = $ediType->getAttributes();
@@ -105,10 +118,13 @@ class EdiTypesController extends Controller
    
    public function fieldEdit(Request $request, $ediTypeId, $fieldName)
    {
+      LoggingFunctions::logThis('info', 5, 'EdiTypes Controller fieldEdit', 'Start fieldName: ' . $fieldName);
+      
       $ediType = EdiType::find($ediTypeId);
       
       $fieldObject = unserialize($ediType->$fieldName);
       $ObjectProperties = ObjectFunctions::getVars($fieldObject);
+      $ObjectPropertyTypes = $fieldObject->getPropertyTypes();
 
       if (!$fieldObject) {
          $fieldObject = '';
@@ -116,13 +132,20 @@ class EdiTypesController extends Controller
       
       
       $objectTypes = [];
+      // this is used to create a default object if needed. 
+      // should be obsolete now as we can edit, but keep it in case 
       if (!$fieldObject) {
          switch ($fieldName) {
             case 'edt_before_process_object': 
             
             break;
             case 'edt_edi_object':
-               
+LoggingFunctions::logThis('info', 8, 'EdiTypes Controller fieldEdit', 'In switch edt_edi_object');
+
+               if (property_exists($fieldObject, 'ediTypeId')) {
+LoggingFunctions::logThis('info', 8, 'EdiTypes Controller fieldEdit', '$fieldObject[ediTypeId]');
+                  $fieldObject->ediTypeId = $ediTypeId;
+               }
                
             break;
             case 'edt_before_process_object':
@@ -197,6 +220,9 @@ class EdiTypesController extends Controller
       // we can remove the ediTypeId and ediTypeFieldName from the input array here
       unset( $input['ediTypeId'] );
       unset( $input['ediTypeFieldName'] );
+      if (array_key_exists('_token', $input)) {
+         unset( $input['_token'] );
+      }
       
       
       $objectTypes = [];
@@ -386,8 +412,8 @@ class EdiTypesController extends Controller
          $ediFile->edf_edi_type_id = $ediType->id;
          $ediFile->edf_filename = $file;
          $ediFile->edf_transaction_control_number = $EDIObj->transactionSetControlNumber;
-         $ediFile->interchange_sender_id = $EDIObj->interchangeSenderID;
-         $ediFile->interchange_receiver_id = $EDIObj->interchangeReceiverID ;
+         $ediFile->interchange_sender_id = trim($EDIObj->interchangeSenderID);
+         $ediFile->interchange_receiver_id = trim($EDIObj->interchangeReceiverID);
          $ediFile->application_receiver_code = $EDIObj->applicationReceiverCode;
          $ediFile->application_sender_code = $EDIObj->applicationSenderCode;
          $ediFile->edf_cancelled = 1;
@@ -556,8 +582,8 @@ class EdiTypesController extends Controller
         $ediType->edt_manual_create = 1;
         $ediType->edt_file_directory = '';
         $ediType->edt_edi_standard = $EDIObj->ediStandard;
-        $ediType->interchange_sender_id = $EDIObj->interchangeSenderID;
-        $ediType->interchange_receiver_id = $EDIObj->interchangeReceiverID;
+        $ediType->interchange_sender_id = trim($EDIObj->interchangeSenderID);
+        $ediType->interchange_receiver_id = trim($EDIObj->interchangeReceiverID);
         $ediType->application_sender_code = $EDIObj->applicationSenderCode;
         $ediType->application_receiver_code = $EDIObj->applicationReceiverCode;
          

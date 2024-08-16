@@ -42,7 +42,7 @@ class X12Send210 extends BaseEdiSend
    private $ediAfterProcessObject = null;
    private $ediFile = array();
    private $errorCount = 0;
-   
+   private $ediFilesId = 0;
    
    /**
     * Create a new instance.
@@ -83,7 +83,7 @@ class X12Send210 extends BaseEdiSend
       // the ediOption object will be passed anywhere it's needed, so 
       // set a couple of properties on it from the EDI type so we don't have to pass the 
       // model also. 
-//      $this->ediOptions['ediId'] = $ediType->id;
+//      $this->ediOptions['ediTypeId'] = $ediType->id;
       //$this->ediOptions->transactionSetIdentifier = '210';
       //$this->ediOptions->transaction_control_number = $this->ediType->edf_transaction_control_number;
       
@@ -195,7 +195,8 @@ class X12Send210 extends BaseEdiSend
       
       try {
           $ediFile = DbFunctions::insertEDIFilesRecord($this->ediType, $this->ediOptions);
-          $this->EDIID = $ediFile->id;
+          
+          $this->ediFilesId = $ediFile->id;
           $ediFile->edf_records_parsed = 0;// count($this->data);
 //          $ediFile->edf_records_tablename = $tableName;
           $this->ediFile = $ediFile;
@@ -204,7 +205,7 @@ class X12Send210 extends BaseEdiSend
           $TopDirectory = FileFunctions::getTopDirectory('edi');
           
           // Note shortFileName is the dir/file name string entered into the database. 
-          $this->ShortFileName = FileFunctions::getShortFileName($this->ediType->edt_name, $this->EDIID);
+          $this->ShortFileName = FileFunctions::getShortFileName($this->ediType->edt_name, $this->ediFilesId);
           $this->ediOptions->ediTableName = $this->ediType->table;
           
          if ($this->WriteTheFile()) {
@@ -212,9 +213,9 @@ class X12Send210 extends BaseEdiSend
             WriteFileToDisk::WriteEDIFile($this->ediOptions->ediMemo,
                  $this->ShortFileName, $this->ediOptions);
            
-            $ediFile = DbFunctions::updateEDIFilesRecord($this->ShortFileName, $this->EDIID, $ediFile, $this->ediType, $this->ediOptions );
+            $ediFile = DbFunctions::updateEDIFilesRecord($this->ShortFileName, $this->ediFilesId, $ediFile, $this->ediType, $this->ediOptions );
             $retVal = DbFunctions::insertFileDetailRecords($this->data, $this->ediType,
-                  $ediFile, $this->ediOptions, $this->EDIID);
+               $ediFile, $this->ediOptions, $this->ediFilesId);
             
             return true;
             

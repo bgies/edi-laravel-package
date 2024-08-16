@@ -27,6 +27,7 @@ class EdiTypesId5Seeder extends Seeder
 
         // Setup the main Options object
         $options = new \Bgies\EdiLaravel\Lib\X12\Options\Read\Read997Options();
+        $options->ediTypeId = 5;
         $options->fileDirection = 'incoming';
         $options->interchangeReceiverID = 'FORGOT_RECEIVER';
         $options->interchangeSenderID = 'AMAZON';

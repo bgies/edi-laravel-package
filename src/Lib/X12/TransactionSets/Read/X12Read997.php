@@ -82,13 +82,13 @@ class Read997 extends BaseEDIReceive
                }
                case 10: {
                   $this->edtBeforeProcessObject = new FileFromDirectory();
-                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'Williams210Replies';
+                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'Johnson210Replies';
                
                break;
                }
                case 11: {
                   $this->edtBeforeProcessObject = new StoredProcedure();
-                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'Williams210Replies';
+                  $this->edtBeforeProcessObject->directoryName = env('EDI_TOP_DIRECTORY') . '/' . 'Johnson210Replies';
                   $this->edtBeforeProcessObject->storedProcedureName = 'proc_get_997_replies';
                
                }

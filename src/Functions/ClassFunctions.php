@@ -63,7 +63,7 @@ class ClassFunctions
    /*
     * $ediStandard is basically an enum X12, EDIFACT, or Others  FROM SharedTypes::EDIStandard
     * $fileDirection either incoming or outgoing FROM SharedTypes::EDIFileDirection
-    * $ediTransactionSetName IE 210, 997,   FROM SharedTypes::X12TransactionSets or SharedTypes::EdifactTransactionSets
+    * $ediTransactionSetName IE 210, 997,   FROM SharedTypes::X12FunctionalIdentifierCodes or SharedTypes::EdifactTransactionSets
     */
    public static function getTransactionSetClassName($ediStandard, $fileDirection, $ediTransactionSetName): string
    {
