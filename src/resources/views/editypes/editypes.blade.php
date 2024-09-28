@@ -81,75 +81,6 @@
 <br />
 <br />
 
-<div class="container edi-grid">
-	<div class="row header">
-		<div class="bs-bars ">
-			<h2>EDI Types</h2>
-		</div>
-	</div>
-	<div class="row header">
-		<div class="col col-1 px-1">
-			<button type="button" class="btn bg-light text-success edi-btn-new" id="row_new" name="row_new" 
-					data-bs-toggle="tooltip" title="New">
-					
-  					<span>New +</span> 
-				</button>
-		</div>
-		
-		<div class="col col-1">
-			Id
-		</div>
-		<div class="col">
-			Name
-		</div>
-		<div class="col col-1 d-none d-sm-block">
-			Enabled
-		</div>
-		<div class="col col-1 d-none d-sm-block">
-			Control Number
-		</div>
-		<div class="col col-4 d-none d-sm-block fs-6">
-			<div>Interchange Sender</div>
-			<div>Interchange Receiver</div>
-		</div>
-		
-	</div>
-
-	@forelse ($ediTypes as $ediType)
-	
-   		{{-- $beforeProcessObject = (object) unserialize($ediType->edt_before_process_object); --}} 
-		<div class="row">
-			<div class="col col-1 edi-btn-col">
-				<button type="button" class="btn btn-warning edi-btn-copy" id="row_{{ $ediType->id }}" name="row_{{ $ediType->id }}" 
-					data-bs-toggle="tooltip" title="{{ $ediType->edt_name }}">
-					
-  					Dup.
-				</button>
-			</div>
-			<div class="col col-1">
-				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->id }}</a>
-			</div>
-			<div class="col">   
-   				<a href="/edilaravel/editype/{{ $ediType->id }}/edit" >{{ $ediType->edt_name }}</a>
-   			</div>
-			<div class="col col-1 d-none d-sm-block text-center">
-				<input class="form-check-input" type="checkbox" id="row{{ $ediType->id }}" name="row{{ $ediType->id }} {{ $ediType->edt_enabled == 1 ? 'checked' : ''}}  ">   
-   				
-   			</div>
-			<div class="col col-1 d-none d-sm-block text-end">   
-   				{{ $ediType->edt_control_number }}
-   			</div>
-			<div class="col col-4 d-none d-sm-block fs-6">   
-   				<div>{{ $ediType->interchange_sender_id }}</div>
-   				<div>{{ $ediType->interchange_receiver_id }}</div>
-   			</div>
-   			
-   		</div>	
-
-   		
-	@empty
-   		<p> 'No EDI Types yet' </p>
-	@endforelse   		
    
    
 <div class="modal" id="edi-duplicate-modal" tabindex="-1">
@@ -185,7 +116,7 @@
       	<form class="edi-grid-bg needs-validation" method="post" action="/edilaravel/editype/createnewtype" novalidate>
       		<div class="mb-3">
 					<label for="edt_name" class="form-label edi-field-name">EDI Type Name</label>      		
-     				<input class="form-control" type="input" name="edt_name" value="" required>
+     				<input class="form-control" type="input" name="edt_name" value="" required  minlength="2" maxlength="30">
      				<div class="valid-feedback">
       				Looks good!
     				</div>     				
@@ -200,9 +131,6 @@
       		</div>
       	
 				<div class="mb-3">
-<!-- 				
-					<label for="edt_transaction_set_name" class="form-label">Transaction Set</label>
- -->
  					<label for="edt_transaction_set_name" class="form-label">Choose Transaction Set</label>					   
 					<select class="mb-3 form-select form-control-sm" name="edt_transaction_set_name" aria-label=".edt_transaction_set_name" required>
 					   <option value="100" {{ $ediType->edt_transaction_set_name == '100' ? 'selected' : '' }}>100 - Insurance Plan Description</option>
@@ -309,8 +237,8 @@
          		   <option value="266" {{ $ediType->edt_transaction_set_name == '266' ? 'selected' : '' }}>266 - Mortgage or Property Record Change Notification</option>
          		   <option value="267" {{ $ediType->edt_transaction_set_name == '267' ? 'selected' : '' }}>267 - Individual Life</option>
          		   <option value="268" {{ $ediType->edt_transaction_set_name == '268' ? 'selected' : '' }}>268 - Annuity Activity</option>
-         		   <option value="270" {{ $ediType->edt_transaction_set_name == '270' ? 'selected' : '' }}>270 - Eligibility</option>
-         		   <option value="271" {{ $ediType->edt_transaction_set_name == '271' ? 'selected' : '' }}>271 - Eligibility</option>
+         		   <option value="270" {{ $ediType->edt_transaction_set_name == '270' ? 'selected' : '' }}>270 - Eligibility, Coverage or Benefit Inquiry</option>
+         		   <option value="271" {{ $ediType->edt_transaction_set_name == '271' ? 'selected' : '' }}>271 - Health Care Eligibility/Benefit Response</option>
          		   <option value="272" {{ $ediType->edt_transaction_set_name == '272' ? 'selected' : '' }}>272 - Property and Casualty Loss Notification</option>
          		   <option value="273" {{ $ediType->edt_transaction_set_name == '273' ? 'selected' : '' }}>273 - Insurance/Annuity Application Status</option>
          		   <option value="274" {{ $ediType->edt_transaction_set_name == '274' ? 'selected' : '' }}>274 - Healthcare Provider Information</option>
@@ -530,22 +458,22 @@
 
       		<div class="mb-3">
 					<label for="interchange_sender_id" class="form-label edi-field-name">interchange_sender_id</label>      		
-     				<input class="form-control" type="input" name="interchange_sender_id" value="" required>
+     				<input class="form-control" type="input" name="interchange_sender_id" value="" required minlength="2" maxlength="15">
       		</div>
       
       		<div class="mb-3">
 					<label for="interchange_receiver_id" class="form-label edi-field-name">interchange_receiver_id</label>      		
-     				<input class="form-control" type="input" name="interchange_receiver_id" value="" required>
+     				<input class="form-control" type="input" name="interchange_receiver_id" value="" required minlength="2" maxlength="15">
       		</div>
 
       		<div class="mb-3">
 					<label for="application_sender_code" class="form-label edi-field-name">application_sender_code</label>      		
-     				<input class="form-control" type="input" name="application_sender_code" value="" required>
+     				<input class="form-control" type="input" name="application_sender_code" value="" required minlength="2" maxlength="15" >
       		</div>
 
       		<div class="mb-3">
 					<label for="application_receiver_code" class="form-label edi-field-name">application_receiver_code</label>      		
-     				<input class="form-control" type="input" name="application_receiver_code" value="" required>
+     				<input class="form-control" type="input" name="application_receiver_code" value="" required minlength="2" maxlength="15">
       		</div>
       		
       		<div class="mb-3">	
@@ -574,23 +502,24 @@
    
 </div>
 
-<script>
-/*
-	document.addEventListener("DOMContentLoaded", function(){
-   		 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    	 var tooltipList = tooltipTriggerList.map(function(element){
-       	return new bootstrap.Tooltip(element);
-    	  });
-	});
-*/
 
+<script>
+
+	const forms = document.querySelectorAll('.needs-validation')
+
+  	// Loop over them and prevent submission
+  	Array.from(forms).forEach(form => {
+   		form.addEventListener('submit', event => {
+   			if (!form.checkValidity()) {
+	        event.preventDefault();
+   			  event.stopPropagation();
+   			}
+
+   			form.classList.add('was-validated');
+    	}, false);
+	});
 	
 
-
-	let newObject = {
-		protocol : 'X12',
-		transactionset: ''
-	}
 	
 	// Add click event to New button  - Inline JS
 	var buttons = document.querySelectorAll('.edi-btn-new');
@@ -641,19 +570,6 @@
 			let myModal = new bootstrap.Modal(document.getElementById('edi-duplicate-modal'));					
 			myModal.show();
 			
-			const forms = document.querySelectorAll('.needs-validation')
-
-  			// Loop over them and prevent submission
-  			Array.from(forms).forEach(form => {
-    			form.addEventListener('submit', event => {
-      			if (!form.checkValidity()) {
-			        event.preventDefault();
-        			  event.stopPropagation();
-      			}
-
-      			form.classList.add('was-validated')
-    			}, false);
-  			});
 			
 				
        })    
@@ -672,7 +588,7 @@
 	
 	}
 	
-	//new DataTable('#editypestable');
+
 
 </script>
 

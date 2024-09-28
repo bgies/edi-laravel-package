@@ -3,14 +3,23 @@
 namespace Bgies\EdiLaravel\Lib\X12\TransactionSets\Read;
 
 use Bgies\EdiLaravel\Lib\PropertyType;
+use Bgies\EdiLaravel\Lib\ReturnValues;
+use Bgies\EdiLaravel\Lib\X12\SegmentFunctions;
+use Bgies\EdiLaravel\Lib\X12\SharedTypes;
 use Bgies\EdiLaravel\Lib\X12\TransactionSets\BaseObjects\BaseEdiReceive;
 use Bgies\EdiLaravel\Lib\X12\Options\Read\EDIReadOptions;
+use Bgies\EdiLaravel\Models\EdiFile;
 use Bgies\EdiLaravel\Models\EdiType;
+use Bgies\EdiLaravel\Functions\EdiFileFunctions;
 use Bgies\EdiLaravel\Functions\LoggingFunctions;
+use function Opis\Closure\unserialize;
+use function Opis\Closure\serialize;
+
 
 class X12Read{{TransactionSetName}} extends BaseEdiReceive
 {
    public $transactionSetName = '{{TransactionSetName}}';
+   protected ?EdiFile $ediFile = null;
    
    
    /**
@@ -18,21 +27,34 @@ class X12Read{{TransactionSetName}} extends BaseEdiReceive
     *
     * @return void
     */
-   public function __construct(int $edi_type_id)
+   public function __construct(EdiType $ediType, EdiFile $ediFile)
    {
-      LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'Start edi_type_id: ' . $edi_type_id);
-      
-      $this->ediType = EdiType::find($edi_type_id); //   findOrFail($edi_type_id);
+      parent::__construct($ediType, $ediFile);
+      LoggingFunctions::logThis('info', 4, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type id: ' . $ediType->id);
       
       if (!$this->ediType) {
-         LoggingFunctions::logThis('error',7, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type (' . $edi_type_id . ') NOT FOUND');
+         LoggingFunctions::logThis('error',7, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type is null');
          return 0;
       }
-
-      LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read{{TransactionSetName}} construct', 'edi_type: ' . print_r($this->ediType->getAttributes(), true));
       
-      $this->ediFile = new EdiFile();
+      LoggingFunctions::logThis('info',3, 'Bgies\EdiLaravel\Lib\X12\TransactionSets\Read\X12Read210 construct', 'edi_type: ' . print_r($this->ediType->getAttributes(), true));
       
+      $this->ediOptions = unserialize($this->ediType->edt_edi_object);
+      $this->edtBeforeProcessObject = unserialize($this->ediType->edt_before_process_object);
+      $this->edtAfterProcessObject = unserialize($this->ediType->edt_after_process_object);
+      
+      \Log::info('');
+      \Log::info('class X12Read210 edi_type serialize: ' . serialize($this->ediType));
+      
+      return 1;
+      
+      
+      
+      
+      
+/*      
+      THIS CODE WAS DEVELOPED TO ALLOW SOME TESTING BEFORE THE CREATE FROM STUB ROUTINES.
+  
       $ediTesting = ENV('EDI_TESTING', false);
       if ($ediTesting) {
          // create a default edt_before_process_object_properties if there isn't one
@@ -108,6 +130,7 @@ class X12Read{{TransactionSetName}} extends BaseEdiReceive
       \Log::info('class X12Read{{TransactionSetName}} edi_type serialize: ' . serialize($this->ediType));
       
       return 1;
+*/      
    }
    
    
